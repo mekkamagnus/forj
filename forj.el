@@ -98,45 +98,79 @@ Signals an error if GEMINI_API_KEY is not set."
 
 (defun forj-paren-check (code-string)
   "Analyze CODE-STRING for parentheses balance and syntax errors.
-Returns structured validation results for AI consumption."
-  (let ((stack '())
-        (errors '())
-        (line 1)
-        (column 1)
-        (in-string nil)
-        (in-comment nil)
-        (paren-pairs '((?\( . ?\)) (?\[ . ?\]) (?\{ . ?\}))))
-    (dotimes (pos (length code-string))
-      (let ((char (aref code-string pos)))
-        (cond
-         ((eq char ?\\) ; Skip escaped characters
-          (setq pos (1+ pos)))
-         ((eq char ?\")
-          (setq in-string (not in-string)))
-         ((eq char ?\;)
-          (unless in-string (setq in-comment t)))
-         ((eq char ?\n)
-          (setq in-comment nil)
-          (setq line (1+ line))
-          (setq column 0))
-         ((not (or in-string in-comment))
+Mirrors the logic of 'scripts/check-parens.ts' for structured output.
+Returns a plist representing the validation result."
+  (cl-block forj-paren-check
+    (let ((stack '())
+          (line 1)
+          (column 1)
+          (in-string nil)
+          (in-comment nil)
+          (paren-pairs '((?\( . ?\)) (?\[ . ?\]) (?\{ . ?\})))
+          (reverse-paren-pairs '((?\) . ?\() (?\] . ?\[) (?\} . ?\{))))
+      (dotimes (pos (length code-string))
+        (let ((char (aref code-string pos))
+              (prev-char (if (> pos 0) (aref code-string (1- pos)) nil)))
           (cond
-           ((assoc char paren-pairs)
-            (push (list char line column) stack))
-           ((rassoc char paren-pairs)
-            (if (null stack)
-                (push (list :type 'extra-paren :line line :column column :char char) errors)
-              (let* ((opening (pop stack))
-                     (expected (cdr (assoc (car opening) paren-pairs))))
-                (unless (eq char expected)
-                  (push (list :type 'mismatched-paren :line line :column column :found char :expected expected :opening-line (cadr opening)) errors))))))))
-      (setq column (1+ column))))
-    (while stack
-      (let ((unclosed (pop stack)))
-        (push (list :type 'unclosed-paren :line (cadr unclosed) :column (caddr unclosed) :char (car unclosed)) errors)))
-    (if errors
-        (list :status 'invalid :errors (nreverse errors))
-      (list :status 'valid))))
+           ;; Handle comments
+           ((and (eq char ?\;) (not in-string))
+            (setq in-comment t))
+
+           ;; Handle newlines
+           ((eq char ?\n)
+            (setq in-comment nil)
+            (setq line (1+ line))
+            (setq column 0))
+
+           ;; Handle strings
+           ((and (eq char ?\") (not (eq prev-char ?\\)))
+            (setq in-string (not in-string)))
+
+           ;; Process characters if not in a string or comment
+           ((not (or in-string in-comment))
+            (cond
+             ;; Opening character
+             ((assoc char paren-pairs)
+              (push (list :char char :line line :col column) stack))
+             ;; Closing character
+             ((rassoc char paren-pairs)
+              (if (null stack)
+                  ;; Unmatched closing character
+                  (cl-return-from forj-paren-check
+                    (list :status 'unbalanced
+                          :error (list :type 'unmatched-closing
+                                       :char (string char)
+                                       :line line
+                                       :col column
+                                       :message (format "Unmatched closing character '%c'." char)
+                                       :suggestion (format "Remove the extra closing character '%c' or add a corresponding opening character." char))))
+                (let* ((last-open (pop stack))
+                       (expected-char (cdr (assoc (plist-get last-open :char) paren-pairs))))
+                  (unless (eq char expected-char)
+                    ;; Mismatched closing character
+                    (cl-return-from forj-paren-check
+                      (list :status 'unbalanced
+                            :error (list :type 'mismatched-closing
+                                         :char (string char)
+                                         :line line
+                                         :col column
+                                         :message (format "Mismatched closing character '%c'. Expected to close '%c'." char (plist-get last-open :char))
+                                         :suggestion (format "Replace '%c' with '%c' or check the opening character." char expected-char)
+                                         :opening last-open))))))))))
+          (setq column (1+ column))))
+
+      (if stack
+          ;; Unclosed opening character
+          (let ((last-unclosed (car stack)))
+            (list :status 'unbalanced
+                  :error (list :type 'unclosed-opening
+                               :char (string (plist-get last-unclosed :char))
+                               :line (plist-get last-unclosed :line)
+                               :col (plist-get last-unclosed :col)
+                               :message (format "Unclosed opening character '%c'." (plist-get last-unclosed :char))
+                               :suggestion (format "Add a closing character for the opening '%c'." (plist-get last-unclosed :char)))))
+        ;; Balanced
+        (list :status 'balanced)))))
 
 (provide 'forj)
 

@@ -28,8 +28,8 @@ Development roadmap for Forj.el - AI co-pilot for Emacs with deep Emacs Lisp int
   - [x] Provide machine-readable validation results for AI consumption
   - [x] Include syntax error recovery suggestions for AI correction
   - [x] Test with AI-generated code examples and edge cases
-  - [ ] Integration point for AI self-validation workflow
-  - [ ] **Mandatory**: All subsequent forj.el functions must pass forj-paren-checker validation
+  - [x] Integration point for AI self-validation workflow
+  - [x] **Mandatory**: All subsequent forj.el functions must pass forj-paren-checker validation
 
 ### 1.3 Conversation & Activity System (P0)
 
