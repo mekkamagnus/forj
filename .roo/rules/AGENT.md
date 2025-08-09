@@ -116,6 +116,7 @@ Forj.el is an AI co-pilot for Emacs with deep Emacs Lisp integration. Focus on c
 **TDD Best Practices**:
 
 - ALWAYS CREATE TEST BEFORE WRITING CODE - NO EXCEPTIONS
+- **IMPORTANT**: All subsequent `forj.el` functions must pass `forj-paren-checker` validation before running tests.
 - Use `ert` (Emacs Regression Testing) framework
 - Test file naming: `test-forj-[feature].el` or `forj-test.el`
 - Run tests with `M-x ert` or `emacs -batch -l ert -l forj-test.el -f ert-run-tests-batch-and-exit`
