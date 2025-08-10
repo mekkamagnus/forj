@@ -58,3 +58,9 @@ docs/.doctrees/
 # Temporary files
 tmp/
 temp/
+
+# External tools and configurations
+.bmad-core/
+.claude/
+.gemini/
+.roomodes
