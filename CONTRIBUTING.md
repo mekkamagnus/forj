@@ -1,3 +1,8 @@
+# Contribution Guidelines
+
+This repository includes a set of documentation templates under [`templates/`](templates/:1).
+Use these templates when filing reports, writing a README, or creating release notes.
+
 # Contributing to Forj.el
 
 First off, thank you for considering contributing to Forj.el! We welcome any help, from bug reports to new features. This document provides the information you need to get started with development.
@@ -8,12 +13,12 @@ Forj.el is built from the ground up to be **quintessentially Emacs**. We embrace
 
 Our development practices follow these Emacs-native conventions:
 
-*   **Dependency Management:** Project dependencies are declared in the `Package-Requires:` header in the main `forj.el` file. They are managed by the built-in Emacs package manager.
-*   **Build System:** We use a `Makefile` to automate common tasks. The primary "build" step is byte-compiling `.el` files into `.elc` files for faster loading.
-*   **Testing Framework:** We use `ert` (Emacs Lisp Regression Testing), the built-in testing framework for Emacs. Tests are located in the `tests/` directory.
-*   **Continuous Integration:** Our GitHub Actions workflow uses a command-line Emacs process to run the `ert` test suite.
-*   **Distribution:** The package is intended for distribution on **MELPA**, the primary community package archive for Emacs.
-*   **User Configuration:** We use the Emacs `customize` system. User-configurable variables are defined with `defcustom`, making them accessible via `M-x customize-group`.
+- **Dependency Management:** Project dependencies are declared in the `Package-Requires:` header in the main `forj.el` file. They are managed by the built-in Emacs package manager.
+- **Build System:** We use a `Makefile` to automate common tasks. The primary "build" step is byte-compiling `.el` files into `.elc` files for faster loading.
+- **Testing Framework:** We use `ert` (Emacs Lisp Regression Testing), the built-in testing framework for Emacs. Tests are located in the `tests/` directory.
+- **Continuous Integration:** Our GitHub Actions workflow uses a command-line Emacs process to run the `ert` test suite.
+- **Distribution:** The package is intended for distribution on **MELPA**, the primary community package archive for Emacs.
+- **User Configuration:** We use the Emacs `customize` system. User-configurable variables are defined with `defcustom`, making them accessible via `M-x customize-group`.
 
 ## Getting Started
 

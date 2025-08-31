@@ -190,7 +190,7 @@ Transform your Emacs into an intelligent coding assistant specialized for Emacs 
 ## Quick Start
 
 ```elisp
-M-x forj-prompt RET "Refactor this function for better readability"
+M-x forj-start RET "Refactor this function for better readability"
 ```
 ````
 

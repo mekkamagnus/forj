@@ -64,3 +64,5 @@ temp/
 .claude/
 .gemini/
 .roomodes
+# Undo-tree backup files (Emacs)
+*.~undo-tree~

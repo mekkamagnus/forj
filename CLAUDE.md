@@ -246,6 +246,20 @@ Forj.el is an AI co-pilot for Emacs with deep Emacs Lisp integration. Focus on c
 - **Request Format**: JSON requests with conversation context
 - **Response Handling**: Stream responses for real-time feedback when possible
 
+### Architecture Decision Records (ADR) Workflow
+
+- Use ADRs to record a single, important architectural decision per document.
+- Keep ADRs atomic and concise (1–3 pages); do not embed long design docs — link to them in References.
+- Template: copy and fill [`templates/adr-template.md`](templates/adr-template.md:1).
+- Storage and naming: place completed ADRs under `docs/adr/` and name files `000X-short-title.md` where `000X` is the next sequential number.
+- Process:
+  - Create the ADR at the time of decision (or immediately after).
+  - Fill metadata (Title, Status, Date, Authors), Context, Decision, Alternatives, Rationale, Consequences, References, and Implementation notes.
+  - Commit the ADR alongside the related PR/issue and add links to the issue/PR.
+  - When a decision is superseded, create a new ADR and set Status: superseded; do not edit historical ADR content.
+- Traceability: always link ADRs to related issues, PRs, benchmarks, or runbooks to make rationale discoverable.
+- Operational notes: include migration/rollback steps and any operational impacts in the Consequences/Implementation Notes sections.
+
 ## Development Process Summary
 
 ### 1. README-First Development
