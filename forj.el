@@ -22,6 +22,16 @@
     (when (locate-library "forj-api")
       (require 'forj-api))))
 
+;; Load Tools dispatcher (coding agent tools)
+(let ((tools-file (expand-file-name "forj-tools.el" (file-name-directory (or load-file-name buffer-file-name)))))
+  (when (file-exists-p tools-file)
+    (condition-case err
+        (progn
+          (message "Loading forj-tools.el...")
+          (load-file tools-file))
+      (error
+       (message "Warning: Failed to load forj-tools.el: %s" (error-message-string err))))))
+
 ;; Load Context Management System (Specification 002) in dependency order
 (let ((context-loaded nil)
       (context-available nil)
