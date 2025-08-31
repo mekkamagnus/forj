@@ -1,0 +1,117 @@
+@node Installation
+@chapter Installation
+
+This chapter describes how to install and set up Forj.el on your system.
+
+@menu
+* Requirements::        System requirements
+* Manual Installation:: Installing from source
+* Installation Configuration:: Initial setup and API key configuration
+* Verification::        Testing your installation
+@end menu
+
+@node Requirements
+@section Requirements
+
+Forj.el requires:
+
+@itemize @bullet
+@item
+GNU Emacs 26.1 or later
+@item
+Internet connection for AI API calls
+@item
+Gemini API key (free tier available)
+@end itemize
+
+@node Manual Installation
+@section Manual Installation
+
+@strong{Currently in Alpha - Install from Git Repository}
+
+@subsection Step 1: Clone Repository
+
+@example
+git clone https://github.com/username/forj.el.git
+cd forj.el
+@end example
+
+@subsection Step 2: Install in Emacs
+
+Add to your Emacs configuration (@file{~/.emacs.d/init.el}):
+
+@lisp
+;; Add to load path
+(add-to-list 'load-path "/path/to/forj.el")
+(require 'forj)
+
+;; Optional: Set up key bindings
+(global-set-key (kbd "C-c f p") 'forj-prompt)
+(global-set-key (kbd "C-c f c") 'forj-check-syntax)
+@end lisp
+
+@subsection Future Installation (Coming Soon)
+
+@lisp
+;; Will be available on MELPA after beta release
+(use-package forj
+  :ensure t
+  :bind (("C-c f p" . forj-prompt)
+         ("C-c f c" . forj-check-syntax)))
+@end lisp
+
+@node Installation Configuration
+@section Configuration
+
+@subsection API Key Setup
+
+Set up your Gemini API key as an environment variable:
+
+@example
+export GEMINI_API_KEY="your-api-key-here"
+@end example
+
+Or configure through Emacs customize interface:
+
+@example
+M-x customize-group RET forj RET
+@end example
+
+@subsection Basic Configuration
+
+@lisp
+;; Configure API provider (currently only Gemini supported)
+(setq forj-api-provider 'gemini)
+(setq forj-api-model "gemini-2.0-flash-exp")
+
+;; Adjust timeouts and limits
+(setq forj-api-timeout 30)           ; API timeout in seconds
+(setq forj-max-file-size 50000)      ; Max file size to read
+@end lisp
+
+@node Verification
+@section Verification
+
+Test your installation:
+
+@enumerate
+@item
+Test syntax checking:
+@example
+M-x forj-check-syntax
+@end example
+
+@item
+Test AI prompt:
+@example
+M-x forj-prompt RET "Hello, can you help me?"
+@end example
+
+@item
+Check conversation buffer:
+@example
+M-x forj-conversation-buffer
+@end example
+@end enumerate
+
+If everything works correctly, you should see responses in the @file{*forj*} buffer.

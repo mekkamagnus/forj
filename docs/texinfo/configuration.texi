@@ -1,0 +1,235 @@
+@node Configuration
+@chapter Configuration
+
+This chapter describes all customization options available in Forj.el.
+
+@menu
+* Basic Configuration::     Essential settings
+* API Configuration::       AI provider and model settings  
+* Config File Operations::  File handling and limits
+* Config Git Integration::  Version control settings
+* Advanced Options::        Power user configurations
+* Keybindings::            Keyboard shortcuts
+@end menu
+
+@node Basic Configuration
+@section Basic Configuration
+
+@subsection Core Settings
+
+@defopt forj-conversation-buffer
+Default: @code{"*forj*"}
+
+Name of the buffer used for conversation display and logging.
+@end defopt
+
+@defopt forj-max-file-size  
+Default: @code{50000}
+
+Maximum file size to read in bytes. Files larger than this limit will be truncated with a warning message.
+@end defopt
+
+@defopt forj-supported-extensions
+Default: @code{'("el" "md" "txt" "org" "lisp")}
+
+List of file extensions to consider for project context analysis. Only files matching these extensions will be included in project scans.
+@end defopt
+
+@defopt forj-excluded-patterns
+Default: @code{'(".git" ".DS_Store" "*.elc" "*.log" "*~")}
+
+Patterns for files and directories to exclude from scanning operations. Supports glob-style patterns.
+@end defopt
+
+@node API Configuration  
+@section API Configuration
+
+@subsection Gemini API Settings
+
+@defopt forj-api-model
+Default: @code{"gemini-2.0-flash-exp"}
+
+Gemini model to use for API calls. Available options:
+@itemize @bullet
+@item @code{"gemini-2.0-flash-exp"} - Latest experimental model
+@item @code{"gemini-1.5-pro"} - Stable production model
+@end itemize
+@end defopt
+
+@defopt forj-api-timeout
+Default: @code{30}
+
+Timeout for API requests in seconds. Increase for slower connections or complex requests.
+@end defopt
+
+@subsection API Key Management
+
+Forj.el retrieves the API key from the @env{GEMINI_API_KEY} environment variable:
+
+@example
+export GEMINI_API_KEY="your-api-key-here"
+@end example
+
+@strong{Security Note:} Never store API keys directly in your Emacs configuration files.
+
+@node Config File Operations
+@section File Operations
+
+@subsection Safety Settings
+
+@defopt forj-confirm-destructive-operations
+Default: @code{t}
+
+Whether to prompt for confirmation before destructive operations like file overwrites or deletions.
+@end defopt
+
+@subsection Backup Configuration
+
+Forj.el automatically creates timestamped backups for file operations:
+
+@example
+;; Backup naming pattern
+original-file.el.bak.20250810-143022
+@end example
+
+Disable backups for specific operations:
+@lisp
+(forj-write-file "temp.el" content t)  ; no-backup = t
+@end lisp
+
+@node Config Git Integration
+@section Git Integration
+
+@subsection Git Settings
+
+@defopt forj-enable-git-integration
+Default: @code{t}
+
+Whether to enable Git repository integration features. When enabled, Forj.el can:
+@itemize @bullet
+@item Check file status before modifications
+@item Warn about uncommitted changes
+@item Automatically stage changes
+@end itemize
+@end defopt
+
+@defopt forj-warn-uncommitted-changes
+Default: @code{t}
+
+Whether to warn before modifying files with uncommitted Git changes. Shows a confirmation dialog with current Git status.
+@end defopt
+
+@defopt forj-auto-stage-changes
+Default: @code{nil}
+
+Whether to automatically stage changes after successful edits in a Git repository. Set to @code{t} for automatic staging.
+@end defopt
+
+@subsection Git Workflow Integration
+
+Example configuration for Git-centric development:
+
+@lisp
+;; Enable all Git features
+(setq forj-enable-git-integration t)
+(setq forj-warn-uncommitted-changes t)  
+(setq forj-auto-stage-changes t)
+
+;; Check Git status programmatically
+(forj-git-file-status "src/main.el")
+;; => (:status modified :staged nil :modified t :untracked nil)
+@end lisp
+
+@node Advanced Options
+@section Advanced Options
+
+@subsection Performance Tuning
+
+@lisp
+;; Adjust scanning limits for large projects
+(setq forj-max-file-size 100000)          ; 100KB limit
+
+;; Limit project scanning depth  
+(forj-scan-directory-recursive "." 3 50)   ; 3 levels, 50 files max
+
+;; Optimize API timeouts
+(setq forj-api-timeout 45)                 ; 45 second timeout
+@end lisp
+
+@subsection Development Settings
+
+@lisp
+;; Enable detailed logging (for debugging)
+(setq forj-debug t)
+(setq forj-log-level 'debug)
+
+;; Disable confirmations for development
+(setq forj-confirm-destructive-operations nil)
+@end lisp
+
+@subsection File Locking
+
+Configure file locking for concurrent access:
+
+@lisp
+;; Default lock timeout
+(forj-lock-file "shared-file.el" 60)  ; 60 second timeout
+
+;; Use with-file-lock macro for automatic cleanup
+(forj-with-file-lock "critical-file.el"
+  ;; Operations here are protected by file lock
+  (forj-edit-file-region "critical-file.el" 1 5 new-content))
+@end lisp
+
+@node Keybindings
+@section Keybindings
+
+@subsection Default Bindings
+
+Forj.el doesn't set global keybindings by default. Add these to your configuration:
+
+@lisp
+;; Essential bindings
+(global-set-key (kbd "C-c f p") 'forj-prompt)
+(global-set-key (kbd "C-c f c") 'forj-check-syntax)
+(global-set-key (kbd "C-c f h") 'forj-conversation-buffer)
+
+;; File operations
+(global-set-key (kbd "C-c f b") 'forj-browse-files)
+(global-set-key (kbd "C-c f r") 'forj-browse-and-read-file)
+(global-set-key (kbd "C-c f s") 'forj-scan-and-display-project)
+
+;; Utility functions
+(global-set-key (kbd "C-c f x") 'forj-clear-conversation)
+@end lisp
+
+@subsection Use-Package Configuration
+
+@lisp
+(use-package forj
+  :ensure t
+  :custom
+  (forj-api-model "gemini-2.0-flash-exp")
+  (forj-api-timeout 30)
+  (forj-max-file-size 50000)
+  (forj-enable-git-integration t)
+  (forj-warn-uncommitted-changes t)
+  :bind
+  (("C-c f p" . forj-prompt)
+   ("C-c f c" . forj-check-syntax)
+   ("C-c f h" . forj-conversation-buffer)
+   ("C-c f b" . forj-browse-files)
+   ("C-c f r" . forj-browse-and-read-file)
+   ("C-c f s" . forj-scan-and-display-project)
+   ("C-c f x" . forj-clear-conversation)))
+@end lisp
+
+@subsection Custom Command Aliases
+
+Create your own command shortcuts:
+
+@lisp
+(defalias 'ai 'forj-prompt)                    ; Quick AI prompt
+(defalias 'check 'forj-check-syntax)           ; Quick syntax check
+(defalias 'proj 'forj-scan-and-display-project) ; Quick project scan
+@end lisp

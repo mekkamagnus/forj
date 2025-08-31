@@ -1,0 +1,469 @@
+;; This file is auto-generated from forj.el source code
+;; Do not edit manually - run forj-texinfo-generate-api-reference instead
+
+@node API Reference
+@chapter API Reference
+
+This chapter provides complete documentation for all Forj.el functions and variables.
+
+@menu
+* Interactive Functions::   User commands and interactive functions
+* Core Functions::         Internal functions and utilities
+* Customization Variables:: User configuration options
+* Internal Variables::     Internal state and configuration
+@end menu
+
+@node Interactive Functions
+@section Interactive Functions
+
+Functions that can be called interactively with @kbd{M-x}.
+
+@subsection User Commands
+
+@deffn {Interactive Function} forj-browse-and-read-file (&optional directory)
+@Var{Interactive} @var{file} @var{browser} @var{that} @var{reads} @var{the} @var{selected} @var{file} @var{and} @var{logs} @var{to} @var{conversation}.
+@VAR{DIRECTORY} @var{defaults} @var{to} @var{current} @var{directory}.
+@Var{Returns} @var{file} @var{content} @var{or} @var{nil} @var{if} @var{cancelled}.
+@end deffn
+
+@deffn {Interactive Function} forj-browse-files (&optional directory)
+@Var{Interactive} @var{file} @var{browser} @var{for} @var{selecting} @var{project} @var{files}.
+@VAR{DIRECTORY} @var{defaults} @var{to} @var{current} @var{directory}.
+@Var{Returns} @var{selected} @var{file} @var{path} @var{or} @var{nil} @var{if} @var{cancelled}.
+@end deffn
+
+@deffn {Interactive Function} forj-check-syntax (&optional buffer)
+@Var{Validate} @Var{Emacs} @Var{Lisp} @var{syntax} @var{using} @var{native} @Var{Emacs} @var{functions}.
+@end deffn
+
+@deffn {Interactive Function} forj-clear-conversation 
+@Var{Clear} @var{the} @var{conversation} @var{buffer} @var{and} @var{history}.
+@end deffn
+
+@deffn {Interactive Function} forj-conversation-buffer 
+@Var{Create} @var{or} @var{switch} @var{to} @var{the} @Var{Forj} @var{conversation} @var{buffer}.
+@end deffn
+
+@deffn {Interactive Function} forj-conversation-mode 
+@Var{Major} @var{mode} @var{for} @var{the} @Var{Forj} @var{conversation} @var{buffer}.
+
+@Var{In} @var{addition} @var{to} @var{any} @var{hooks} @var{its} @var{parent} @var{mode} ‘@var{special-mode}’ @var{might} @var{have}
+@var{run}, @var{this} @var{mode} @var{runs} @var{the} @var{hook} ‘@var{forj-conversation-mode-hook}’, @var{as} @var{the}
+@var{final} @var{or} @var{penultimate} @var{step} @var{during} @var{initialization}.
+
+
+@end deffn
+
+@deffn {Interactive Function} forj-prompt (user-input)
+@Var{Process} @VAR{USER-INPUT} @var{with} @VAR{AI} @var{and} @var{apply} @var{response}.
+@end deffn
+
+@deffn {Interactive Function} forj-scan-and-display-project (&optional directory)
+@Var{Scan} @var{project} @var{directory} @var{and} @var{display} @var{results} @var{in} @var{conversation} @var{buffer}.
+@VAR{DIRECTORY} @var{defaults} @var{to} @var{current} @var{directory}.
+@Var{Shows} @var{project} @var{structure} @var{and} @var{file} @var{summary} @var{in} @var{conversation}.
+@end deffn
+
+@deffn {Interactive Function} forj-texinfo-preview-symbol (symbol)
+@Var{Preview} @Var{Texinfo} @var{output} @var{for} @VAR{SYMBOL} @var{in} @var{a} @var{temporary} @var{buffer}.
+@end deffn
+
+@deffn {Interactive Function} forj-texinfo-update-api-reference 
+@Var{Update} @var{the} @VAR{API} @var{reference} @var{file} @var{with} @var{current} @var{symbol} @var{information}.
+@Var{This} @var{is} @var{typically} @var{called} @var{during} @var{the} @var{build} @var{process}.
+@end deffn
+
+@deffn {Interactive Function} forj-texinfo-validate-references 
+@Var{Validate} @var{that} @var{all} @var{documented} @var{functions} @var{actually} @var{exist}.
+@end deffn
+
+@deffn {Interactive Function} forj-texinfo-write-api-reference (&optional output-file)
+@Var{Write} @VAR{API} @var{reference} @var{to} @VAR{OUTPUT-FILE}.
+@Var{If} @VAR{OUTPUT-FILE} @var{is} @var{nil}, @var{uses} @var{default} @var{location}.
+@end deffn
+
+@node Core Functions
+@section Core Functions
+
+Internal functions and utilities.
+
+@subsection Internal Functions
+
+@deffn {Function} forj-add-to-history (role content)
+@Var{Add} @var{a} @var{conversation} @var{turn} @var{to} @var{history} @var{with} @VAR{ROLE} @var{and} @VAR{CONTENT}.
+@end deffn
+
+@deffn {Function} forj-api-request (prompt &optional context)
+@Var{Send} @VAR{PROMPT} @var{to} @Var{Gemini} @VAR{API} @var{with} @var{optional} @VAR{CONTEXT} @var{and} @var{return} @var{response}.
+@end deffn
+
+@deffn {Function} forj-apply-response (response)
+@Var{Apply} @VAR{AI} @VAR{RESPONSE} @var{to} @var{appropriate} @var{files} @var{with} @var{enhanced} @var{validation}.
+@end deffn
+
+@deffn {Function} forj-auto-stage-file-if-enabled (file-path)
+@Var{Automatically} @var{stage} @VAR{FILE-PATH} @var{if} @var{auto-staging} @var{is} @var{enabled} @var{and} @var{we}’@var{re} @var{in} @var{a} @Var{Git} @var{repo}.
+@end deffn
+
+@deffn {Function} forj-backup-file (file-path &optional backup-name)
+@Var{Create} @var{backup} @var{of} @VAR{FILE-PATH} @var{with} @var{optional} @var{custom} @VAR{BACKUP-NAME}.
+@Var{Returns} @var{plist} @var{with} :@var{success}, :@var{backup-path}, :@var{error-message}.
+@end deffn
+
+@deffn {Function} forj-build-api-url 
+@Var{Build} @var{the} @Var{Gemini} @VAR{API} @VAR{URL} @var{for} @var{the} @var{configured} @var{model}.
+@end deffn
+
+@deffn {Function} forj-build-code-context (user-input)
+@Var{Build} @var{enhanced} @var{context} @var{including} @var{file} @var{contents} @var{for} @var{code} @var{review} @var{prompts}.
+@end deffn
+
+@deffn {Function} forj-build-context 
+@Var{Build} @var{context} @var{from} @var{current} @var{project} @var{and} @var{conversation}.
+@end deffn
+
+@deffn {Function} forj-build-payload (prompt &optional context)
+@Var{Build} @VAR{JSON} @var{payload} @var{for} @VAR{API} @var{request} @var{with} @VAR{PROMPT} @var{and} @var{optional} @VAR{CONTEXT}.
+@end deffn
+
+@deffn {Function} forj-check-git-status-before-edit (file-path)
+@Var{Check} @Var{Git} @var{status} @var{of} @VAR{FILE-PATH} @var{and} @var{warn} @var{if} @var{there} @var{are} @var{uncommitted} @var{changes}.
+@Var{Returns} @var{t} @var{if} @var{it}’@var{s} @var{safe} @var{to} @var{proceed}, @var{signals} @var{error} @var{if} @var{user} @var{cancels}.
+@end deffn
+
+@deffn {Function} forj-confirm-operation (operation-description file-path &optional details)
+@Var{Prompt} @var{user} @var{to} @var{confirm} @VAR{OPERATION-DESCRIPTION} @var{on} @VAR{FILE-PATH} @var{with} @var{optional} @VAR{DETAILS}.
+@Var{Returns} @var{t} @var{if} @var{user} @var{confirms}, @var{nil} @var{otherwise}.
+@end deffn
+
+@deffn {Function} forj-conversation-history 
+@Var{Return} @var{the} @var{current} @var{conversation} @var{history}.
+@end deffn
+
+@deffn {Function} forj-detect-project-type (&optional directory)
+@Var{Detect} @var{the} @var{type} @var{of} @var{project} @var{in} @VAR{DIRECTORY}.
+@Var{Returns} ’@var{elisp-package}, ’@var{general}, @var{or} ’@var{unknown}.
+@end deffn
+
+@deffn {Function} forj-directory-operations (&optional directory)
+@Var{Analyze} @var{current} @var{directory} @var{context} @var{for} @VAR{AI} @var{coding} @var{operations}.
+@VAR{DIRECTORY} @var{defaults} @var{to} @var{current} @var{working} @var{directory}.
+@Var{Returns} @var{project} @var{context} @var{as} @var{a} @var{plist} @var{with}:
+  :@var{directory} - @var{absolute} @var{path} @var{of} @var{analyzed} @var{directory}
+  :@var{files} - @var{list} @var{of} @var{project-relevant} @var{file} @var{paths}  
+  :@var{project-type} - @var{detected} @var{project} @var{type} (@var{elisp-package}, @var{general}, @var{unknown})
+  :@var{file-count} - @var{total} @var{number} @var{of} @var{relevant} @var{files}
+  :@var{total-size} - @var{combined} @var{size} @var{of} @var{all} @var{files} @var{in} @var{bytes}
+  :@var{file-types} - @var{hash} @var{table} @var{of} @var{extension} -> @var{count}
+  :@var{excluded-count} - @var{number} @var{of} @var{excluded} @var{files}/@var{directories}
+@end deffn
+
+@deffn {Function} forj-display-conversation-entry (entry)
+@Var{Display} @var{a} @var{conversation} @VAR{ENTRY} @var{in} @var{the} @var{conversation} @var{buffer}.
+@end deffn
+
+@deffn {Function} forj-display-response (response)
+@Var{Display} @VAR{AI} @VAR{RESPONSE} @var{in} @var{conversation} @var{buffer} @var{and} @var{show} @var{it} @var{to} @var{user}.
+@end deffn
+
+@deffn {Function} forj-display-user-input (input)
+@Var{Display} @var{user} @VAR{INPUT} @var{in} @var{conversation} @var{buffer}.
+@end deffn
+
+@deffn {Function} forj-edit-file-region (file-path start-line end-line new-content &optional no-backup)
+@Var{Edit} @var{region} @var{in} @VAR{FILE-PATH} @var{from} @VAR{START-LINE} @var{to} @VAR{END-LINE} @var{with} @VAR{NEW-CONTENT}.
+@Var{Creates} @var{backup} @var{and} @var{validates} @var{syntax} @var{for} .@var{el} @var{files} @var{unless} @VAR{NO-BACKUP}.
+@Var{Returns} @var{plist} @var{with} :@var{success}, :@var{backup-path}, :@var{error-message}, :@var{lines-changed}.
+@end deffn
+
+@deffn {Function} forj-edit-file-region-with-git-awareness (file-path start-line end-line new-content &optional no-backup)
+@Var{Edit} @var{region} @var{with} @Var{Git} @var{awareness} @var{and} @var{conversation} @var{logging}.
+@Var{Enhanced} @var{version} @var{of} @var{forj-edit-file-region} @var{with} @Var{Git} @var{integration}.
+@end deffn
+
+@deffn {Function} forj-file-metadata (file-path)
+@Var{Get} @var{metadata} @var{for} @VAR{FILE-PATH} @var{including} @var{size}, @var{modification} @var{time}, @var{and} @var{type}.
+@Var{Returns} @var{plist} @var{with} :@var{path}, :@var{size}, :@var{modified-time}, :@var{type}, :@var{readable}, :@var{writable}.
+@end deffn
+
+@deffn {Function} forj-get-api-key 
+@Var{Retrieve} @Var{Gemini} @VAR{API} @var{key} @var{from} @var{environment} @var{variable} @VAR{GEMINI}_@VAR{API}_@VAR{KEY}.
+@end deffn
+
+@deffn {Function} forj-get-conversation-context 
+@Var{Get} @var{recent} @var{conversation} @var{context}.
+@end deffn
+
+@deffn {Function} forj-get-file-modification-history (file-path)
+@Var{Get} @var{modification} @var{history} @var{for} @VAR{FILE-PATH}.
+@Var{Returns} @var{list} @var{of} @var{modification} @var{info} @var{plists} @var{in} @var{chronological} @var{order} (@var{newest} @var{first}).
+@end deffn
+
+@deffn {Function} forj-get-project-context 
+@Var{Get} @var{current} @var{project} @var{context} @var{for} @VAR{API} @var{calls}.
+@end deffn
+
+@deffn {Function} forj-get-relevant-file-contents (user-input)
+@Var{Get} @var{contents} @var{of} @var{files} @var{relevant} @var{to} @VAR{USER-INPUT} @var{prompt}.
+@end deffn
+
+@deffn {Function} forj-git-file-status (file-path)
+@Var{Get} @Var{Git} @var{status} @var{for} @VAR{FILE-PATH}.
+@Var{Returns} @var{plist} @var{with} :@var{status}, :@var{staged}, :@var{modified}, :@var{untracked}.
+@end deffn
+
+@deffn {Function} forj-git-has-uncommitted-changes-p (file-path)
+@Var{Check} @var{if} @VAR{FILE-PATH} @var{has} @var{uncommitted} @var{changes} @var{in} @Var{Git}.
+@Var{Returns} @var{t} @var{if} @var{file} @var{has} @var{unstaged} @var{or} @var{staged} @var{changes}, @var{nil} @var{otherwise}.
+@end deffn
+
+@deffn {Function} forj-handle-api-error (error-data)
+@Var{Handle} @VAR{API} @var{errors} @var{gracefully} @var{with} @var{user} @var{feedback}.
+@end deffn
+
+@deffn {Function} forj-in-git-repo-p (&optional directory)
+@Var{Check} @var{if} @VAR{DIRECTORY} (@var{or} @var{current} @var{directory}) @var{is} @var{in} @var{a} @Var{Git} @var{repository}.
+@Var{Returns} @var{git} @var{root} @var{directory} @var{if} @var{in} @var{repo}, @var{nil} @var{otherwise}.
+@end deffn
+
+@deffn {Function} forj-list-files (&optional directory pattern)
+@Var{List} @var{files} @var{in} @VAR{DIRECTORY} @var{matching} @var{optional} @VAR{PATTERN}.
+@VAR{DIRECTORY} @var{defaults} @var{to} @var{current} @var{directory}.
+@VAR{PATTERN} @var{defaults} @var{to} @var{match} @var{all} @var{files} (@var{no} @var{filtering}).
+@Var{Returns} @var{list} @var{of} @var{file} @var{paths}.
+@end deffn
+
+@deffn {Function} forj-list-files-with-metadata (&optional directory pattern)
+@Var{List} @var{files} @var{in} @VAR{DIRECTORY} @var{with} @var{metadata} @var{including} @var{size}, @var{modification} @var{time}, @var{and} @var{type}.
+@VAR{DIRECTORY} @var{defaults} @var{to} @var{current} @var{directory}.
+@VAR{PATTERN} @var{defaults} @var{to} @var{match} @var{all} @var{files} (@var{no} @var{filtering}).
+@Var{Returns} @var{list} @var{of} @var{metadata} @var{plists} @var{for} @var{each} @var{file}.
+@end deffn
+
+@deffn {Function} forj-lock-file (file-path &optional timeout)
+@Var{Lock} @VAR{FILE-PATH} @var{for} @var{exclusive} @var{access} @var{with} @var{optional} @VAR{TIMEOUT} @var{in} @var{seconds}.
+@Var{Returns} @var{plist} @var{with} :@var{success}, :@var{lock-id}, :@var{error-message}.
+@end deffn
+
+@deffn {Function} forj-paren-check (code-string)
+@Var{Analyze} @VAR{CODE-STRING} @var{for} @var{parentheses} @var{balance} @var{and} @var{syntax} @var{errors}.
+@Var{Returns} @var{structured} @var{data} @var{with} @var{detailed} @var{error} @var{reporting} @var{for} @VAR{AI} @var{consumption}.
+@end deffn
+
+@deffn {Function} forj-parse-api-response (response)
+@Var{Parse} @Var{Gemini} @VAR{API} @VAR{RESPONSE} @var{and} @var{extract} @var{text} @var{content}.
+@end deffn
+
+@deffn {Function} forj-process-file-operations (response)
+@Var{Process} @var{file} @var{operations} @var{from} @VAR{AI} @VAR{RESPONSE}.
+@Var{Currently} @var{displays} @var{the} @var{response}; @var{file} @var{operations} @var{are} @var{handled} @var{through} @var{forj-apply-response}.
+@end deffn
+
+@deffn {Function} forj-read-file (file-path &optional max-size)
+@Var{Read} @var{contents} @var{of} @VAR{FILE-PATH} @var{safely} @var{with} @var{optional} @VAR{MAX-SIZE} @var{limit}.
+@Var{If} @VAR{MAX-SIZE} @var{is} @var{specified}, @var{only} @var{read} @var{up} @var{to} @var{that} @var{many} @var{bytes}.
+@Var{Returns} @var{file} @var{contents} @var{as} @var{string}, @var{or} @var{signals} @var{file-error} @var{if} @var{file} @var{cannot} @var{be} @var{read}.
+@end deffn
+
+@deffn {Function} forj-read-project-files (&optional file-types max-files)
+@Var{Read} @var{multiple} @var{project} @var{files} @var{for} @VAR{AI} @var{context}.
+@VAR{FILE-TYPES} @var{is} @var{list} @var{of} @var{file} @var{extensions} (@var{default}: @var{forj-supported-extensions}).
+@VAR{MAX-FILES} @var{is} @var{maximum} @var{number} @var{of} @var{files} @var{to} @var{read} (@var{default}: 10).
+@Var{Returns} @var{alist} @var{of} (@var{file-path} . @var{content}) @var{pairs}.
+@end deffn
+
+@deffn {Function} forj-restore-backup (backup-path original-path)
+@Var{Restore} @VAR{BACKUP-PATH} @var{to} @VAR{ORIGINAL-PATH}.
+@Var{Returns} @var{plist} @var{with} :@var{success}, :@var{error-message}, :@var{restored-size}.
+@end deffn
+
+@deffn {Function} forj-scan-directory (&optional directory max-depth max-files)
+@Var{Alias} @var{for} @var{forj-scan-directory-recursive} @var{for} @VAR{API} @var{integration} @var{compatibility}.
+@end deffn
+
+@deffn {Function} forj-scan-directory-recursive (&optional directory max-depth max-files)
+@Var{Recursively} @var{scan} @VAR{DIRECTORY} @var{for} @var{project} @var{files} @var{with} @var{depth} @var{and} @var{file} @var{limits}.
+@VAR{DIRECTORY} @var{defaults} @var{to} @var{current} @var{directory}.
+@VAR{MAX-DEPTH} @var{defaults} @var{to} 5 @var{levels} @var{deep}.
+@VAR{MAX-FILES} @var{defaults} @var{to} 100 @var{files} @var{total}.
+@Var{Returns} @var{list} @var{of} @var{file} @var{metadata} @var{plists}.
+@end deffn
+
+@deffn {Function} forj-set-activity (status)
+@Var{Set} @var{current} @var{activity} @VAR{STATUS} @var{and} @var{update} @var{conversation} @var{buffer} @var{display}.
+@end deffn
+
+@deffn {Function} forj-texinfo--escape-string (string)
+@Var{Escape} @VAR{STRING} @var{for} @var{safe} @var{inclusion} @var{in} @Var{Texinfo} @var{documents}.
+@end deffn
+
+@deffn {Function} forj-texinfo--extract-function-info (symbol)
+@Var{Extract} @var{documentation} @var{information} @var{for} @var{function} @VAR{SYMBOL}.
+@end deffn
+
+@deffn {Function} forj-texinfo--extract-variable-info (symbol)
+@Var{Extract} @var{documentation} @var{information} @var{for} @var{variable} @VAR{SYMBOL}.
+@end deffn
+
+@deffn {Function} forj-texinfo--format-docstring (docstring)
+@Var{Format} @VAR{DOCSTRING} @var{for} @Var{Texinfo} @var{output} @var{with} @var{proper} @var{escaping}.
+@end deffn
+
+@deffn {Function} forj-texinfo--generate-function-entry (info)
+@Var{Generate} @Var{Texinfo} @var{entry} @var{for} @var{function} @VAR{INFO}.
+@end deffn
+
+@deffn {Function} forj-texinfo--generate-section (title symbols)
+@Var{Generate} @Var{Texinfo} @var{section} @var{with} @VAR{TITLE} @var{containing} @VAR{SYMBOLS}.
+@end deffn
+
+@deffn {Function} forj-texinfo--generate-variable-entry (info)
+@Var{Generate} @Var{Texinfo} @var{entry} @var{for} @var{variable} @VAR{INFO}.
+@end deffn
+
+@deffn {Function} forj-texinfo--scan-symbols (&optional prefix)
+@Var{Scan} @var{for} @var{symbols} @var{with} @var{optional} @VAR{PREFIX} @var{filter}.
+@Var{Returns} @var{list} @var{of} @var{symbol} @var{information} @var{plists}.
+@end deffn
+
+@deffn {Function} forj-texinfo-generate-api-reference (&optional symbols)
+@Var{Generate} @var{complete} @VAR{API} @var{reference} @Var{Texinfo} @var{content}.
+@Var{If} @VAR{SYMBOLS} @var{is} @var{provided}, @var{use} @var{those}; @var{otherwise} @var{scan} @var{for} @var{forj}- @var{prefixed} @var{symbols}.
+@end deffn
+
+@deffn {Function} forj-track-file-modification (file-path operation-type)
+@Var{Track} @VAR{FILE-PATH} @var{modification} @var{with} @VAR{OPERATION-TYPE} @var{and} @var{timestamp}.
+@VAR{OPERATION-TYPE} @var{can} @var{be} ’@var{write}, ’@var{edit-region}, ’@var{backup}, ’@var{restore}.
+@end deffn
+
+@deffn {Function} forj-unlock-file (file-path lock-id)
+@Var{Unlock} @VAR{FILE-PATH} @var{using} @VAR{LOCK-ID}.
+@Var{Returns} @var{plist} @var{with} :@var{success}, :@var{error-message}.
+@end deffn
+
+@deffn {Function} forj-update-activity-display 
+@Var{Update} @var{the} @var{activity} @var{display} @var{in} @var{the} @var{conversation} @var{buffer}.
+@end deffn
+
+@deffn {Function} forj-validate-response (response)
+@Var{Validate} @VAR{AI} @VAR{RESPONSE} @var{using} @var{forj-paren-check}.
+@end deffn
+
+@deffn {Function} forj-with-file-lock (file-path &rest body)
+@Var{Execute} @VAR{BODY} @var{with} @VAR{FILE-PATH} @var{locked}, @var{automatically} @var{unlocking} @var{when} @var{done}.
+@end deffn
+
+@deffn {Function} forj-write-file (file-path content &optional no-backup)
+@Var{Write} @VAR{CONTENT} @var{to} @VAR{FILE-PATH} @var{with} @var{backup} @var{unless} @VAR{NO-BACKUP}.
+@Var{Returns} @var{plist} @var{with} :@var{success}, :@var{backup-path}, :@var{error-message}, @var{and} :@var{modified-time}.
+@Var{Creates} @var{timestamped} @var{backup} @var{for} @var{existing} @var{files}.
+@Var{Validates} @Var{Emacs} @Var{Lisp} @var{syntax} @var{for} .@var{el} @var{files} @var{before} @var{writing}.
+@Var{Uses} @var{atomic} @var{operations} @var{to} @var{prevent} @var{file} @var{corruption}.
+@end deffn
+
+@deffn {Function} forj-write-file-with-confirmation (file-path content &optional no-backup)
+@Var{Write} @VAR{CONTENT} @var{to} @VAR{FILE-PATH} @var{with} @var{user} @var{confirmation} @var{for} @var{existing} @var{files}.
+@Var{Shows} @var{diff} @var{preview} @var{and} @var{asks} @var{for} @var{confirmation} @var{if} @var{file} @var{exists}.
+@end deffn
+
+@deffn {Function} forj-write-file-with-git-awareness (file-path content &optional no-backup)
+@Var{Write} @VAR{CONTENT} @var{to} @VAR{FILE-PATH} @var{with} @Var{Git} @var{status} @var{awareness} @var{and} @var{logging}.
+@Var{Checks} @Var{Git} @var{status}, @var{warns} @var{about} @var{uncommitted} @var{changes}, @var{and} @var{optionally} @var{auto-stages}.
+@end deffn
+
+@node Customization Variables
+@section Customization Variables
+
+Variables that can be customized through the Emacs customize interface.
+
+@subsection Custom Variables
+
+@defvr {Variable} forj-api-model
+@Var{Gemini} @var{model} @var{to} @var{use} @var{for} @VAR{API} @var{calls}.
+@end defvr
+
+@defvr {Variable} forj-api-timeout
+@Var{Timeout} @var{for} @VAR{API} @var{requests} @var{in} @var{seconds}.
+@end defvr
+
+@defvr {Variable} forj-auto-stage-changes
+@Var{Whether} @var{to} @var{automatically} @var{stage} @var{changes} @var{after} @var{successful} @var{edits} @var{in} @Var{Git} @var{repo}.
+@end defvr
+
+@defvr {Variable} forj-confirm-destructive-operations
+@Var{Whether} @var{to} @var{prompt} @var{for} @var{confirmation} @var{before} @var{destructive} @var{operations}.
+@end defvr
+
+@defvr {Variable} forj-conversation-buffer
+@Var{Buffer} @var{name}.
+@end defvr
+
+@defvr {Variable} forj-enable-git-integration
+@Var{Whether} @var{to} @var{enable} @Var{Git} @var{repository} @var{integration} @var{features}.
+@end defvr
+
+@defvr {Variable} forj-excluded-patterns
+@Var{Patterns} @var{for} @var{files}/@var{directories} @var{to} @var{exclude} @var{from} @var{scanning}.
+@end defvr
+
+@defvr {Variable} forj-max-file-size
+@Var{Maximum} @var{file} @var{size} @var{to} @var{read} @var{in} @var{bytes}.
+@end defvr
+
+@defvr {Variable} forj-supported-extensions
+@Var{List} @var{of} @var{file} @var{extensions} @var{to} @var{consider} @var{for} @var{project} @var{context}.
+@end defvr
+
+@defvr {Variable} forj-texinfo-api-file
+@Var{Filename} @var{for} @var{generated} @VAR{API} @var{reference} @var{documentation}.
+@end defvr
+
+@defvr {Variable} forj-texinfo-output-dir
+@Var{Directory} @var{for} @var{generated} @Var{Texinfo} @var{files}.
+@end defvr
+
+@defvr {Variable} forj-warn-uncommitted-changes
+@Var{Whether} @var{to} @var{warn} @var{before} @var{modifying} @var{files} @var{with} @var{uncommitted} @Var{Git} @var{changes}.
+@end defvr
+
+@node Internal Variables
+@section Internal Variables
+
+Internal state and configuration variables.
+
+@subsection Internal Variables
+
+@defvr {Variable} forj-conversation-history
+@Var{List} @var{storing} @var{conversation} @var{history}.
+@end defvr
+
+@defvr {Variable} forj-conversation-mode-abbrev-table
+@Var{Abbrev} @var{table} @var{for} ‘@var{forj-conversation-mode}’.
+@end defvr
+
+@defvr {Variable} forj-conversation-mode-hook
+@Var{Hook} @var{run} @var{after} @var{entering} ‘@var{forj-conversation-mode}’.
+@Var{No} @var{problems} @var{result} @var{if} @var{this} @var{variable} @var{is} @var{not} @var{bound}.
+‘@var{add-hook}’ @var{automatically} @var{binds} @var{it}.  (@Var{This} @var{is} @var{true} @var{for} @var{all} @var{hook} @var{variables}.)
+@end defvr
+
+@defvr {Variable} forj-conversation-mode-map
+@Var{Keymap} @var{for} ‘@var{forj-conversation-mode}’.
+@end defvr
+
+@defvr {Variable} forj-conversation-mode-syntax-table
+@Var{Syntax} @var{table} @var{for} ‘@var{forj-conversation-mode}’.
+@end defvr
+
+@defvr {Variable} forj-current-activity
+@Var{Current} @var{activity} @var{status} @var{for} @var{display}.
+@end defvr
+
+@defvr {Variable} forj-file-modifications
+@Var{Hash} @var{table} @var{tracking} @var{file} @var{modification} @var{timestamps} @var{and} @var{changes}.
+@end defvr
+
+@defvr {Variable} forj-locked-files
+@Var{Hash} @var{table} @var{tracking} @var{currently} @var{locked} @var{files}.
+@end defvr
+

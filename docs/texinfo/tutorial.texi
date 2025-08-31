@@ -1,0 +1,228 @@
+@node Tutorial
+@chapter Tutorial
+
+This chapter provides a hands-on introduction to using Forj.el for AI-assisted Emacs Lisp development.
+
+@menu
+* Getting Started::     Your first interaction with Forj
+* Code Analysis::       Using AI for code review and validation
+* Tutorial File Operations:: Working with project files
+* Refactoring::         AI-assisted code improvements
+* Advanced Features::   Power user tips and workflows
+@end menu
+
+@node Getting Started
+@section Getting Started
+
+@subsection Your First AI Prompt
+
+Start by opening an Emacs Lisp file or creating a new buffer. Try your first AI interaction:
+
+@example
+M-x forj-prompt RET "Explain what this function does"
+@end example
+
+The AI will analyze your current context and provide helpful information.
+
+@subsection The Conversation Buffer
+
+All interactions are logged in the @file{*forj*} conversation buffer. View it with:
+
+@example
+M-x forj-conversation-buffer
+@end example
+
+This buffer shows:
+@itemize @bullet
+@item User prompts
+@item AI responses  
+@item System operations (file reads, syntax checks)
+@item Activity status updates
+@end itemize
+
+@node Code Analysis
+@section Code Analysis
+
+@subsection Syntax Validation
+
+Forj.el includes a sophisticated syntax checker designed for AI-generated code:
+
+@example
+M-x forj-check-syntax
+@end example
+
+This returns detailed error information:
+@lisp
+(:status 'invalid 
+ :error (:type 'unmatched-closing 
+         :line 15 
+         :col 23 
+         :message "Unmatched closing brace, expected closing parenthesis"))
+@end lisp
+
+@subsection AI Code Review
+
+Ask the AI to review your code:
+
+@example
+M-x forj-prompt RET "Review this function for potential improvements"
+@end example
+
+The AI will analyze:
+@itemize @bullet
+@item Code style and idioms
+@item Error handling patterns
+@item Performance considerations
+@item Documentation quality
+@end itemize
+
+@node Tutorial File Operations  
+@section File Operations
+
+@subsection Reading Project Files
+
+Forj.el provides safe file operations with built-in limits:
+
+@lisp
+;; Read a single file
+(forj-read-file "forj.el")
+
+;; Read with size limit
+(forj-read-file "large-file.txt" 1000)
+
+;; List project files
+(forj-list-files "." "\\.el$")
+@end lisp
+
+@subsection Interactive File Browser
+
+Use the built-in file browser for easy file selection:
+
+@example
+M-x forj-browse-files
+@end example
+
+This shows files with metadata:
+@example
+forj.el [elisp, 15234 bytes, 2025-08-10 14:30]
+forj-api.el [elisp, 8456 bytes, 2025-08-10 12:15]
+README.md [markdown, 12890 bytes, 2025-08-10 10:45]
+@end example
+
+@subsection Project Scanning
+
+Analyze your entire project structure:
+
+@example
+M-x forj-scan-and-display-project
+@end example
+
+This provides:
+@itemize @bullet
+@item Complete project overview
+@item File type statistics
+@item Total project size
+@item Scan performance metrics
+@end itemize
+
+@node Refactoring
+@section Refactoring
+
+@subsection Function Improvement
+
+Select a function and ask for improvements:
+
+@example
+M-x forj-prompt RET "Make this function more idiomatic and add error handling"
+@end example
+
+@strong{Before:}
+@lisp
+(defun get-file-content (file)
+  (with-temp-buffer
+    (insert-file-contents file)
+    (buffer-string)))
+@end lisp
+
+@strong{After AI suggestions:}
+@lisp
+(defun forj-get-file-content (file)
+  "Read and return the contents of FILE.
+Signals an error if FILE cannot be read."
+  (condition-case err
+      (with-temp-buffer
+        (insert-file-contents file)
+        (buffer-string))
+    (file-error
+     (user-error "Cannot read file %s: %s" 
+                 file (error-message-string err)))))
+@end lisp
+
+@subsection Code Modernization
+
+Ask for modern Emacs Lisp patterns:
+
+@example
+M-x forj-prompt RET "Update this code to use modern cl-lib functions"
+@end example
+
+The AI will suggest:
+@itemize @bullet
+@item Replacing deprecated @code{cl} functions with @code{cl-lib} versions
+@item Using @code{seq} library functions where appropriate
+@item Applying current best practices
+@end itemize
+
+@node Advanced Features
+@section Advanced Features
+
+@subsection Git Integration
+
+Forj.el is Git-aware and can:
+@itemize @bullet
+@item Warn about uncommitted changes before modifications
+@item Auto-stage changes after successful edits (optional)
+@item Show Git status in file operations
+@end itemize
+
+Configure Git integration:
+@lisp
+(setq forj-enable-git-integration t)
+(setq forj-warn-uncommitted-changes t)
+(setq forj-auto-stage-changes nil)  ; Set to t for auto-staging
+@end lisp
+
+@subsection File Locking
+
+For concurrent development, use file locking:
+
+@lisp
+(forj-with-file-lock "important.el"
+  (let ((content (forj-read-file "important.el")))
+    (forj-write-file "important.el" 
+                     (concat content "\n;; Added line"))))
+@end lisp
+
+@subsection Context-Aware Prompts
+
+The AI includes project context in responses:
+
+@example
+M-x forj-prompt RET "Based on my project files, suggest architectural improvements"
+@end example
+
+This analyzes your entire codebase and provides targeted suggestions.
+
+@subsection Conversation History
+
+Access your conversation history programmatically:
+
+@lisp
+;; Get conversation history
+(forj-conversation-history)
+
+;; Clear conversation
+(forj-clear-conversation)
+@end lisp
+
+The history includes timestamps and role information for each interaction.

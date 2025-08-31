@@ -1,0 +1,64 @@
+\input texinfo
+@c -*- texinfo -*-
+@c %**start of header
+@setfilename forj.info
+@settitle Forj Manual
+@documentencoding UTF-8
+@c %**end of header
+
+@dircategory Emacs
+@direntry
+* Forj: (forj).    AI co-pilot for Emacs Lisp development.
+@end direntry
+
+@copying
+Copyright @copyright{} 2025 Forj.el Contributors
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3
+or any later version published by the Free Software Foundation.
+@end copying
+
+@titlepage
+@title Forj Manual
+@subtitle AI Co-pilot for Emacs Lisp Development
+@subtitle Version 1.0 (Alpha)
+@author Forj.el Contributors
+
+@page
+@vskip 0pt plus 1filll
+@insertcopying
+@end titlepage
+
+@contents
+
+@ifnottex
+@node Top
+@top Forj Manual
+
+Forj.el is an AI co-pilot for Emacs that provides intelligent assistance for Emacs Lisp development. It offers AI-powered code analysis, refactoring, and validation with deep integration into your Emacs workflow.
+
+@insertcopying
+@end ifnottex
+
+@menu
+* Installation::        How to install and configure Forj.el
+* Tutorial::            Getting started with Forj.el
+* Configuration::       Customization options and settings
+* API Reference::       Complete function and variable reference
+* Troubleshooting::     Common issues and their solutions
+* Index::               Complete index
+@end menu
+
+@include installation.texi
+@include tutorial.texi
+@include configuration.texi
+@include api-reference.texi
+@include troubleshooting.texi
+
+@node Index
+@unnumbered Index
+
+@printindex cp
+
+@bye

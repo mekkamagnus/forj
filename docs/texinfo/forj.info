@@ -1,0 +1,1377 @@
+This is forj.info, produced by makeinfo version 7.2 from forj.texi.
+
+Copyright © 2025 Forj.el Contributors
+
+   Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation.
+INFO-DIR-SECTION Emacs
+START-INFO-DIR-ENTRY
+* Forj: (forj).    AI co-pilot for Emacs Lisp development.
+END-INFO-DIR-ENTRY
+
+
+File: forj.info,  Node: Top,  Next: Installation,  Up: (dir)
+
+Forj Manual
+***********
+
+Forj.el is an AI co-pilot for Emacs that provides intelligent assistance
+for Emacs Lisp development.  It offers AI-powered code analysis,
+refactoring, and validation with deep integration into your Emacs
+workflow.
+
+   Copyright © 2025 Forj.el Contributors
+
+   Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation.
+
+* Menu:
+
+* Installation::        How to install and configure Forj.el
+* Tutorial::            Getting started with Forj.el
+* Configuration::       Customization options and settings
+* API Reference::       Complete function and variable reference
+* Troubleshooting::     Common issues and their solutions
+* Index::               Complete index
+
+
+File: forj.info,  Node: Installation,  Next: Tutorial,  Prev: Top,  Up: Top
+
+1 Installation
+**************
+
+This chapter describes how to install and set up Forj.el on your system.
+
+* Menu:
+
+* Requirements::        System requirements
+* Manual Installation:: Installing from source
+* Installation Configuration:: Initial setup and API key configuration
+* Verification::        Testing your installation
+
+
+File: forj.info,  Node: Requirements,  Next: Manual Installation,  Up: Installation
+
+1.1 Requirements
+================
+
+Forj.el requires:
+
+   • GNU Emacs 26.1 or later
+   • Internet connection for AI API calls
+   • Gemini API key (free tier available)
+
+
+File: forj.info,  Node: Manual Installation,  Next: Installation Configuration,  Prev: Requirements,  Up: Installation
+
+1.2 Manual Installation
+=======================
+
+*Currently in Alpha - Install from Git Repository*
+
+1.2.1 Step 1: Clone Repository
+------------------------------
+
+     git clone https://github.com/username/forj.el.git
+     cd forj.el
+
+1.2.2 Step 2: Install in Emacs
+------------------------------
+
+Add to your Emacs configuration (‘~/.emacs.d/init.el’):
+
+     ;; Add to load path
+     (add-to-list 'load-path "/path/to/forj.el")
+     (require 'forj)
+
+     ;; Optional: Set up key bindings
+     (global-set-key (kbd "C-c f p") 'forj-prompt)
+     (global-set-key (kbd "C-c f c") 'forj-check-syntax)
+
+1.2.3 Future Installation (Coming Soon)
+---------------------------------------
+
+     ;; Will be available on MELPA after beta release
+     (use-package forj
+       :ensure t
+       :bind (("C-c f p" . forj-prompt)
+              ("C-c f c" . forj-check-syntax)))
+
+
+File: forj.info,  Node: Installation Configuration,  Next: Verification,  Prev: Manual Installation,  Up: Installation
+
+1.3 Configuration
+=================
+
+1.3.1 API Key Setup
+-------------------
+
+Set up your Gemini API key as an environment variable:
+
+     export GEMINI_API_KEY="your-api-key-here"
+
+   Or configure through Emacs customize interface:
+
+     M-x customize-group RET forj RET
+
+1.3.2 Basic Configuration
+-------------------------
+
+     ;; Configure API provider (currently only Gemini supported)
+     (setq forj-api-provider 'gemini)
+     (setq forj-api-model "gemini-2.0-flash-exp")
+
+     ;; Adjust timeouts and limits
+     (setq forj-api-timeout 30)           ; API timeout in seconds
+     (setq forj-max-file-size 50000)      ; Max file size to read
+
+
+File: forj.info,  Node: Verification,  Prev: Installation Configuration,  Up: Installation
+
+1.4 Verification
+================
+
+Test your installation:
+
+  1. Test syntax checking:
+          M-x forj-check-syntax
+
+  2. Test AI prompt:
+          M-x forj-prompt RET "Hello, can you help me?"
+
+  3. Check conversation buffer:
+          M-x forj-conversation-buffer
+
+   If everything works correctly, you should see responses in the
+‘*forj*’ buffer.
+
+
+File: forj.info,  Node: Tutorial,  Next: Configuration,  Prev: Installation,  Up: Top
+
+2 Tutorial
+**********
+
+This chapter provides a hands-on introduction to using Forj.el for
+AI-assisted Emacs Lisp development.
+
+* Menu:
+
+* Getting Started::     Your first interaction with Forj
+* Code Analysis::       Using AI for code review and validation
+* Tutorial File Operations:: Working with project files
+* Refactoring::         AI-assisted code improvements
+* Advanced Features::   Power user tips and workflows
+
+
+File: forj.info,  Node: Getting Started,  Next: Code Analysis,  Up: Tutorial
+
+2.1 Getting Started
+===================
+
+2.1.1 Your First AI Prompt
+--------------------------
+
+Start by opening an Emacs Lisp file or creating a new buffer.  Try your
+first AI interaction:
+
+     M-x forj-prompt RET "Explain what this function does"
+
+   The AI will analyze your current context and provide helpful
+information.
+
+2.1.2 The Conversation Buffer
+-----------------------------
+
+All interactions are logged in the ‘*forj*’ conversation buffer.  View
+it with:
+
+     M-x forj-conversation-buffer
+
+   This buffer shows:
+   • User prompts
+   • AI responses
+   • System operations (file reads, syntax checks)
+   • Activity status updates
+
+
+File: forj.info,  Node: Code Analysis,  Next: Tutorial File Operations,  Prev: Getting Started,  Up: Tutorial
+
+2.2 Code Analysis
+=================
+
+2.2.1 Syntax Validation
+-----------------------
+
+Forj.el includes a sophisticated syntax checker designed for
+AI-generated code:
+
+     M-x forj-check-syntax
+
+   This returns detailed error information:
+     (:status 'invalid
+      :error (:type 'unmatched-closing
+              :line 15
+              :col 23
+              :message "Unmatched closing brace, expected closing parenthesis"))
+
+2.2.2 AI Code Review
+--------------------
+
+Ask the AI to review your code:
+
+     M-x forj-prompt RET "Review this function for potential improvements"
+
+   The AI will analyze:
+   • Code style and idioms
+   • Error handling patterns
+   • Performance considerations
+   • Documentation quality
+
+
+File: forj.info,  Node: Tutorial File Operations,  Next: Refactoring,  Prev: Code Analysis,  Up: Tutorial
+
+2.3 File Operations
+===================
+
+2.3.1 Reading Project Files
+---------------------------
+
+Forj.el provides safe file operations with built-in limits:
+
+     ;; Read a single file
+     (forj-read-file "forj.el")
+
+     ;; Read with size limit
+     (forj-read-file "large-file.txt" 1000)
+
+     ;; List project files
+     (forj-list-files "." "\\.el$")
+
+2.3.2 Interactive File Browser
+------------------------------
+
+Use the built-in file browser for easy file selection:
+
+     M-x forj-browse-files
+
+   This shows files with metadata:
+     forj.el [elisp, 15234 bytes, 2025-08-10 14:30]
+     forj-api.el [elisp, 8456 bytes, 2025-08-10 12:15]
+     README.md [markdown, 12890 bytes, 2025-08-10 10:45]
+
+2.3.3 Project Scanning
+----------------------
+
+Analyze your entire project structure:
+
+     M-x forj-scan-and-display-project
+
+   This provides:
+   • Complete project overview
+   • File type statistics
+   • Total project size
+   • Scan performance metrics
+
+
+File: forj.info,  Node: Refactoring,  Next: Advanced Features,  Prev: Tutorial File Operations,  Up: Tutorial
+
+2.4 Refactoring
+===============
+
+2.4.1 Function Improvement
+--------------------------
+
+Select a function and ask for improvements:
+
+     M-x forj-prompt RET "Make this function more idiomatic and add error handling"
+
+   *Before:*
+     (defun get-file-content (file)
+       (with-temp-buffer
+         (insert-file-contents file)
+         (buffer-string)))
+
+   *After AI suggestions:*
+     (defun forj-get-file-content (file)
+       "Read and return the contents of FILE.
+     Signals an error if FILE cannot be read."
+       (condition-case err
+           (with-temp-buffer
+             (insert-file-contents file)
+             (buffer-string))
+         (file-error
+          (user-error "Cannot read file %s: %s"
+                      file (error-message-string err)))))
+
+2.4.2 Code Modernization
+------------------------
+
+Ask for modern Emacs Lisp patterns:
+
+     M-x forj-prompt RET "Update this code to use modern cl-lib functions"
+
+   The AI will suggest:
+   • Replacing deprecated ‘cl’ functions with ‘cl-lib’ versions
+   • Using ‘seq’ library functions where appropriate
+   • Applying current best practices
+
+
+File: forj.info,  Node: Advanced Features,  Prev: Refactoring,  Up: Tutorial
+
+2.5 Advanced Features
+=====================
+
+2.5.1 Git Integration
+---------------------
+
+Forj.el is Git-aware and can:
+   • Warn about uncommitted changes before modifications
+   • Auto-stage changes after successful edits (optional)
+   • Show Git status in file operations
+
+   Configure Git integration:
+     (setq forj-enable-git-integration t)
+     (setq forj-warn-uncommitted-changes t)
+     (setq forj-auto-stage-changes nil)  ; Set to t for auto-staging
+
+2.5.2 File Locking
+------------------
+
+For concurrent development, use file locking:
+
+     (forj-with-file-lock "important.el"
+       (let ((content (forj-read-file "important.el")))
+         (forj-write-file "important.el"
+                          (concat content "\n;; Added line"))))
+
+2.5.3 Context-Aware Prompts
+---------------------------
+
+The AI includes project context in responses:
+
+     M-x forj-prompt RET "Based on my project files, suggest architectural improvements"
+
+   This analyzes your entire codebase and provides targeted suggestions.
+
+2.5.4 Conversation History
+--------------------------
+
+Access your conversation history programmatically:
+
+     ;; Get conversation history
+     (forj-conversation-history)
+
+     ;; Clear conversation
+     (forj-clear-conversation)
+
+   The history includes timestamps and role information for each
+interaction.
+
+
+File: forj.info,  Node: Configuration,  Next: API Reference,  Prev: Tutorial,  Up: Top
+
+3 Configuration
+***************
+
+This chapter describes all customization options available in Forj.el.
+
+* Menu:
+
+* Basic Configuration::     Essential settings
+* API Configuration::       AI provider and model settings
+* Config File Operations::  File handling and limits
+* Config Git Integration::  Version control settings
+* Advanced Options::        Power user configurations
+* Keybindings::            Keyboard shortcuts
+
+
+File: forj.info,  Node: Basic Configuration,  Next: API Configuration,  Up: Configuration
+
+3.1 Basic Configuration
+=======================
+
+3.1.1 Core Settings
+-------------------
+
+ -- User Option: forj-conversation-buffer
+     Default: ‘"*forj*"’
+
+     Name of the buffer used for conversation display and logging.
+
+ -- User Option: forj-max-file-size
+     Default: ‘50000’
+
+     Maximum file size to read in bytes.  Files larger than this limit
+     will be truncated with a warning message.
+
+ -- User Option: forj-supported-extensions
+     Default: ‘'("el" "md" "txt" "org" "lisp")’
+
+     List of file extensions to consider for project context analysis.
+     Only files matching these extensions will be included in project
+     scans.
+
+ -- User Option: forj-excluded-patterns
+     Default: ‘'(".git" ".DS_Store" "*.elc" "*.log" "*~")’
+
+     Patterns for files and directories to exclude from scanning
+     operations.  Supports glob-style patterns.
+
+
+File: forj.info,  Node: API Configuration,  Next: Config File Operations,  Prev: Basic Configuration,  Up: Configuration
+
+3.2 API Configuration
+=====================
+
+3.2.1 Gemini API Settings
+-------------------------
+
+ -- User Option: forj-api-model
+     Default: ‘"gemini-2.0-flash-exp"’
+
+     Gemini model to use for API calls.  Available options:
+        • ‘"gemini-2.0-flash-exp"’ - Latest experimental model
+        • ‘"gemini-1.5-pro"’ - Stable production model
+
+ -- User Option: forj-api-timeout
+     Default: ‘30’
+
+     Timeout for API requests in seconds.  Increase for slower
+     connections or complex requests.
+
+3.2.2 API Key Management
+------------------------
+
+Forj.el retrieves the API key from the ‘GEMINI_API_KEY’ environment
+variable:
+
+     export GEMINI_API_KEY="your-api-key-here"
+
+   *Security Note:* Never store API keys directly in your Emacs
+configuration files.
+
+
+File: forj.info,  Node: Config File Operations,  Next: Config Git Integration,  Prev: API Configuration,  Up: Configuration
+
+3.3 File Operations
+===================
+
+3.3.1 Safety Settings
+---------------------
+
+ -- User Option: forj-confirm-destructive-operations
+     Default: ‘t’
+
+     Whether to prompt for confirmation before destructive operations
+     like file overwrites or deletions.
+
+3.3.2 Backup Configuration
+--------------------------
+
+Forj.el automatically creates timestamped backups for file operations:
+
+     ;; Backup naming pattern
+     original-file.el.bak.20250810-143022
+
+   Disable backups for specific operations:
+     (forj-write-file "temp.el" content t)  ; no-backup = t
+
+
+File: forj.info,  Node: Config Git Integration,  Next: Advanced Options,  Prev: Config File Operations,  Up: Configuration
+
+3.4 Git Integration
+===================
+
+3.4.1 Git Settings
+------------------
+
+ -- User Option: forj-enable-git-integration
+     Default: ‘t’
+
+     Whether to enable Git repository integration features.  When
+     enabled, Forj.el can:
+        • Check file status before modifications
+        • Warn about uncommitted changes
+        • Automatically stage changes
+
+ -- User Option: forj-warn-uncommitted-changes
+     Default: ‘t’
+
+     Whether to warn before modifying files with uncommitted Git
+     changes.  Shows a confirmation dialog with current Git status.
+
+ -- User Option: forj-auto-stage-changes
+     Default: ‘nil’
+
+     Whether to automatically stage changes after successful edits in a
+     Git repository.  Set to ‘t’ for automatic staging.
+
+3.4.2 Git Workflow Integration
+------------------------------
+
+Example configuration for Git-centric development:
+
+     ;; Enable all Git features
+     (setq forj-enable-git-integration t)
+     (setq forj-warn-uncommitted-changes t)
+     (setq forj-auto-stage-changes t)
+
+     ;; Check Git status programmatically
+     (forj-git-file-status "src/main.el")
+     ;; => (:status modified :staged nil :modified t :untracked nil)
+
+
+File: forj.info,  Node: Advanced Options,  Next: Keybindings,  Prev: Config Git Integration,  Up: Configuration
+
+3.5 Advanced Options
+====================
+
+3.5.1 Performance Tuning
+------------------------
+
+     ;; Adjust scanning limits for large projects
+     (setq forj-max-file-size 100000)          ; 100KB limit
+
+     ;; Limit project scanning depth
+     (forj-scan-directory-recursive "." 3 50)   ; 3 levels, 50 files max
+
+     ;; Optimize API timeouts
+     (setq forj-api-timeout 45)                 ; 45 second timeout
+
+3.5.2 Development Settings
+--------------------------
+
+     ;; Enable detailed logging (for debugging)
+     (setq forj-debug t)
+     (setq forj-log-level 'debug)
+
+     ;; Disable confirmations for development
+     (setq forj-confirm-destructive-operations nil)
+
+3.5.3 File Locking
+------------------
+
+Configure file locking for concurrent access:
+
+     ;; Default lock timeout
+     (forj-lock-file "shared-file.el" 60)  ; 60 second timeout
+
+     ;; Use with-file-lock macro for automatic cleanup
+     (forj-with-file-lock "critical-file.el"
+       ;; Operations here are protected by file lock
+       (forj-edit-file-region "critical-file.el" 1 5 new-content))
+
+
+File: forj.info,  Node: Keybindings,  Prev: Advanced Options,  Up: Configuration
+
+3.6 Keybindings
+===============
+
+3.6.1 Default Bindings
+----------------------
+
+Forj.el doesn't set global keybindings by default.  Add these to your
+configuration:
+
+     ;; Essential bindings
+     (global-set-key (kbd "C-c f p") 'forj-prompt)
+     (global-set-key (kbd "C-c f c") 'forj-check-syntax)
+     (global-set-key (kbd "C-c f h") 'forj-conversation-buffer)
+
+     ;; File operations
+     (global-set-key (kbd "C-c f b") 'forj-browse-files)
+     (global-set-key (kbd "C-c f r") 'forj-browse-and-read-file)
+     (global-set-key (kbd "C-c f s") 'forj-scan-and-display-project)
+
+     ;; Utility functions
+     (global-set-key (kbd "C-c f x") 'forj-clear-conversation)
+
+3.6.2 Use-Package Configuration
+-------------------------------
+
+     (use-package forj
+       :ensure t
+       :custom
+       (forj-api-model "gemini-2.0-flash-exp")
+       (forj-api-timeout 30)
+       (forj-max-file-size 50000)
+       (forj-enable-git-integration t)
+       (forj-warn-uncommitted-changes t)
+       :bind
+       (("C-c f p" . forj-prompt)
+        ("C-c f c" . forj-check-syntax)
+        ("C-c f h" . forj-conversation-buffer)
+        ("C-c f b" . forj-browse-files)
+        ("C-c f r" . forj-browse-and-read-file)
+        ("C-c f s" . forj-scan-and-display-project)
+        ("C-c f x" . forj-clear-conversation)))
+
+3.6.3 Custom Command Aliases
+----------------------------
+
+Create your own command shortcuts:
+
+     (defalias 'ai 'forj-prompt)                    ; Quick AI prompt
+     (defalias 'check 'forj-check-syntax)           ; Quick syntax check
+     (defalias 'proj 'forj-scan-and-display-project) ; Quick project scan
+
+
+File: forj.info,  Node: API Reference,  Next: Troubleshooting,  Prev: Configuration,  Up: Top
+
+4 API Reference
+***************
+
+This chapter provides complete documentation for all Forj.el functions
+and variables.
+
+* Menu:
+
+* Core Functions::          Main interactive commands
+* Syntax Validation::       Code analysis and validation
+* API File Operations::     File reading and manipulation
+* Conversation System::     History and buffer management
+* Directory Operations::    Project scanning and analysis
+* API Git Integration::     Version control functions
+* File Locking::           Concurrency control
+* Utility Functions::      Helper and support functions
+* Customization Variables:: User configuration options
+
+
+File: forj.info,  Node: Core Functions,  Next: Syntax Validation,  Up: API Reference
+
+4.1 Core Functions
+==================
+
+4.1.1 Interactive Commands
+--------------------------
+
+ -- Interactive Function: forj-prompt prompt
+     Main interaction function for AI assistance.
+
+     PROMPT
+          String containing your request to the AI assistant.
+
+     *Returns:* AI response as string on success, or displays error
+     message.
+
+     *Example:*
+          (forj-prompt "Add error handling to the current function")
+
+     The function analyzes the current buffer context and conversation
+     history to provide contextual AI assistance.
+
+ -- Interactive Function: forj-conversation-buffer
+     Create or switch to the Forj conversation buffer.
+
+     Displays the ‘*forj*’ buffer containing conversation history,
+     system messages, and activity status.  If the buffer doesn't exist,
+     creates it with helpful usage instructions.
+
+     *Returns:* The conversation buffer object.
+
+ -- Interactive Function: forj-clear-conversation
+     Clear the conversation buffer and history.
+
+     Resets both the conversation history list and the display buffer to
+     their initial state.
+
+
+File: forj.info,  Node: Syntax Validation,  Next: API File Operations,  Prev: Core Functions,  Up: API Reference
+
+4.2 Syntax Validation
+=====================
+
+ -- Function: forj-check-syntax &optional buffer
+     Validate Emacs Lisp syntax using native Emacs functions.
+
+     BUFFER
+          Buffer to check (optional, defaults to current buffer).
+
+     *Returns:* Property list with validation results:
+          (:status 'valid :message "Syntax is valid")
+          ;; or
+          (:status 'invalid :message "Syntax error: ...")
+
+     *Example:*
+          (forj-check-syntax (current-buffer))
+
+ -- Function: forj-paren-check code-string
+     Analyze CODE-STRING for parentheses balance and syntax errors.
+
+     CODE-STRING
+          String containing Emacs Lisp code to analyze.
+
+     *Returns:* Structured analysis with detailed error reporting:
+          ;; Success case
+          (:status balanced)
+
+          ;; Error case
+          (:status unbalanced
+           :error (:type unmatched-closing
+                   :line 15
+                   :col 23
+                   :message "Unmatched closing )"))
+
+     This function provides AI-consumable syntax analysis with precise
+     error locations.
+
+
+File: forj.info,  Node: API File Operations,  Next: Conversation System,  Prev: Syntax Validation,  Up: API Reference
+
+4.3 File Operations
+===================
+
+ -- Function: forj-read-file file-path &optional max-size
+     Read contents of FILE-PATH safely with optional size limit.
+
+     FILE-PATH
+          Path to file to read.
+     MAX-SIZE
+          Maximum bytes to read (optional, defaults to
+          ‘forj-max-file-size’).
+
+     *Returns:* String containing file contents, or signals
+     ‘file-error’.
+
+     *Example:*
+          (forj-read-file "README.md")        ; Read entire file
+          (forj-read-file "large.txt" 1000)   ; Limit to 1KB
+
+ -- Function: forj-list-files &optional directory pattern
+     List files in DIRECTORY matching optional PATTERN.
+
+     DIRECTORY
+          Directory to scan (optional, defaults to current directory).
+     PATTERN
+          Regular expression pattern to match (optional).
+
+     *Returns:* List of file paths.
+
+     *Example:*
+          (forj-list-files)                   ; All supported files
+          (forj-list-files "." "\\.el$")      ; Only .el files
+
+ -- Function: forj-write-file file-path content &optional no-backup
+     Write CONTENT to FILE-PATH with backup and validation.
+
+     FILE-PATH
+          Path where to write the file.
+     CONTENT
+          String content to write.
+     NO-BACKUP
+          Skip backup creation if non-nil (optional).
+
+     *Returns:* Property list with operation results:
+          (:success t
+           :backup-path "file.el.bak.20250810-143022"
+           :modified-time (25086 12345))
+
+     Features atomic operations, syntax validation for .el files, and
+     automatic backups.
+
+ -- Function: forj-edit-file-region file-path start-line end-line
+          new-content &optional no-backup
+     Edit specific region in FILE-PATH from START-LINE to END-LINE.
+
+     FILE-PATH
+          Path to file to edit.
+     START-LINE
+          Starting line number (1-based).
+     END-LINE
+          Ending line number (1-based).
+     NEW-CONTENT
+          New content to replace the region.
+     NO-BACKUP
+          Skip backup creation if non-nil (optional).
+
+     *Returns:* Property list with operation results including lines
+     changed.
+
+     Provides surgical file editing with backup and validation.
+
+
+File: forj.info,  Node: Conversation System,  Next: Directory Operations,  Prev: API File Operations,  Up: API Reference
+
+4.4 Conversation System
+=======================
+
+ -- Function: forj-add-to-history role content
+     Add a conversation turn to history with ROLE and CONTENT.
+
+     ROLE
+          Symbol indicating the speaker: ‘'user’, ‘'assistant’, or
+          ‘'system’.
+     CONTENT
+          String containing the conversation content.
+
+     Automatically adds timestamp and updates the conversation display.
+
+ -- Function: forj-conversation-history
+     Return the current conversation history.
+
+     *Returns:* List of conversation entries, each containing:
+          (:role user :content "Hello" :timestamp "2025-08-10 14:30:15")
+
+ -- Function: forj-set-activity status
+     Set current activity STATUS and update conversation buffer display.
+
+     STATUS
+          String describing current activity, or nil to clear.
+
+     Used to show progress indicators like "Reading file..."  or
+     "Generating response...".
+
+
+File: forj.info,  Node: Directory Operations,  Next: API Git Integration,  Prev: Conversation System,  Up: API Reference
+
+4.5 Directory Operations
+========================
+
+ -- Interactive Function: forj-browse-files &optional directory
+     Interactive file browser for selecting project files.
+
+     DIRECTORY
+          Directory to browse (optional, defaults to current directory).
+
+     *Returns:* Selected file path or nil if cancelled.
+
+     Displays files with rich metadata:
+          forj.el [elisp, 15234 bytes, 2025-08-10 14:30]
+          README.md [markdown, 8456 bytes, 2025-08-10 12:15]
+
+ -- Function: forj-scan-directory-recursive &optional directory
+          max-depth max-files
+     Recursively scan DIRECTORY for project files with limits.
+
+     DIRECTORY
+          Directory to scan (optional, defaults to current directory).
+     MAX-DEPTH
+          Maximum recursion depth (optional, defaults to 5).
+     MAX-FILES
+          Maximum files to find (optional, defaults to 100).
+
+     *Returns:* List of file metadata property lists.
+
+     *Example:*
+          (forj-scan-directory-recursive "." 3 50)
+
+ -- Interactive Function: forj-scan-and-display-project &optional
+          directory
+     Comprehensive project scanner with conversation logging.
+
+     DIRECTORY
+          Directory to analyze (optional, defaults to current
+          directory).
+
+     Analyzes project structure and logs detailed statistics to the
+     conversation buffer.
+
+
+File: forj.info,  Node: API Git Integration,  Next: File Locking,  Prev: Directory Operations,  Up: API Reference
+
+4.6 Git Integration
+===================
+
+ -- Function: forj-in-git-repo-p &optional directory
+     Check if DIRECTORY is in a Git repository.
+
+     DIRECTORY
+          Directory to check (optional, defaults to current directory).
+
+     *Returns:* Git root directory path if in repository, nil otherwise.
+
+ -- Function: forj-git-file-status file-path
+     Get Git status information for FILE-PATH.
+
+     FILE-PATH
+          Path to file to check.
+
+     *Returns:* Property list with Git status:
+          (:status modified :staged nil :modified t :untracked nil)
+
+     Possible status values: ‘'clean’, ‘'modified’, ‘'staged’,
+     ‘'staged-and-modified’, ‘'untracked’.
+
+ -- Function: forj-write-file-with-git-awareness file-path content
+          &optional no-backup
+     Write file with Git integration and status checking.
+
+     Extends ‘forj-write-file’ with:
+        • Git status warnings for uncommitted changes
+        • Optional auto-staging after successful write
+        • Conversation logging of Git operations
+
+
+File: forj.info,  Node: File Locking,  Next: Utility Functions,  Prev: API Git Integration,  Up: API Reference
+
+4.7 File Locking
+================
+
+ -- Function: forj-lock-file file-path &optional timeout
+     Lock FILE-PATH for exclusive access.
+
+     FILE-PATH
+          Path to file to lock.
+     TIMEOUT
+          Timeout in seconds (optional, defaults to 30).
+
+     *Returns:* Property list with lock results:
+          (:success t :lock-id "12345-67890")
+
+     Creates a ‘.forj-lock’ file to prevent concurrent access.
+
+ -- Function: forj-unlock-file file-path lock-id
+     Unlock FILE-PATH using LOCK-ID.
+
+     FILE-PATH
+          Path to file to unlock.
+     LOCK-ID
+          Lock identifier from ‘forj-lock-file’.
+
+     *Returns:* Property list indicating success or failure.
+
+ -- Macro: forj-with-file-lock file-path &rest body
+     Execute BODY with FILE-PATH locked, automatically unlocking when
+     done.
+
+     FILE-PATH
+          Path to file to lock during execution.
+     BODY
+          Forms to execute while file is locked.
+
+     *Example:*
+          (forj-with-file-lock "important.el"
+            (let ((content (forj-read-file "important.el")))
+              (forj-write-file "important.el" (concat content "\n;; Added"))))
+
+
+File: forj.info,  Node: Utility Functions,  Next: Customization Variables,  Prev: File Locking,  Up: API Reference
+
+4.8 Utility Functions
+=====================
+
+ -- Function: forj-file-metadata file-path
+     Get comprehensive metadata for FILE-PATH.
+
+     FILE-PATH
+          Path to file for metadata extraction.
+
+     *Returns:* Property list with file information:
+          (:path "/path/file.el" :size 15234 :modified-time (25086 12345)
+           :type elisp :readable t :writable t)
+
+ -- Function: forj-backup-file file-path &optional backup-name
+     Create timestamped backup of FILE-PATH.
+
+     FILE-PATH
+          Path to file to backup.
+     BACKUP-NAME
+          Custom backup filename (optional).
+
+     *Returns:* Property list with backup results including backup path.
+
+ -- Function: forj-restore-backup backup-path original-path
+     Restore ORIGINAL-PATH from BACKUP-PATH.
+
+     BACKUP-PATH
+          Path to backup file.
+     ORIGINAL-PATH
+          Path where to restore the file.
+
+     *Returns:* Property list with restoration results including
+     restored file size.
+
+
+File: forj.info,  Node: Customization Variables,  Prev: Utility Functions,  Up: API Reference
+
+4.9 Customization Variables
+===========================
+
+ -- User Option: forj-conversation-buffer
+     Name of buffer used for conversation display.  Default: ‘"*forj*"’
+
+ -- User Option: forj-max-file-size
+     Maximum file size to read in bytes.  Default: ‘50000’
+
+ -- User Option: forj-supported-extensions
+     List of file extensions for project context.  Default: ‘'("el" "md"
+     "txt" "org" "lisp")’
+
+ -- User Option: forj-excluded-patterns
+     Glob patterns for files/directories to exclude.  Default: ‘'(".git"
+     ".DS_Store" "*.elc" "*.log" "*~")’
+
+ -- User Option: forj-confirm-destructive-operations
+     Whether to confirm before destructive operations.  Default: ‘t’
+
+ -- User Option: forj-enable-git-integration
+     Whether to enable Git repository features.  Default: ‘t’
+
+ -- User Option: forj-warn-uncommitted-changes
+     Whether to warn before modifying files with Git changes.  Default:
+     ‘t’
+
+ -- User Option: forj-auto-stage-changes
+     Whether to auto-stage changes after edits.  Default: ‘nil’
+
+
+File: forj.info,  Node: Troubleshooting,  Next: Index,  Prev: API Reference,  Up: Top
+
+5 Troubleshooting
+*****************
+
+This chapter covers common issues and their solutions when using
+Forj.el.
+
+* Menu:
+
+* Installation Issues::     Problems setting up Forj.el
+* API Problems::           Issues with AI service connectivity
+* Performance Issues::     Slow response or high memory usage
+* File Operation Errors::  Problems reading or writing files
+* Git Integration Issues:: Version control related problems
+* Debug Mode::             Enabling detailed logging
+
+
+File: forj.info,  Node: Installation Issues,  Next: API Problems,  Up: Troubleshooting
+
+5.1 Installation Issues
+=======================
+
+5.1.1 Package Loading Errors
+----------------------------
+
+*Problem:* ‘Cannot open load file: No such file or directory, forj’
+
+   *Solution:*
+  1. Verify the installation path:
+          (add-to-list 'load-path "/correct/path/to/forj.el")
+
+  2. Check file permissions:
+          ls -la /path/to/forj.el/forj.el
+
+  3. Reload your Emacs configuration:
+          M-x eval-buffer
+
+5.1.2 Missing Dependencies
+--------------------------
+
+*Problem:* ‘Symbol's function definition is void: cl-lib’
+
+   *Solution:* Ensure you have a recent Emacs version (26.1+) or install
+missing packages:
+     (package-install 'cl-lib)
+
+
+File: forj.info,  Node: API Problems,  Next: Performance Issues,  Prev: Installation Issues,  Up: Troubleshooting
+
+5.2 API Problems
+================
+
+5.2.1 API Key Not Found
+-----------------------
+
+*Problem:* ‘GEMINI_API_KEY environment variable not set’
+
+   *Solutions:*
+  1. Set environment variable:
+          export GEMINI_API_KEY="your-api-key-here"
+
+  2. Restart Emacs to pick up new environment variables.
+
+  3. Verify the key is set:
+          (getenv "GEMINI_API_KEY")
+
+5.2.2 Connection Timeouts
+-------------------------
+
+*Problem:* ‘API request timed out after 30 seconds’
+
+   *Solutions:*
+  1. Increase timeout for slow connections:
+          (setq forj-api-timeout 60)  ; 60 seconds
+
+  2. Check internet connectivity:
+          curl -I https://generativelanguage.googleapis.com
+
+  3. Verify API key validity by testing with curl:
+          curl -H "x-goog-api-key: YOUR_KEY" \
+            https://generativelanguage.googleapis.com/v1beta/models
+
+5.2.3 Invalid API Responses
+---------------------------
+
+*Problem:* ‘Invalid response format’
+
+   *Solutions:*
+  1. Check API key permissions and quotas in Google Cloud Console.
+
+  2. Verify the model name is correct:
+          (setq forj-api-model "gemini-2.0-flash-exp")
+
+  3. Enable debug mode to see raw responses:
+          (setq forj-debug t)
+
+
+File: forj.info,  Node: Performance Issues,  Next: File Operation Errors,  Prev: API Problems,  Up: Troubleshooting
+
+5.3 Performance Issues
+======================
+
+5.3.1 Slow Response Times
+-------------------------
+
+*Problem:* AI responses taking too long.
+
+   *Solutions:*
+  1. Reduce file size limits:
+          (setq forj-max-file-size 20000)  ; 20KB limit
+
+  2. Clear conversation history:
+          M-x forj-clear-conversation
+
+  3. Limit project scanning:
+          (forj-scan-directory-recursive "." 2 25)  ; 2 levels, 25 files max
+
+5.3.2 High Memory Usage
+-----------------------
+
+*Problem:* Emacs consuming excessive memory.
+
+   *Solutions:*
+  1. Monitor conversation buffer size:
+          M-x forj-conversation-buffer
+          M-x buffer-size
+
+  2. Regularly clear large conversations:
+          (forj-clear-conversation)
+
+  3. Adjust file reading limits:
+          (setq forj-max-file-size 10000)  ; Smaller limit
+
+
+File: forj.info,  Node: File Operation Errors,  Next: Git Integration Issues,  Prev: Performance Issues,  Up: Troubleshooting
+
+5.4 File Operation Errors
+=========================
+
+5.4.1 Permission Denied
+-----------------------
+
+*Problem:* ‘File not writable: permission denied’
+
+   *Solutions:*
+  1. Check file permissions:
+          ls -la filename.el
+
+  2. Ensure directory is writable:
+          ls -ld /path/to/directory/
+
+  3. Use sudo for system files (not recommended for regular
+     development):
+          sudo emacs filename.el
+
+5.4.2 Syntax Validation Errors
+------------------------------
+
+*Problem:* ‘Invalid Emacs Lisp syntax detected’
+
+   *Solutions:*
+  1. Use the detailed syntax checker:
+          M-x forj-check-syntax
+
+  2. Check for common issues:
+        • Unmatched parentheses, brackets, or braces
+        • Unclosed string literals
+        • Missing semicolons in comments
+
+  3. Get AI help with syntax errors:
+          M-x forj-prompt RET "Fix the syntax errors in this code"
+
+5.4.3 File Locking Issues
+-------------------------
+
+*Problem:* ‘File is locked by another process’
+
+   *Solutions:*
+  1. Check for stale lock files:
+          ls -la filename.el.forj-lock
+
+  2. Remove stale locks manually:
+          rm filename.el.forj-lock
+
+  3. Increase lock timeout:
+          (forj-lock-file "file.el" 120)  ; 2 minute timeout
+
+
+File: forj.info,  Node: Git Integration Issues,  Next: Debug Mode,  Prev: File Operation Errors,  Up: Troubleshooting
+
+5.5 Git Integration Issues
+==========================
+
+5.5.1 Git Commands Not Found
+----------------------------
+
+*Problem:* ‘git: command not found’
+
+   *Solutions:*
+  1. Verify Git installation:
+          which git
+          git --version
+
+  2. Install Git if missing:
+          # macOS
+          brew install git
+
+          # Ubuntu/Debian
+          sudo apt-get install git
+
+          # Windows
+          # Download from https://git-scm.com/
+
+  3. Update Emacs exec-path if needed:
+          (add-to-list 'exec-path "/usr/local/bin")
+
+5.5.2 Git Status Errors
+-----------------------
+
+*Problem:* ‘Not in a git repository’
+
+   *Solutions:*
+  1. Initialize Git repository:
+          git init
+
+  2. Disable Git integration if not needed:
+          (setq forj-enable-git-integration nil)
+
+  3. Check if you're in the right directory:
+          pwd
+          git status
+
+
+File: forj.info,  Node: Debug Mode,  Prev: Git Integration Issues,  Up: Troubleshooting
+
+5.6 Debug Mode
+==============
+
+5.6.1 Enabling Debug Logging
+----------------------------
+
+Enable detailed logging for troubleshooting:
+
+     ;; Enable debug mode
+     (setq forj-debug t)
+     (setq forj-log-level 'debug)
+
+     ;; Watch the *Messages* buffer for details
+     (with-current-buffer "*Messages*"
+       (goto-char (point-max)))
+
+5.6.2 Debug Information to Collect
+----------------------------------
+
+When reporting issues, include:
+
+  1. Emacs version:
+          M-x emacs-version
+
+  2. Forj.el version and commit:
+          git log -1 --oneline
+
+  3. Error messages from *Messages* buffer
+
+  4. Minimal reproduction case
+
+  5. System information:
+          (message "System: %s %s" system-type system-configuration)
+
+5.6.3 Common Debug Commands
+---------------------------
+
+     ;; Check configuration
+     (customize-group 'forj)
+
+     ;; Test API connectivity
+     (forj-prompt "test")
+
+     ;; Check file permissions
+     (file-readable-p "filename.el")
+     (file-writable-p "filename.el")
+
+     ;; Check Git integration
+     (forj-in-git-repo-p)
+     (forj-git-file-status "filename.el")
+
+     ;; Validate syntax
+     (forj-check-syntax)
+     (forj-paren-check "(defun test ())")
+
+5.6.4 Reporting Issues
+----------------------
+
+If problems persist:
+
+  1. Check existing issues: <https://github.com/username/forj.el/issues>
+
+  2. Create detailed bug report with:
+        • Steps to reproduce
+        • Expected vs actual behavior
+        • Debug logs and error messages
+        • System and Emacs version info
+
+  3. For urgent issues, include ‘[URGENT]’ in the title
+
+
+File: forj.info,  Node: Index,  Prev: Troubleshooting,  Up: Top
+
+Index
+*****
+
+
+Tag Table:
+Node: Top436
+Node: Installation1333
+Node: Requirements1739
+Node: Manual Installation2000
+Node: Installation Configuration2989
+Node: Verification3760
+Node: Tutorial4212
+Node: Getting Started4723
+Node: Code Analysis5460
+Node: Tutorial File Operations6301
+Node: Refactoring7379
+Node: Advanced Features8626
+Node: Configuration10043
+Node: Basic Configuration10560
+Node: API Configuration11533
+Node: Config File Operations12450
+Node: Config Git Integration13155
+Node: Advanced Options14486
+Node: Keybindings15679
+Node: API Reference17381
+Node: Core Functions18105
+Node: Syntax Validation19298
+Node: API File Operations20506
+Node: Conversation System22817
+Node: Directory Operations23862
+Node: API Git Integration25330
+Node: File Locking26499
+Node: Utility Functions27756
+Node: Customization Variables28852
+Node: Troubleshooting30012
+Node: Installation Issues30578
+Node: API Problems31340
+Node: Performance Issues32664
+Node: File Operation Errors33595
+Node: Git Integration Issues34970
+Node: Debug Mode35968
+Node: Index37657
+
+End Tag Table
+
+
+Local Variables:
+coding: utf-8
+End:

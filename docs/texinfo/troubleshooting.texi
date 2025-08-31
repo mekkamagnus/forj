@@ -1,0 +1,409 @@
+@node Troubleshooting
+@chapter Troubleshooting
+
+This chapter covers common issues and their solutions when using Forj.el.
+
+@menu
+* Installation Issues::     Problems setting up Forj.el
+* API Problems::           Issues with AI service connectivity
+* Performance Issues::     Slow response or high memory usage  
+* File Operation Errors::  Problems reading or writing files
+* Git Integration Issues:: Version control related problems
+* Debug Mode::             Enabling detailed logging
+@end menu
+
+@node Installation Issues
+@section Installation Issues
+
+@subsection Package Loading Errors
+
+@strong{Problem:} @code{Cannot open load file: No such file or directory, forj}
+
+@strong{Solution:}
+@enumerate
+@item
+Verify the installation path:
+@lisp
+(add-to-list 'load-path "/correct/path/to/forj.el")
+@end lisp
+
+@item  
+Check file permissions:
+@example
+ls -la /path/to/forj.el/forj.el
+@end example
+
+@item
+Reload your Emacs configuration:
+@example
+M-x eval-buffer
+@end example
+@end enumerate
+
+@subsection Missing Dependencies
+
+@strong{Problem:} @code{Symbol's function definition is void: cl-lib}
+
+@strong{Solution:} Ensure you have a recent Emacs version (26.1+) or install missing packages:
+@lisp
+(package-install 'cl-lib)
+@end lisp
+
+@node API Problems
+@section API Problems
+
+@subsection API Key Not Found
+
+@strong{Problem:} @code{GEMINI_API_KEY environment variable not set}
+
+@strong{Solutions:}
+@enumerate
+@item
+Set environment variable:
+@example
+export GEMINI_API_KEY="your-api-key-here"
+@end example
+
+@item
+Restart Emacs to pick up new environment variables.
+
+@item
+Verify the key is set:
+@lisp
+(getenv "GEMINI_API_KEY")
+@end lisp
+@end enumerate
+
+@subsection Connection Timeouts
+
+@strong{Problem:} @code{API request timed out after 30 seconds}
+
+@strong{Solutions:}
+@enumerate  
+@item
+Increase timeout for slow connections:
+@lisp
+(setq forj-api-timeout 60)  ; 60 seconds
+@end lisp
+
+@item
+Check internet connectivity:
+@example
+curl -I https://generativelanguage.googleapis.com
+@end example
+
+@item
+Verify API key validity by testing with curl:
+@example
+curl -H "x-goog-api-key: YOUR_KEY" \
+  https://generativelanguage.googleapis.com/v1beta/models
+@end example
+@end enumerate
+
+@subsection Invalid API Responses
+
+@strong{Problem:} @code{Invalid response format}
+
+@strong{Solutions:}
+@enumerate
+@item
+Check API key permissions and quotas in Google Cloud Console.
+
+@item  
+Verify the model name is correct:
+@lisp
+(setq forj-api-model "gemini-2.0-flash-exp")
+@end lisp
+
+@item
+Enable debug mode to see raw responses:
+@lisp
+(setq forj-debug t)
+@end lisp
+@end enumerate
+
+@node Performance Issues
+@section Performance Issues
+
+@subsection Slow Response Times
+
+@strong{Problem:} AI responses taking too long.
+
+@strong{Solutions:}
+@enumerate
+@item
+Reduce file size limits:
+@lisp
+(setq forj-max-file-size 20000)  ; 20KB limit
+@end lisp
+
+@item
+Clear conversation history:
+@example
+M-x forj-clear-conversation
+@end example
+
+@item
+Limit project scanning:
+@lisp
+(forj-scan-directory-recursive "." 2 25)  ; 2 levels, 25 files max
+@end lisp
+@end enumerate
+
+@subsection High Memory Usage
+
+@strong{Problem:} Emacs consuming excessive memory.
+
+@strong{Solutions:}
+@enumerate
+@item
+Monitor conversation buffer size:
+@example
+M-x forj-conversation-buffer
+M-x buffer-size
+@end example
+
+@item
+Regularly clear large conversations:
+@lisp
+(forj-clear-conversation)
+@end lisp
+
+@item
+Adjust file reading limits:
+@lisp  
+(setq forj-max-file-size 10000)  ; Smaller limit
+@end lisp
+@end enumerate
+
+@node File Operation Errors
+@section File Operation Errors  
+
+@subsection Permission Denied
+
+@strong{Problem:} @code{File not writable: permission denied}
+
+@strong{Solutions:}
+@enumerate
+@item
+Check file permissions:
+@example
+ls -la filename.el
+@end example
+
+@item
+Ensure directory is writable:
+@example  
+ls -ld /path/to/directory/
+@end example
+
+@item
+Use sudo for system files (not recommended for regular development):
+@example
+sudo emacs filename.el
+@end example
+@end enumerate
+
+@subsection Syntax Validation Errors
+
+@strong{Problem:} @code{Invalid Emacs Lisp syntax detected}
+
+@strong{Solutions:}
+@enumerate
+@item
+Use the detailed syntax checker:
+@example
+M-x forj-check-syntax
+@end example
+
+@item
+Check for common issues:
+@itemize @bullet
+@item Unmatched parentheses, brackets, or braces
+@item Unclosed string literals  
+@item Missing semicolons in comments
+@end itemize
+
+@item
+Get AI help with syntax errors:
+@example
+M-x forj-prompt RET "Fix the syntax errors in this code"
+@end example
+@end enumerate
+
+@subsection File Locking Issues
+
+@strong{Problem:} @code{File is locked by another process}
+
+@strong{Solutions:}
+@enumerate
+@item
+Check for stale lock files:
+@example
+ls -la filename.el.forj-lock
+@end example
+
+@item
+Remove stale locks manually:
+@example
+rm filename.el.forj-lock
+@end example
+
+@item
+Increase lock timeout:
+@lisp
+(forj-lock-file "file.el" 120)  ; 2 minute timeout
+@end lisp
+@end enumerate
+
+@node Git Integration Issues
+@section Git Integration Issues
+
+@subsection Git Commands Not Found
+
+@strong{Problem:} @code{git: command not found}
+
+@strong{Solutions:}
+@enumerate
+@item
+Verify Git installation:
+@example
+which git
+git --version
+@end example
+
+@item
+Install Git if missing:
+@example
+# macOS
+brew install git
+
+# Ubuntu/Debian  
+sudo apt-get install git
+
+# Windows
+# Download from https://git-scm.com/
+@end example
+
+@item
+Update Emacs exec-path if needed:
+@lisp
+(add-to-list 'exec-path "/usr/local/bin")
+@end lisp
+@end enumerate
+
+@subsection Git Status Errors
+
+@strong{Problem:} @code{Not in a git repository}
+
+@strong{Solutions:}
+@enumerate
+@item
+Initialize Git repository:
+@example
+git init
+@end example
+
+@item
+Disable Git integration if not needed:
+@lisp  
+(setq forj-enable-git-integration nil)
+@end lisp
+
+@item
+Check if you're in the right directory:
+@example
+pwd
+git status
+@end example
+@end enumerate
+
+@node Debug Mode
+@section Debug Mode
+
+@subsection Enabling Debug Logging
+
+Enable detailed logging for troubleshooting:
+
+@lisp
+;; Enable debug mode
+(setq forj-debug t)
+(setq forj-log-level 'debug)
+
+;; Watch the *Messages* buffer for details  
+(with-current-buffer "*Messages*"
+  (goto-char (point-max)))
+@end lisp
+
+@subsection Debug Information to Collect
+
+When reporting issues, include:
+
+@enumerate
+@item
+Emacs version:
+@example
+M-x emacs-version
+@end example
+
+@item
+Forj.el version and commit:
+@example
+git log -1 --oneline
+@end example
+
+@item
+Error messages from *Messages* buffer
+
+@item  
+Minimal reproduction case
+
+@item
+System information:
+@lisp
+(message "System: %s %s" system-type system-configuration)  
+@end lisp
+@end enumerate
+
+@subsection Common Debug Commands
+
+@lisp
+;; Check configuration
+(customize-group 'forj)
+
+;; Test API connectivity  
+(forj-prompt "test")
+
+;; Check file permissions
+(file-readable-p "filename.el")
+(file-writable-p "filename.el")
+
+;; Check Git integration
+(forj-in-git-repo-p)
+(forj-git-file-status "filename.el")
+
+;; Validate syntax
+(forj-check-syntax)
+(forj-paren-check "(defun test ())")
+@end lisp
+
+@subsection Reporting Issues
+
+If problems persist:
+
+@enumerate
+@item
+Check existing issues: @url{https://github.com/username/forj.el/issues}
+
+@item
+Create detailed bug report with:
+@itemize @bullet
+@item Steps to reproduce
+@item Expected vs actual behavior
+@item Debug logs and error messages  
+@item System and Emacs version info
+@end itemize
+
+@item
+For urgent issues, include @code{[URGENT]} in the title
+@end enumerate

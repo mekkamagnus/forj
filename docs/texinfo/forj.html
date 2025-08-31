@@ -1,0 +1,2085 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.2, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 2025 Forj.el Contributors
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3
+or any later version published by the Free Software Foundation. -->
+<title>Forj Manual</title>
+
+<meta name="description" content="Forj Manual">
+<meta name="keywords" content="Forj Manual">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="#Top" rel="start" title="Top">
+<link href="#Index" rel="index" title="Index">
+<link href="#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="#Installation" rel="next" title="Installation">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+ul.mark-bullet {list-style-type: disc}
+ul.toc-numbered-mark {list-style: none}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+
+
+
+
+
+<div class="top-level-extent" id="Top">
+<div class="nav-panel">
+<p>
+Next: <a href="#Installation" accesskey="n" rel="next">Installation</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<h1 class="top" id="Forj-Manual"><span>Forj Manual<a class="copiable-link" href="#Forj-Manual"> &para;</a></span></h1>
+
+<p>Forj.el is an AI co-pilot for Emacs that provides intelligent assistance for Emacs Lisp development. It offers AI-powered code analysis, refactoring, and validation with deep integration into your Emacs workflow.
+</p>
+<p>Copyright &copy; 2025 Forj.el Contributors
+</p>
+<p>Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3
+or any later version published by the Free Software Foundation.
+</p>
+
+<div class="region-contents" id="SEC_Contents">
+<h2 class="contents-heading">Table of Contents</h2>
+
+<div class="contents">
+
+<ul class="toc-numbered-mark">
+  <li><a id="toc-Installation" href="#Installation">1 Installation</a>
+  <ul class="toc-numbered-mark">
+    <li><a id="toc-Requirements" href="#Requirements">1.1 Requirements</a></li>
+    <li><a id="toc-Manual-Installation" href="#Manual-Installation">1.2 Manual Installation</a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-Step-1_003a-Clone-Repository" href="#Step-1_003a-Clone-Repository">1.2.1 Step 1: Clone Repository</a></li>
+      <li><a id="toc-Step-2_003a-Install-in-Emacs" href="#Step-2_003a-Install-in-Emacs">1.2.2 Step 2: Install in Emacs</a></li>
+      <li><a id="toc-Future-Installation-_0028Coming-Soon_0029" href="#Future-Installation-_0028Coming-Soon_0029">1.2.3 Future Installation (Coming Soon)</a></li>
+    </ul></li>
+    <li><a id="toc-Configuration" href="#Installation-Configuration">1.3 Configuration</a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-API-Key-Setup" href="#API-Key-Setup">1.3.1 API Key Setup</a></li>
+      <li><a id="toc-Basic-Configuration" href="#Basic-Configuration-1">1.3.2 Basic Configuration</a></li>
+    </ul></li>
+    <li><a id="toc-Verification" href="#Verification">1.4 Verification</a></li>
+  </ul></li>
+  <li><a id="toc-Tutorial" href="#Tutorial">2 Tutorial</a>
+  <ul class="toc-numbered-mark">
+    <li><a id="toc-Getting-Started" href="#Getting-Started">2.1 Getting Started</a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-Your-First-AI-Prompt" href="#Your-First-AI-Prompt">2.1.1 Your First AI Prompt</a></li>
+      <li><a id="toc-The-Conversation-Buffer" href="#The-Conversation-Buffer">2.1.2 The Conversation Buffer</a></li>
+    </ul></li>
+    <li><a id="toc-Code-Analysis" href="#Code-Analysis">2.2 Code Analysis</a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-Syntax-Validation" href="#Syntax-Validation-1">2.2.1 Syntax Validation</a></li>
+      <li><a id="toc-AI-Code-Review" href="#AI-Code-Review">2.2.2 AI Code Review</a></li>
+    </ul></li>
+    <li><a id="toc-File-Operations" href="#Tutorial-File-Operations">2.3 File Operations</a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-Reading-Project-Files" href="#Reading-Project-Files">2.3.1 Reading Project Files</a></li>
+      <li><a id="toc-Interactive-File-Browser" href="#Interactive-File-Browser">2.3.2 Interactive File Browser</a></li>
+      <li><a id="toc-Project-Scanning" href="#Project-Scanning">2.3.3 Project Scanning</a></li>
+    </ul></li>
+    <li><a id="toc-Refactoring" href="#Refactoring">2.4 Refactoring</a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-Function-Improvement" href="#Function-Improvement">2.4.1 Function Improvement</a></li>
+      <li><a id="toc-Code-Modernization" href="#Code-Modernization">2.4.2 Code Modernization</a></li>
+    </ul></li>
+    <li><a id="toc-Advanced-Features" href="#Advanced-Features">2.5 Advanced Features</a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-Git-Integration" href="#Git-Integration">2.5.1 Git Integration</a></li>
+      <li><a id="toc-File-Locking" href="#File-Locking-1">2.5.2 File Locking</a></li>
+      <li><a id="toc-Context_002dAware-Prompts" href="#Context_002dAware-Prompts">2.5.3 Context-Aware Prompts</a></li>
+      <li><a id="toc-Conversation-History" href="#Conversation-History">2.5.4 Conversation History</a></li>
+    </ul></li>
+  </ul></li>
+  <li><a id="toc-Configuration-1" href="#Configuration">3 Configuration</a>
+  <ul class="toc-numbered-mark">
+    <li><a id="toc-Basic-Configuration-1" href="#Basic-Configuration">3.1 Basic Configuration</a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-Core-Settings" href="#Core-Settings">3.1.1 Core Settings</a></li>
+    </ul></li>
+    <li><a id="toc-API-Configuration" href="#API-Configuration">3.2 API Configuration</a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-Gemini-API-Settings" href="#Gemini-API-Settings">3.2.1 Gemini API Settings</a></li>
+      <li><a id="toc-API-Key-Management" href="#API-Key-Management">3.2.2 API Key Management</a></li>
+    </ul></li>
+    <li><a id="toc-File-Operations-1" href="#Config-File-Operations">3.3 File Operations</a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-Safety-Settings" href="#Safety-Settings">3.3.1 Safety Settings</a></li>
+      <li><a id="toc-Backup-Configuration" href="#Backup-Configuration">3.3.2 Backup Configuration</a></li>
+    </ul></li>
+    <li><a id="toc-Git-Integration-1" href="#Config-Git-Integration">3.4 Git Integration</a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-Git-Settings" href="#Git-Settings">3.4.1 Git Settings</a></li>
+      <li><a id="toc-Git-Workflow-Integration" href="#Git-Workflow-Integration">3.4.2 Git Workflow Integration</a></li>
+    </ul></li>
+    <li><a id="toc-Advanced-Options" href="#Advanced-Options">3.5 Advanced Options</a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-Performance-Tuning" href="#Performance-Tuning">3.5.1 Performance Tuning</a></li>
+      <li><a id="toc-Development-Settings" href="#Development-Settings">3.5.2 Development Settings</a></li>
+      <li><a id="toc-File-Locking-1" href="#File-Locking-2">3.5.3 File Locking</a></li>
+    </ul></li>
+    <li><a id="toc-Keybindings" href="#Keybindings">3.6 Keybindings</a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-Default-Bindings" href="#Default-Bindings">3.6.1 Default Bindings</a></li>
+      <li><a id="toc-Use_002dPackage-Configuration" href="#Use_002dPackage-Configuration">3.6.2 Use-Package Configuration</a></li>
+      <li><a id="toc-Custom-Command-Aliases" href="#Custom-Command-Aliases">3.6.3 Custom Command Aliases</a></li>
+    </ul></li>
+  </ul></li>
+  <li><a id="toc-API-Reference" href="#API-Reference">4 API Reference</a>
+  <ul class="toc-numbered-mark">
+    <li><a id="toc-Core-Functions" href="#Core-Functions">4.1 Core Functions</a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-Interactive-Commands" href="#Interactive-Commands">4.1.1 Interactive Commands</a></li>
+    </ul></li>
+    <li><a id="toc-Syntax-Validation-1" href="#Syntax-Validation">4.2 Syntax Validation</a></li>
+    <li><a id="toc-File-Operations-2" href="#API-File-Operations">4.3 File Operations</a></li>
+    <li><a id="toc-Conversation-System" href="#Conversation-System">4.4 Conversation System</a></li>
+    <li><a id="toc-Directory-Operations" href="#Directory-Operations">4.5 Directory Operations</a></li>
+    <li><a id="toc-Git-Integration-2" href="#API-Git-Integration">4.6 Git Integration</a></li>
+    <li><a id="toc-File-Locking-2" href="#File-Locking">4.7 File Locking</a></li>
+    <li><a id="toc-Utility-Functions" href="#Utility-Functions">4.8 Utility Functions</a></li>
+    <li><a id="toc-Customization-Variables" href="#Customization-Variables">4.9 Customization Variables</a></li>
+  </ul></li>
+  <li><a id="toc-Troubleshooting" href="#Troubleshooting">5 Troubleshooting</a>
+  <ul class="toc-numbered-mark">
+    <li><a id="toc-Installation-Issues" href="#Installation-Issues">5.1 Installation Issues</a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-Package-Loading-Errors" href="#Package-Loading-Errors">5.1.1 Package Loading Errors</a></li>
+      <li><a id="toc-Missing-Dependencies" href="#Missing-Dependencies">5.1.2 Missing Dependencies</a></li>
+    </ul></li>
+    <li><a id="toc-API-Problems" href="#API-Problems">5.2 API Problems</a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-API-Key-Not-Found" href="#API-Key-Not-Found">5.2.1 API Key Not Found</a></li>
+      <li><a id="toc-Connection-Timeouts" href="#Connection-Timeouts">5.2.2 Connection Timeouts</a></li>
+      <li><a id="toc-Invalid-API-Responses" href="#Invalid-API-Responses">5.2.3 Invalid API Responses</a></li>
+    </ul></li>
+    <li><a id="toc-Performance-Issues" href="#Performance-Issues">5.3 Performance Issues</a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-Slow-Response-Times" href="#Slow-Response-Times">5.3.1 Slow Response Times</a></li>
+      <li><a id="toc-High-Memory-Usage" href="#High-Memory-Usage">5.3.2 High Memory Usage</a></li>
+    </ul></li>
+    <li><a id="toc-File-Operation-Errors" href="#File-Operation-Errors">5.4 File Operation Errors</a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-Permission-Denied" href="#Permission-Denied">5.4.1 Permission Denied</a></li>
+      <li><a id="toc-Syntax-Validation-Errors" href="#Syntax-Validation-Errors">5.4.2 Syntax Validation Errors</a></li>
+      <li><a id="toc-File-Locking-Issues" href="#File-Locking-Issues">5.4.3 File Locking Issues</a></li>
+    </ul></li>
+    <li><a id="toc-Git-Integration-Issues" href="#Git-Integration-Issues">5.5 Git Integration Issues</a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-Git-Commands-Not-Found" href="#Git-Commands-Not-Found">5.5.1 Git Commands Not Found</a></li>
+      <li><a id="toc-Git-Status-Errors" href="#Git-Status-Errors">5.5.2 Git Status Errors</a></li>
+    </ul></li>
+    <li><a id="toc-Debug-Mode" href="#Debug-Mode">5.6 Debug Mode</a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-Enabling-Debug-Logging" href="#Enabling-Debug-Logging">5.6.1 Enabling Debug Logging</a></li>
+      <li><a id="toc-Debug-Information-to-Collect" href="#Debug-Information-to-Collect">5.6.2 Debug Information to Collect</a></li>
+      <li><a id="toc-Common-Debug-Commands" href="#Common-Debug-Commands">5.6.3 Common Debug Commands</a></li>
+      <li><a id="toc-Reporting-Issues" href="#Reporting-Issues">5.6.4 Reporting Issues</a></li>
+    </ul></li>
+  </ul></li>
+  <li><a id="toc-Index" href="#Index" rel="index">Index</a></li>
+</ul>
+</div>
+</div>
+<hr>
+<div class="chapter-level-extent" id="Installation">
+<div class="nav-panel">
+<p>
+Next: <a href="#Tutorial" accesskey="n" rel="next">Tutorial</a>, Previous: <a href="#Top" accesskey="p" rel="prev">Forj Manual</a>, Up: <a href="#Top" accesskey="u" rel="up">Forj Manual</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<h2 class="chapter" id="Installation-1"><span>1 Installation<a class="copiable-link" href="#Installation-1"> &para;</a></span></h2>
+
+<p>This chapter describes how to install and set up Forj.el on your system.
+</p>
+
+<ul class="mini-toc">
+<li><a href="#Requirements" accesskey="1">Requirements</a></li>
+<li><a href="#Manual-Installation" accesskey="2">Manual Installation</a></li>
+<li><a href="#Installation-Configuration" accesskey="3">Configuration</a></li>
+<li><a href="#Verification" accesskey="4">Verification</a></li>
+</ul>
+<hr>
+<div class="section-level-extent" id="Requirements">
+<div class="nav-panel">
+<p>
+Next: <a href="#Manual-Installation" accesskey="n" rel="next">Manual Installation</a>, Up: <a href="#Installation" accesskey="u" rel="up">Installation</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<h3 class="section" id="Requirements-1"><span>1.1 Requirements<a class="copiable-link" href="#Requirements-1"> &para;</a></span></h3>
+
+<p>Forj.el requires:
+</p>
+<ul class="itemize mark-bullet">
+<li>GNU Emacs 26.1 or later
+</li><li>Internet connection for AI API calls
+</li><li>Gemini API key (free tier available)
+</li></ul>
+
+<hr>
+</div>
+<div class="section-level-extent" id="Manual-Installation">
+<div class="nav-panel">
+<p>
+Next: <a href="#Installation-Configuration" accesskey="n" rel="next">Configuration</a>, Previous: <a href="#Requirements" accesskey="p" rel="prev">Requirements</a>, Up: <a href="#Installation" accesskey="u" rel="up">Installation</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<h3 class="section" id="Manual-Installation-1"><span>1.2 Manual Installation<a class="copiable-link" href="#Manual-Installation-1"> &para;</a></span></h3>
+
+<p><strong class="strong">Currently in Alpha - Install from Git Repository</strong>
+</p>
+<ul class="mini-toc">
+<li><a href="#Step-1_003a-Clone-Repository" accesskey="1">Step 1: Clone Repository</a></li>
+<li><a href="#Step-2_003a-Install-in-Emacs" accesskey="2">Step 2: Install in Emacs</a></li>
+<li><a href="#Future-Installation-_0028Coming-Soon_0029" accesskey="3">Future Installation (Coming Soon)</a></li>
+</ul>
+<div class="subsection-level-extent" id="Step-1_003a-Clone-Repository">
+<h4 class="subsection"><span>1.2.1 Step 1: Clone Repository<a class="copiable-link" href="#Step-1_003a-Clone-Repository"> &para;</a></span></h4>
+
+<div class="example">
+<pre class="example-preformatted">git clone https://github.com/username/forj.el.git
+cd forj.el
+</pre></div>
+
+</div>
+<div class="subsection-level-extent" id="Step-2_003a-Install-in-Emacs">
+<h4 class="subsection"><span>1.2.2 Step 2: Install in Emacs<a class="copiable-link" href="#Step-2_003a-Install-in-Emacs"> &para;</a></span></h4>
+
+<p>Add to your Emacs configuration (<samp class="file">~/.emacs.d/init.el</samp>):
+</p>
+<div class="example lisp">
+<pre class="lisp-preformatted">;; Add to load path
+(add-to-list 'load-path &quot;/path/to/forj.el&quot;)
+(require 'forj)
+
+;; Optional: Set up key bindings
+(global-set-key (kbd &quot;C-c f p&quot;) 'forj-prompt)
+(global-set-key (kbd &quot;C-c f c&quot;) 'forj-check-syntax)
+</pre></div>
+
+</div>
+<div class="subsection-level-extent" id="Future-Installation-_0028Coming-Soon_0029">
+<h4 class="subsection"><span>1.2.3 Future Installation (Coming Soon)<a class="copiable-link" href="#Future-Installation-_0028Coming-Soon_0029"> &para;</a></span></h4>
+
+<div class="example lisp">
+<pre class="lisp-preformatted">;; Will be available on MELPA after beta release
+(use-package forj
+  :ensure t
+  :bind ((&quot;C-c f p&quot; . forj-prompt)
+         (&quot;C-c f c&quot; . forj-check-syntax)))
+</pre></div>
+
+<hr>
+</div>
+</div>
+<div class="section-level-extent" id="Installation-Configuration">
+<div class="nav-panel">
+<p>
+Next: <a href="#Verification" accesskey="n" rel="next">Verification</a>, Previous: <a href="#Manual-Installation" accesskey="p" rel="prev">Manual Installation</a>, Up: <a href="#Installation" accesskey="u" rel="up">Installation</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<h3 class="section" id="Configuration-1"><span>1.3 Configuration<a class="copiable-link" href="#Configuration-1"> &para;</a></span></h3>
+
+<ul class="mini-toc">
+<li><a href="#API-Key-Setup" accesskey="1">API Key Setup</a></li>
+<li><a href="#Basic-Configuration-1" accesskey="2">Basic Configuration</a></li>
+</ul>
+<div class="subsection-level-extent" id="API-Key-Setup">
+<h4 class="subsection"><span>1.3.1 API Key Setup<a class="copiable-link" href="#API-Key-Setup"> &para;</a></span></h4>
+
+<p>Set up your Gemini API key as an environment variable:
+</p>
+<div class="example">
+<pre class="example-preformatted">export GEMINI_API_KEY=&quot;your-api-key-here&quot;
+</pre></div>
+
+<p>Or configure through Emacs customize interface:
+</p>
+<div class="example">
+<pre class="example-preformatted">M-x customize-group RET forj RET
+</pre></div>
+
+</div>
+<div class="subsection-level-extent" id="Basic-Configuration-1">
+<h4 class="subsection"><span>1.3.2 Basic Configuration<a class="copiable-link" href="#Basic-Configuration-1"> &para;</a></span></h4>
+
+<div class="example lisp">
+<pre class="lisp-preformatted">;; Configure API provider (currently only Gemini supported)
+(setq forj-api-provider 'gemini)
+(setq forj-api-model &quot;gemini-2.0-flash-exp&quot;)
+
+;; Adjust timeouts and limits
+(setq forj-api-timeout 30)           ; API timeout in seconds
+(setq forj-max-file-size 50000)      ; Max file size to read
+</pre></div>
+
+<hr>
+</div>
+</div>
+<div class="section-level-extent" id="Verification">
+<div class="nav-panel">
+<p>
+Previous: <a href="#Installation-Configuration" accesskey="p" rel="prev">Configuration</a>, Up: <a href="#Installation" accesskey="u" rel="up">Installation</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<h3 class="section" id="Verification-1"><span>1.4 Verification<a class="copiable-link" href="#Verification-1"> &para;</a></span></h3>
+
+<p>Test your installation:
+</p>
+<ol class="enumerate">
+<li> Test syntax checking:
+<div class="example">
+<pre class="example-preformatted">M-x forj-check-syntax
+</pre></div>
+
+</li><li> Test AI prompt:
+<div class="example">
+<pre class="example-preformatted">M-x forj-prompt RET &quot;Hello, can you help me?&quot;
+</pre></div>
+
+</li><li> Check conversation buffer:
+<div class="example">
+<pre class="example-preformatted">M-x forj-conversation-buffer
+</pre></div>
+</li></ol>
+
+<p>If everything works correctly, you should see responses in the <samp class="file">*forj*</samp> buffer.
+</p><hr>
+</div>
+</div>
+<div class="chapter-level-extent" id="Tutorial">
+<div class="nav-panel">
+<p>
+Next: <a href="#Configuration" accesskey="n" rel="next">Configuration</a>, Previous: <a href="#Installation" accesskey="p" rel="prev">Installation</a>, Up: <a href="#Top" accesskey="u" rel="up">Forj Manual</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<h2 class="chapter" id="Tutorial-1"><span>2 Tutorial<a class="copiable-link" href="#Tutorial-1"> &para;</a></span></h2>
+
+<p>This chapter provides a hands-on introduction to using Forj.el for AI-assisted Emacs Lisp development.
+</p>
+
+<ul class="mini-toc">
+<li><a href="#Getting-Started" accesskey="1">Getting Started</a></li>
+<li><a href="#Code-Analysis" accesskey="2">Code Analysis</a></li>
+<li><a href="#Tutorial-File-Operations" accesskey="3">File Operations</a></li>
+<li><a href="#Refactoring" accesskey="4">Refactoring</a></li>
+<li><a href="#Advanced-Features" accesskey="5">Advanced Features</a></li>
+</ul>
+<hr>
+<div class="section-level-extent" id="Getting-Started">
+<div class="nav-panel">
+<p>
+Next: <a href="#Code-Analysis" accesskey="n" rel="next">Code Analysis</a>, Up: <a href="#Tutorial" accesskey="u" rel="up">Tutorial</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<h3 class="section" id="Getting-Started-1"><span>2.1 Getting Started<a class="copiable-link" href="#Getting-Started-1"> &para;</a></span></h3>
+
+<ul class="mini-toc">
+<li><a href="#Your-First-AI-Prompt" accesskey="1">Your First AI Prompt</a></li>
+<li><a href="#The-Conversation-Buffer" accesskey="2">The Conversation Buffer</a></li>
+</ul>
+<div class="subsection-level-extent" id="Your-First-AI-Prompt">
+<h4 class="subsection"><span>2.1.1 Your First AI Prompt<a class="copiable-link" href="#Your-First-AI-Prompt"> &para;</a></span></h4>
+
+<p>Start by opening an Emacs Lisp file or creating a new buffer. Try your first AI interaction:
+</p>
+<div class="example">
+<pre class="example-preformatted">M-x forj-prompt RET &quot;Explain what this function does&quot;
+</pre></div>
+
+<p>The AI will analyze your current context and provide helpful information.
+</p>
+</div>
+<div class="subsection-level-extent" id="The-Conversation-Buffer">
+<h4 class="subsection"><span>2.1.2 The Conversation Buffer<a class="copiable-link" href="#The-Conversation-Buffer"> &para;</a></span></h4>
+
+<p>All interactions are logged in the <samp class="file">*forj*</samp> conversation buffer. View it with:
+</p>
+<div class="example">
+<pre class="example-preformatted">M-x forj-conversation-buffer
+</pre></div>
+
+<p>This buffer shows:
+</p><ul class="itemize mark-bullet">
+<li>User prompts
+</li><li>AI responses  
+</li><li>System operations (file reads, syntax checks)
+</li><li>Activity status updates
+</li></ul>
+
+<hr>
+</div>
+</div>
+<div class="section-level-extent" id="Code-Analysis">
+<div class="nav-panel">
+<p>
+Next: <a href="#Tutorial-File-Operations" accesskey="n" rel="next">File Operations</a>, Previous: <a href="#Getting-Started" accesskey="p" rel="prev">Getting Started</a>, Up: <a href="#Tutorial" accesskey="u" rel="up">Tutorial</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<h3 class="section" id="Code-Analysis-1"><span>2.2 Code Analysis<a class="copiable-link" href="#Code-Analysis-1"> &para;</a></span></h3>
+
+<ul class="mini-toc">
+<li><a href="#Syntax-Validation-1" accesskey="1">Syntax Validation</a></li>
+<li><a href="#AI-Code-Review" accesskey="2">AI Code Review</a></li>
+</ul>
+<div class="subsection-level-extent" id="Syntax-Validation-1">
+<h4 class="subsection"><span>2.2.1 Syntax Validation<a class="copiable-link" href="#Syntax-Validation-1"> &para;</a></span></h4>
+
+<p>Forj.el includes a sophisticated syntax checker designed for AI-generated code:
+</p>
+<div class="example">
+<pre class="example-preformatted">M-x forj-check-syntax
+</pre></div>
+
+<p>This returns detailed error information:
+</p><div class="example lisp">
+<pre class="lisp-preformatted">(:status 'invalid 
+ :error (:type 'unmatched-closing 
+         :line 15 
+         :col 23 
+         :message &quot;Unmatched closing brace, expected closing parenthesis&quot;))
+</pre></div>
+
+</div>
+<div class="subsection-level-extent" id="AI-Code-Review">
+<h4 class="subsection"><span>2.2.2 AI Code Review<a class="copiable-link" href="#AI-Code-Review"> &para;</a></span></h4>
+
+<p>Ask the AI to review your code:
+</p>
+<div class="example">
+<pre class="example-preformatted">M-x forj-prompt RET &quot;Review this function for potential improvements&quot;
+</pre></div>
+
+<p>The AI will analyze:
+</p><ul class="itemize mark-bullet">
+<li>Code style and idioms
+</li><li>Error handling patterns
+</li><li>Performance considerations
+</li><li>Documentation quality
+</li></ul>
+
+<hr>
+</div>
+</div>
+<div class="section-level-extent" id="Tutorial-File-Operations">
+<div class="nav-panel">
+<p>
+Next: <a href="#Refactoring" accesskey="n" rel="next">Refactoring</a>, Previous: <a href="#Code-Analysis" accesskey="p" rel="prev">Code Analysis</a>, Up: <a href="#Tutorial" accesskey="u" rel="up">Tutorial</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<h3 class="section" id="File-Operations"><span>2.3 File Operations<a class="copiable-link" href="#File-Operations"> &para;</a></span></h3>
+
+<ul class="mini-toc">
+<li><a href="#Reading-Project-Files" accesskey="1">Reading Project Files</a></li>
+<li><a href="#Interactive-File-Browser" accesskey="2">Interactive File Browser</a></li>
+<li><a href="#Project-Scanning" accesskey="3">Project Scanning</a></li>
+</ul>
+<div class="subsection-level-extent" id="Reading-Project-Files">
+<h4 class="subsection"><span>2.3.1 Reading Project Files<a class="copiable-link" href="#Reading-Project-Files"> &para;</a></span></h4>
+
+<p>Forj.el provides safe file operations with built-in limits:
+</p>
+<div class="example lisp">
+<pre class="lisp-preformatted">;; Read a single file
+(forj-read-file &quot;forj.el&quot;)
+
+;; Read with size limit
+(forj-read-file &quot;large-file.txt&quot; 1000)
+
+;; List project files
+(forj-list-files &quot;.&quot; &quot;\\.el$&quot;)
+</pre></div>
+
+</div>
+<div class="subsection-level-extent" id="Interactive-File-Browser">
+<h4 class="subsection"><span>2.3.2 Interactive File Browser<a class="copiable-link" href="#Interactive-File-Browser"> &para;</a></span></h4>
+
+<p>Use the built-in file browser for easy file selection:
+</p>
+<div class="example">
+<pre class="example-preformatted">M-x forj-browse-files
+</pre></div>
+
+<p>This shows files with metadata:
+</p><div class="example">
+<pre class="example-preformatted">forj.el [elisp, 15234 bytes, 2025-08-10 14:30]
+forj-api.el [elisp, 8456 bytes, 2025-08-10 12:15]
+README.md [markdown, 12890 bytes, 2025-08-10 10:45]
+</pre></div>
+
+</div>
+<div class="subsection-level-extent" id="Project-Scanning">
+<h4 class="subsection"><span>2.3.3 Project Scanning<a class="copiable-link" href="#Project-Scanning"> &para;</a></span></h4>
+
+<p>Analyze your entire project structure:
+</p>
+<div class="example">
+<pre class="example-preformatted">M-x forj-scan-and-display-project
+</pre></div>
+
+<p>This provides:
+</p><ul class="itemize mark-bullet">
+<li>Complete project overview
+</li><li>File type statistics
+</li><li>Total project size
+</li><li>Scan performance metrics
+</li></ul>
+
+<hr>
+</div>
+</div>
+<div class="section-level-extent" id="Refactoring">
+<div class="nav-panel">
+<p>
+Next: <a href="#Advanced-Features" accesskey="n" rel="next">Advanced Features</a>, Previous: <a href="#Tutorial-File-Operations" accesskey="p" rel="prev">File Operations</a>, Up: <a href="#Tutorial" accesskey="u" rel="up">Tutorial</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<h3 class="section" id="Refactoring-1"><span>2.4 Refactoring<a class="copiable-link" href="#Refactoring-1"> &para;</a></span></h3>
+
+<ul class="mini-toc">
+<li><a href="#Function-Improvement" accesskey="1">Function Improvement</a></li>
+<li><a href="#Code-Modernization" accesskey="2">Code Modernization</a></li>
+</ul>
+<div class="subsection-level-extent" id="Function-Improvement">
+<h4 class="subsection"><span>2.4.1 Function Improvement<a class="copiable-link" href="#Function-Improvement"> &para;</a></span></h4>
+
+<p>Select a function and ask for improvements:
+</p>
+<div class="example">
+<pre class="example-preformatted">M-x forj-prompt RET &quot;Make this function more idiomatic and add error handling&quot;
+</pre></div>
+
+<p><strong class="strong">Before:</strong>
+</p><div class="example lisp">
+<pre class="lisp-preformatted">(defun get-file-content (file)
+  (with-temp-buffer
+    (insert-file-contents file)
+    (buffer-string)))
+</pre></div>
+
+<p><strong class="strong">After AI suggestions:</strong>
+</p><div class="example lisp">
+<pre class="lisp-preformatted">(defun forj-get-file-content (file)
+  &quot;Read and return the contents of FILE.
+Signals an error if FILE cannot be read.&quot;
+  (condition-case err
+      (with-temp-buffer
+        (insert-file-contents file)
+        (buffer-string))
+    (file-error
+     (user-error &quot;Cannot read file %s: %s&quot; 
+                 file (error-message-string err)))))
+</pre></div>
+
+</div>
+<div class="subsection-level-extent" id="Code-Modernization">
+<h4 class="subsection"><span>2.4.2 Code Modernization<a class="copiable-link" href="#Code-Modernization"> &para;</a></span></h4>
+
+<p>Ask for modern Emacs Lisp patterns:
+</p>
+<div class="example">
+<pre class="example-preformatted">M-x forj-prompt RET &quot;Update this code to use modern cl-lib functions&quot;
+</pre></div>
+
+<p>The AI will suggest:
+</p><ul class="itemize mark-bullet">
+<li>Replacing deprecated <code class="code">cl</code> functions with <code class="code">cl-lib</code> versions
+</li><li>Using <code class="code">seq</code> library functions where appropriate
+</li><li>Applying current best practices
+</li></ul>
+
+<hr>
+</div>
+</div>
+<div class="section-level-extent" id="Advanced-Features">
+<div class="nav-panel">
+<p>
+Previous: <a href="#Refactoring" accesskey="p" rel="prev">Refactoring</a>, Up: <a href="#Tutorial" accesskey="u" rel="up">Tutorial</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<h3 class="section" id="Advanced-Features-1"><span>2.5 Advanced Features<a class="copiable-link" href="#Advanced-Features-1"> &para;</a></span></h3>
+
+<ul class="mini-toc">
+<li><a href="#Git-Integration" accesskey="1">Git Integration</a></li>
+<li><a href="#File-Locking-1" accesskey="2">File Locking</a></li>
+<li><a href="#Context_002dAware-Prompts" accesskey="3">Context-Aware Prompts</a></li>
+<li><a href="#Conversation-History" accesskey="4">Conversation History</a></li>
+</ul>
+<div class="subsection-level-extent" id="Git-Integration">
+<h4 class="subsection"><span>2.5.1 Git Integration<a class="copiable-link" href="#Git-Integration"> &para;</a></span></h4>
+
+<p>Forj.el is Git-aware and can:
+</p><ul class="itemize mark-bullet">
+<li>Warn about uncommitted changes before modifications
+</li><li>Auto-stage changes after successful edits (optional)
+</li><li>Show Git status in file operations
+</li></ul>
+
+<p>Configure Git integration:
+</p><div class="example lisp">
+<pre class="lisp-preformatted">(setq forj-enable-git-integration t)
+(setq forj-warn-uncommitted-changes t)
+(setq forj-auto-stage-changes nil)  ; Set to t for auto-staging
+</pre></div>
+
+</div>
+<div class="subsection-level-extent" id="File-Locking-1">
+<h4 class="subsection"><span>2.5.2 File Locking<a class="copiable-link" href="#File-Locking-1"> &para;</a></span></h4>
+
+<p>For concurrent development, use file locking:
+</p>
+<div class="example lisp">
+<pre class="lisp-preformatted">(forj-with-file-lock &quot;important.el&quot;
+  (let ((content (forj-read-file &quot;important.el&quot;)))
+    (forj-write-file &quot;important.el&quot; 
+                     (concat content &quot;\n;; Added line&quot;))))
+</pre></div>
+
+</div>
+<div class="subsection-level-extent" id="Context_002dAware-Prompts">
+<h4 class="subsection"><span>2.5.3 Context-Aware Prompts<a class="copiable-link" href="#Context_002dAware-Prompts"> &para;</a></span></h4>
+
+<p>The AI includes project context in responses:
+</p>
+<div class="example">
+<pre class="example-preformatted">M-x forj-prompt RET &quot;Based on my project files, suggest architectural improvements&quot;
+</pre></div>
+
+<p>This analyzes your entire codebase and provides targeted suggestions.
+</p>
+</div>
+<div class="subsection-level-extent" id="Conversation-History">
+<h4 class="subsection"><span>2.5.4 Conversation History<a class="copiable-link" href="#Conversation-History"> &para;</a></span></h4>
+
+<p>Access your conversation history programmatically:
+</p>
+<div class="example lisp">
+<pre class="lisp-preformatted">;; Get conversation history
+(forj-conversation-history)
+
+;; Clear conversation
+(forj-clear-conversation)
+</pre></div>
+
+<p>The history includes timestamps and role information for each interaction.
+</p><hr>
+</div>
+</div>
+</div>
+<div class="chapter-level-extent" id="Configuration">
+<div class="nav-panel">
+<p>
+Next: <a href="#API-Reference" accesskey="n" rel="next">API Reference</a>, Previous: <a href="#Tutorial" accesskey="p" rel="prev">Tutorial</a>, Up: <a href="#Top" accesskey="u" rel="up">Forj Manual</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<h2 class="chapter" id="Configuration-2"><span>3 Configuration<a class="copiable-link" href="#Configuration-2"> &para;</a></span></h2>
+
+<p>This chapter describes all customization options available in Forj.el.
+</p>
+
+<ul class="mini-toc">
+<li><a href="#Basic-Configuration" accesskey="1">Basic Configuration</a></li>
+<li><a href="#API-Configuration" accesskey="2">API Configuration</a></li>
+<li><a href="#Config-File-Operations" accesskey="3">File Operations</a></li>
+<li><a href="#Config-Git-Integration" accesskey="4">Git Integration</a></li>
+<li><a href="#Advanced-Options" accesskey="5">Advanced Options</a></li>
+<li><a href="#Keybindings" accesskey="6">Keybindings</a></li>
+</ul>
+<hr>
+<div class="section-level-extent" id="Basic-Configuration">
+<div class="nav-panel">
+<p>
+Next: <a href="#API-Configuration" accesskey="n" rel="next">API Configuration</a>, Up: <a href="#Configuration" accesskey="u" rel="up">Configuration</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<h3 class="section" id="Basic-Configuration-2"><span>3.1 Basic Configuration<a class="copiable-link" href="#Basic-Configuration-2"> &para;</a></span></h3>
+
+<ul class="mini-toc">
+<li><a href="#Core-Settings" accesskey="1">Core Settings</a></li>
+</ul>
+<div class="subsection-level-extent" id="Core-Settings">
+<h4 class="subsection"><span>3.1.1 Core Settings<a class="copiable-link" href="#Core-Settings"> &para;</a></span></h4>
+
+<dl class="first-defvr first-defopt-alias-first-defvr def-block">
+<dt class="defvr defopt-alias-defvr def-line" id="index-forj_002dconversation_002dbuffer-1"><span class="category-def">User Option: </span><span><strong class="def-name">forj-conversation-buffer</strong><a class="copiable-link" href="#index-forj_002dconversation_002dbuffer-1"> &para;</a></span></dt>
+<dd><p>Default: <code class="code">&quot;*forj*&quot;</code>
+</p>
+<p>Name of the buffer used for conversation display and logging.
+</p></dd></dl>
+
+<dl class="first-defvr first-defopt-alias-first-defvr def-block">
+<dt class="defvr defopt-alias-defvr def-line" id="index-forj_002dmax_002dfile_002dsize"><span class="category-def">User Option: </span><span><strong class="def-name">forj-max-file-size</strong><a class="copiable-link" href="#index-forj_002dmax_002dfile_002dsize"> &para;</a></span></dt>
+<dd><p>Default: <code class="code">50000</code>
+</p>
+<p>Maximum file size to read in bytes. Files larger than this limit will be truncated with a warning message.
+</p></dd></dl>
+
+<dl class="first-defvr first-defopt-alias-first-defvr def-block">
+<dt class="defvr defopt-alias-defvr def-line" id="index-forj_002dsupported_002dextensions"><span class="category-def">User Option: </span><span><strong class="def-name">forj-supported-extensions</strong><a class="copiable-link" href="#index-forj_002dsupported_002dextensions"> &para;</a></span></dt>
+<dd><p>Default: <code class="code">'(&quot;el&quot; &quot;md&quot; &quot;txt&quot; &quot;org&quot; &quot;lisp&quot;)</code>
+</p>
+<p>List of file extensions to consider for project context analysis. Only files matching these extensions will be included in project scans.
+</p></dd></dl>
+
+<dl class="first-defvr first-defopt-alias-first-defvr def-block">
+<dt class="defvr defopt-alias-defvr def-line" id="index-forj_002dexcluded_002dpatterns"><span class="category-def">User Option: </span><span><strong class="def-name">forj-excluded-patterns</strong><a class="copiable-link" href="#index-forj_002dexcluded_002dpatterns"> &para;</a></span></dt>
+<dd><p>Default: <code class="code">'(&quot;.git&quot; &quot;.DS_Store&quot; &quot;*.elc&quot; &quot;*.log&quot; &quot;*~&quot;)</code>
+</p>
+<p>Patterns for files and directories to exclude from scanning operations. Supports glob-style patterns.
+</p></dd></dl>
+
+<hr>
+</div>
+</div>
+<div class="section-level-extent" id="API-Configuration">
+<div class="nav-panel">
+<p>
+Next: <a href="#Config-File-Operations" accesskey="n" rel="next">File Operations</a>, Previous: <a href="#Basic-Configuration" accesskey="p" rel="prev">Basic Configuration</a>, Up: <a href="#Configuration" accesskey="u" rel="up">Configuration</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<h3 class="section" id="API-Configuration-1"><span>3.2 API Configuration<a class="copiable-link" href="#API-Configuration-1"> &para;</a></span></h3>
+
+<ul class="mini-toc">
+<li><a href="#Gemini-API-Settings" accesskey="1">Gemini API Settings</a></li>
+<li><a href="#API-Key-Management" accesskey="2">API Key Management</a></li>
+</ul>
+<div class="subsection-level-extent" id="Gemini-API-Settings">
+<h4 class="subsection"><span>3.2.1 Gemini API Settings<a class="copiable-link" href="#Gemini-API-Settings"> &para;</a></span></h4>
+
+<dl class="first-defvr first-defopt-alias-first-defvr def-block">
+<dt class="defvr defopt-alias-defvr def-line" id="index-forj_002dapi_002dmodel"><span class="category-def">User Option: </span><span><strong class="def-name">forj-api-model</strong><a class="copiable-link" href="#index-forj_002dapi_002dmodel"> &para;</a></span></dt>
+<dd><p>Default: <code class="code">&quot;gemini-2.0-flash-exp&quot;</code>
+</p>
+<p>Gemini model to use for API calls. Available options:
+</p><ul class="itemize mark-bullet">
+<li><code class="code">&quot;gemini-2.0-flash-exp&quot;</code> - Latest experimental model
+</li><li><code class="code">&quot;gemini-1.5-pro&quot;</code> - Stable production model
+</li></ul>
+</dd></dl>
+
+<dl class="first-defvr first-defopt-alias-first-defvr def-block">
+<dt class="defvr defopt-alias-defvr def-line" id="index-forj_002dapi_002dtimeout"><span class="category-def">User Option: </span><span><strong class="def-name">forj-api-timeout</strong><a class="copiable-link" href="#index-forj_002dapi_002dtimeout"> &para;</a></span></dt>
+<dd><p>Default: <code class="code">30</code>
+</p>
+<p>Timeout for API requests in seconds. Increase for slower connections or complex requests.
+</p></dd></dl>
+
+</div>
+<div class="subsection-level-extent" id="API-Key-Management">
+<h4 class="subsection"><span>3.2.2 API Key Management<a class="copiable-link" href="#API-Key-Management"> &para;</a></span></h4>
+
+<p>Forj.el retrieves the API key from the <code class="env">GEMINI_API_KEY</code> environment variable:
+</p>
+<div class="example">
+<pre class="example-preformatted">export GEMINI_API_KEY=&quot;your-api-key-here&quot;
+</pre></div>
+
+<p><strong class="strong">Security Note:</strong> Never store API keys directly in your Emacs configuration files.
+</p>
+<hr>
+</div>
+</div>
+<div class="section-level-extent" id="Config-File-Operations">
+<div class="nav-panel">
+<p>
+Next: <a href="#Config-Git-Integration" accesskey="n" rel="next">Git Integration</a>, Previous: <a href="#API-Configuration" accesskey="p" rel="prev">API Configuration</a>, Up: <a href="#Configuration" accesskey="u" rel="up">Configuration</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<h3 class="section" id="File-Operations-1"><span>3.3 File Operations<a class="copiable-link" href="#File-Operations-1"> &para;</a></span></h3>
+
+<ul class="mini-toc">
+<li><a href="#Safety-Settings" accesskey="1">Safety Settings</a></li>
+<li><a href="#Backup-Configuration" accesskey="2">Backup Configuration</a></li>
+</ul>
+<div class="subsection-level-extent" id="Safety-Settings">
+<h4 class="subsection"><span>3.3.1 Safety Settings<a class="copiable-link" href="#Safety-Settings"> &para;</a></span></h4>
+
+<dl class="first-defvr first-defopt-alias-first-defvr def-block">
+<dt class="defvr defopt-alias-defvr def-line" id="index-forj_002dconfirm_002ddestructive_002doperations"><span class="category-def">User Option: </span><span><strong class="def-name">forj-confirm-destructive-operations</strong><a class="copiable-link" href="#index-forj_002dconfirm_002ddestructive_002doperations"> &para;</a></span></dt>
+<dd><p>Default: <code class="code">t</code>
+</p>
+<p>Whether to prompt for confirmation before destructive operations like file overwrites or deletions.
+</p></dd></dl>
+
+</div>
+<div class="subsection-level-extent" id="Backup-Configuration">
+<h4 class="subsection"><span>3.3.2 Backup Configuration<a class="copiable-link" href="#Backup-Configuration"> &para;</a></span></h4>
+
+<p>Forj.el automatically creates timestamped backups for file operations:
+</p>
+<div class="example">
+<pre class="example-preformatted">;; Backup naming pattern
+original-file.el.bak.20250810-143022
+</pre></div>
+
+<p>Disable backups for specific operations:
+</p><div class="example lisp">
+<pre class="lisp-preformatted">(forj-write-file &quot;temp.el&quot; content t)  ; no-backup = t
+</pre></div>
+
+<hr>
+</div>
+</div>
+<div class="section-level-extent" id="Config-Git-Integration">
+<div class="nav-panel">
+<p>
+Next: <a href="#Advanced-Options" accesskey="n" rel="next">Advanced Options</a>, Previous: <a href="#Config-File-Operations" accesskey="p" rel="prev">File Operations</a>, Up: <a href="#Configuration" accesskey="u" rel="up">Configuration</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<h3 class="section" id="Git-Integration-1"><span>3.4 Git Integration<a class="copiable-link" href="#Git-Integration-1"> &para;</a></span></h3>
+
+<ul class="mini-toc">
+<li><a href="#Git-Settings" accesskey="1">Git Settings</a></li>
+<li><a href="#Git-Workflow-Integration" accesskey="2">Git Workflow Integration</a></li>
+</ul>
+<div class="subsection-level-extent" id="Git-Settings">
+<h4 class="subsection"><span>3.4.1 Git Settings<a class="copiable-link" href="#Git-Settings"> &para;</a></span></h4>
+
+<dl class="first-defvr first-defopt-alias-first-defvr def-block">
+<dt class="defvr defopt-alias-defvr def-line" id="index-forj_002denable_002dgit_002dintegration"><span class="category-def">User Option: </span><span><strong class="def-name">forj-enable-git-integration</strong><a class="copiable-link" href="#index-forj_002denable_002dgit_002dintegration"> &para;</a></span></dt>
+<dd><p>Default: <code class="code">t</code>
+</p>
+<p>Whether to enable Git repository integration features. When enabled, Forj.el can:
+</p><ul class="itemize mark-bullet">
+<li>Check file status before modifications
+</li><li>Warn about uncommitted changes
+</li><li>Automatically stage changes
+</li></ul>
+</dd></dl>
+
+<dl class="first-defvr first-defopt-alias-first-defvr def-block">
+<dt class="defvr defopt-alias-defvr def-line" id="index-forj_002dwarn_002duncommitted_002dchanges"><span class="category-def">User Option: </span><span><strong class="def-name">forj-warn-uncommitted-changes</strong><a class="copiable-link" href="#index-forj_002dwarn_002duncommitted_002dchanges"> &para;</a></span></dt>
+<dd><p>Default: <code class="code">t</code>
+</p>
+<p>Whether to warn before modifying files with uncommitted Git changes. Shows a confirmation dialog with current Git status.
+</p></dd></dl>
+
+<dl class="first-defvr first-defopt-alias-first-defvr def-block">
+<dt class="defvr defopt-alias-defvr def-line" id="index-forj_002dauto_002dstage_002dchanges"><span class="category-def">User Option: </span><span><strong class="def-name">forj-auto-stage-changes</strong><a class="copiable-link" href="#index-forj_002dauto_002dstage_002dchanges"> &para;</a></span></dt>
+<dd><p>Default: <code class="code">nil</code>
+</p>
+<p>Whether to automatically stage changes after successful edits in a Git repository. Set to <code class="code">t</code> for automatic staging.
+</p></dd></dl>
+
+</div>
+<div class="subsection-level-extent" id="Git-Workflow-Integration">
+<h4 class="subsection"><span>3.4.2 Git Workflow Integration<a class="copiable-link" href="#Git-Workflow-Integration"> &para;</a></span></h4>
+
+<p>Example configuration for Git-centric development:
+</p>
+<div class="example lisp">
+<pre class="lisp-preformatted">;; Enable all Git features
+(setq forj-enable-git-integration t)
+(setq forj-warn-uncommitted-changes t)  
+(setq forj-auto-stage-changes t)
+
+;; Check Git status programmatically
+(forj-git-file-status &quot;src/main.el&quot;)
+;; =&gt; (:status modified :staged nil :modified t :untracked nil)
+</pre></div>
+
+<hr>
+</div>
+</div>
+<div class="section-level-extent" id="Advanced-Options">
+<div class="nav-panel">
+<p>
+Next: <a href="#Keybindings" accesskey="n" rel="next">Keybindings</a>, Previous: <a href="#Config-Git-Integration" accesskey="p" rel="prev">Git Integration</a>, Up: <a href="#Configuration" accesskey="u" rel="up">Configuration</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<h3 class="section" id="Advanced-Options-1"><span>3.5 Advanced Options<a class="copiable-link" href="#Advanced-Options-1"> &para;</a></span></h3>
+
+<ul class="mini-toc">
+<li><a href="#Performance-Tuning" accesskey="1">Performance Tuning</a></li>
+<li><a href="#Development-Settings" accesskey="2">Development Settings</a></li>
+<li><a href="#File-Locking-2" accesskey="3">File Locking</a></li>
+</ul>
+<div class="subsection-level-extent" id="Performance-Tuning">
+<h4 class="subsection"><span>3.5.1 Performance Tuning<a class="copiable-link" href="#Performance-Tuning"> &para;</a></span></h4>
+
+<div class="example lisp">
+<pre class="lisp-preformatted">;; Adjust scanning limits for large projects
+(setq forj-max-file-size 100000)          ; 100KB limit
+
+;; Limit project scanning depth  
+(forj-scan-directory-recursive &quot;.&quot; 3 50)   ; 3 levels, 50 files max
+
+;; Optimize API timeouts
+(setq forj-api-timeout 45)                 ; 45 second timeout
+</pre></div>
+
+</div>
+<div class="subsection-level-extent" id="Development-Settings">
+<h4 class="subsection"><span>3.5.2 Development Settings<a class="copiable-link" href="#Development-Settings"> &para;</a></span></h4>
+
+<div class="example lisp">
+<pre class="lisp-preformatted">;; Enable detailed logging (for debugging)
+(setq forj-debug t)
+(setq forj-log-level 'debug)
+
+;; Disable confirmations for development
+(setq forj-confirm-destructive-operations nil)
+</pre></div>
+
+</div>
+<div class="subsection-level-extent" id="File-Locking-2">
+<h4 class="subsection"><span>3.5.3 File Locking<a class="copiable-link" href="#File-Locking-2"> &para;</a></span></h4>
+
+<p>Configure file locking for concurrent access:
+</p>
+<div class="example lisp">
+<pre class="lisp-preformatted">;; Default lock timeout
+(forj-lock-file &quot;shared-file.el&quot; 60)  ; 60 second timeout
+
+;; Use with-file-lock macro for automatic cleanup
+(forj-with-file-lock &quot;critical-file.el&quot;
+  ;; Operations here are protected by file lock
+  (forj-edit-file-region &quot;critical-file.el&quot; 1 5 new-content))
+</pre></div>
+
+<hr>
+</div>
+</div>
+<div class="section-level-extent" id="Keybindings">
+<div class="nav-panel">
+<p>
+Previous: <a href="#Advanced-Options" accesskey="p" rel="prev">Advanced Options</a>, Up: <a href="#Configuration" accesskey="u" rel="up">Configuration</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<h3 class="section" id="Keybindings-1"><span>3.6 Keybindings<a class="copiable-link" href="#Keybindings-1"> &para;</a></span></h3>
+
+<ul class="mini-toc">
+<li><a href="#Default-Bindings" accesskey="1">Default Bindings</a></li>
+<li><a href="#Use_002dPackage-Configuration" accesskey="2">Use-Package Configuration</a></li>
+<li><a href="#Custom-Command-Aliases" accesskey="3">Custom Command Aliases</a></li>
+</ul>
+<div class="subsection-level-extent" id="Default-Bindings">
+<h4 class="subsection"><span>3.6.1 Default Bindings<a class="copiable-link" href="#Default-Bindings"> &para;</a></span></h4>
+
+<p>Forj.el doesn&rsquo;t set global keybindings by default. Add these to your configuration:
+</p>
+<div class="example lisp">
+<pre class="lisp-preformatted">;; Essential bindings
+(global-set-key (kbd &quot;C-c f p&quot;) 'forj-prompt)
+(global-set-key (kbd &quot;C-c f c&quot;) 'forj-check-syntax)
+(global-set-key (kbd &quot;C-c f h&quot;) 'forj-conversation-buffer)
+
+;; File operations
+(global-set-key (kbd &quot;C-c f b&quot;) 'forj-browse-files)
+(global-set-key (kbd &quot;C-c f r&quot;) 'forj-browse-and-read-file)
+(global-set-key (kbd &quot;C-c f s&quot;) 'forj-scan-and-display-project)
+
+;; Utility functions
+(global-set-key (kbd &quot;C-c f x&quot;) 'forj-clear-conversation)
+</pre></div>
+
+</div>
+<div class="subsection-level-extent" id="Use_002dPackage-Configuration">
+<h4 class="subsection"><span>3.6.2 Use-Package Configuration<a class="copiable-link" href="#Use_002dPackage-Configuration"> &para;</a></span></h4>
+
+<div class="example lisp">
+<pre class="lisp-preformatted">(use-package forj
+  :ensure t
+  :custom
+  (forj-api-model &quot;gemini-2.0-flash-exp&quot;)
+  (forj-api-timeout 30)
+  (forj-max-file-size 50000)
+  (forj-enable-git-integration t)
+  (forj-warn-uncommitted-changes t)
+  :bind
+  ((&quot;C-c f p&quot; . forj-prompt)
+   (&quot;C-c f c&quot; . forj-check-syntax)
+   (&quot;C-c f h&quot; . forj-conversation-buffer)
+   (&quot;C-c f b&quot; . forj-browse-files)
+   (&quot;C-c f r&quot; . forj-browse-and-read-file)
+   (&quot;C-c f s&quot; . forj-scan-and-display-project)
+   (&quot;C-c f x&quot; . forj-clear-conversation)))
+</pre></div>
+
+</div>
+<div class="subsection-level-extent" id="Custom-Command-Aliases">
+<h4 class="subsection"><span>3.6.3 Custom Command Aliases<a class="copiable-link" href="#Custom-Command-Aliases"> &para;</a></span></h4>
+
+<p>Create your own command shortcuts:
+</p>
+<div class="example lisp">
+<pre class="lisp-preformatted">(defalias 'ai 'forj-prompt)                    ; Quick AI prompt
+(defalias 'check 'forj-check-syntax)           ; Quick syntax check
+(defalias 'proj 'forj-scan-and-display-project) ; Quick project scan
+</pre></div>
+<hr>
+</div>
+</div>
+</div>
+<div class="chapter-level-extent" id="API-Reference">
+<div class="nav-panel">
+<p>
+Next: <a href="#Troubleshooting" accesskey="n" rel="next">Troubleshooting</a>, Previous: <a href="#Configuration" accesskey="p" rel="prev">Configuration</a>, Up: <a href="#Top" accesskey="u" rel="up">Forj Manual</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<h2 class="chapter" id="API-Reference-1"><span>4 API Reference<a class="copiable-link" href="#API-Reference-1"> &para;</a></span></h2>
+
+<p>This chapter provides complete documentation for all Forj.el functions and variables.
+</p>
+
+<ul class="mini-toc">
+<li><a href="#Core-Functions" accesskey="1">Core Functions</a></li>
+<li><a href="#Syntax-Validation" accesskey="2">Syntax Validation</a></li>
+<li><a href="#API-File-Operations" accesskey="3">File Operations</a></li>
+<li><a href="#Conversation-System" accesskey="4">Conversation System</a></li>
+<li><a href="#Directory-Operations" accesskey="5">Directory Operations</a></li>
+<li><a href="#API-Git-Integration" accesskey="6">Git Integration</a></li>
+<li><a href="#File-Locking" accesskey="7">File Locking</a></li>
+<li><a href="#Utility-Functions" accesskey="8">Utility Functions</a></li>
+<li><a href="#Customization-Variables" accesskey="9">Customization Variables</a></li>
+</ul>
+<hr>
+<div class="section-level-extent" id="Core-Functions">
+<div class="nav-panel">
+<p>
+Next: <a href="#Syntax-Validation" accesskey="n" rel="next">Syntax Validation</a>, Up: <a href="#API-Reference" accesskey="u" rel="up">API Reference</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<h3 class="section" id="Core-Functions-1"><span>4.1 Core Functions<a class="copiable-link" href="#Core-Functions-1"> &para;</a></span></h3>
+
+<ul class="mini-toc">
+<li><a href="#Interactive-Commands" accesskey="1">Interactive Commands</a></li>
+</ul>
+<div class="subsection-level-extent" id="Interactive-Commands">
+<h4 class="subsection"><span>4.1.1 Interactive Commands<a class="copiable-link" href="#Interactive-Commands"> &para;</a></span></h4>
+
+<dl class="first-deffn def-block">
+<dt class="deffn def-line" id="index-forj_002dprompt"><span class="category-def">Interactive Function: </span><span><strong class="def-name">forj-prompt</strong> <var class="def-var-arguments">prompt</var><a class="copiable-link" href="#index-forj_002dprompt"> &para;</a></span></dt>
+<dd><p>Main interaction function for AI assistance.
+</p>
+<dl class="table">
+<dt><var class="var">prompt</var></dt>
+<dd><p>String containing your request to the AI assistant.
+</p></dd>
+</dl>
+
+<p><strong class="strong">Returns:</strong> AI response as string on success, or displays error message.
+</p>
+<p><strong class="strong">Example:</strong>
+</p><div class="example lisp">
+<pre class="lisp-preformatted">(forj-prompt &quot;Add error handling to the current function&quot;)
+</pre></div>
+
+<p>The function analyzes the current buffer context and conversation history to provide contextual AI assistance.
+</p></dd></dl>
+
+<dl class="first-deffn def-block">
+<dt class="deffn def-line" id="index-forj_002dconversation_002dbuffer"><span class="category-def">Interactive Function: </span><span><strong class="def-name">forj-conversation-buffer</strong><a class="copiable-link" href="#index-forj_002dconversation_002dbuffer"> &para;</a></span></dt>
+<dd><p>Create or switch to the Forj conversation buffer.
+</p>
+<p>Displays the <samp class="file">*forj*</samp> buffer containing conversation history, system messages, and activity status. If the buffer doesn&rsquo;t exist, creates it with helpful usage instructions.
+</p>
+<p><strong class="strong">Returns:</strong> The conversation buffer object.
+</p></dd></dl>
+
+<dl class="first-deffn def-block">
+<dt class="deffn def-line" id="index-forj_002dclear_002dconversation"><span class="category-def">Interactive Function: </span><span><strong class="def-name">forj-clear-conversation</strong><a class="copiable-link" href="#index-forj_002dclear_002dconversation"> &para;</a></span></dt>
+<dd><p>Clear the conversation buffer and history.
+</p>
+<p>Resets both the conversation history list and the display buffer to their initial state.
+</p></dd></dl>
+
+<hr>
+</div>
+</div>
+<div class="section-level-extent" id="Syntax-Validation">
+<div class="nav-panel">
+<p>
+Next: <a href="#API-File-Operations" accesskey="n" rel="next">File Operations</a>, Previous: <a href="#Core-Functions" accesskey="p" rel="prev">Core Functions</a>, Up: <a href="#API-Reference" accesskey="u" rel="up">API Reference</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<h3 class="section" id="Syntax-Validation-2"><span>4.2 Syntax Validation<a class="copiable-link" href="#Syntax-Validation-2"> &para;</a></span></h3>
+
+<dl class="first-deffn def-block">
+<dt class="deffn def-line" id="index-forj_002dcheck_002dsyntax"><span class="category-def">Function: </span><span><strong class="def-name">forj-check-syntax</strong> <var class="def-var-arguments">&amp;optional buffer</var><a class="copiable-link" href="#index-forj_002dcheck_002dsyntax"> &para;</a></span></dt>
+<dd><p>Validate Emacs Lisp syntax using native Emacs functions.
+</p>
+<dl class="table">
+<dt><var class="var">buffer</var></dt>
+<dd><p>Buffer to check (optional, defaults to current buffer).
+</p></dd>
+</dl>
+
+<p><strong class="strong">Returns:</strong> Property list with validation results:
+</p><div class="example lisp">
+<pre class="lisp-preformatted">(:status 'valid :message &quot;Syntax is valid&quot;)
+;; or  
+(:status 'invalid :message &quot;Syntax error: ...&quot;)
+</pre></div>
+
+<p><strong class="strong">Example:</strong>
+</p><div class="example lisp">
+<pre class="lisp-preformatted">(forj-check-syntax (current-buffer))
+</pre></div>
+</dd></dl>
+
+<dl class="first-deffn def-block">
+<dt class="deffn def-line" id="index-forj_002dparen_002dcheck"><span class="category-def">Function: </span><span><strong class="def-name">forj-paren-check</strong> <var class="def-var-arguments">code-string</var><a class="copiable-link" href="#index-forj_002dparen_002dcheck"> &para;</a></span></dt>
+<dd><p>Analyze CODE-STRING for parentheses balance and syntax errors.
+</p>
+<dl class="table">
+<dt><var class="var">code-string</var></dt>
+<dd><p>String containing Emacs Lisp code to analyze.
+</p></dd>
+</dl>
+
+<p><strong class="strong">Returns:</strong> Structured analysis with detailed error reporting:
+</p><div class="example lisp">
+<pre class="lisp-preformatted">;; Success case
+(:status balanced)
+
+;; Error case  
+(:status unbalanced
+ :error (:type unmatched-closing
+         :line 15
+         :col 23
+         :message &quot;Unmatched closing )&quot;))
+</pre></div>
+
+<p>This function provides AI-consumable syntax analysis with precise error locations.
+</p></dd></dl>
+
+<hr>
+</div>
+<div class="section-level-extent" id="API-File-Operations">
+<div class="nav-panel">
+<p>
+Next: <a href="#Conversation-System" accesskey="n" rel="next">Conversation System</a>, Previous: <a href="#Syntax-Validation" accesskey="p" rel="prev">Syntax Validation</a>, Up: <a href="#API-Reference" accesskey="u" rel="up">API Reference</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<h3 class="section" id="File-Operations-2"><span>4.3 File Operations<a class="copiable-link" href="#File-Operations-2"> &para;</a></span></h3>
+
+<dl class="first-deffn def-block">
+<dt class="deffn def-line" id="index-forj_002dread_002dfile"><span class="category-def">Function: </span><span><strong class="def-name">forj-read-file</strong> <var class="def-var-arguments">file-path &amp;optional max-size</var><a class="copiable-link" href="#index-forj_002dread_002dfile"> &para;</a></span></dt>
+<dd><p>Read contents of FILE-PATH safely with optional size limit.
+</p>
+<dl class="table">
+<dt><var class="var">file-path</var></dt>
+<dd><p>Path to file to read.
+</p></dd>
+<dt><var class="var">max-size</var></dt>
+<dd><p>Maximum bytes to read (optional, defaults to <code class="code">forj-max-file-size</code>).
+</p></dd>
+</dl>
+
+<p><strong class="strong">Returns:</strong> String containing file contents, or signals <code class="code">file-error</code>.
+</p>
+<p><strong class="strong">Example:</strong>
+</p><div class="example lisp">
+<pre class="lisp-preformatted">(forj-read-file &quot;README.md&quot;)        ; Read entire file  
+(forj-read-file &quot;large.txt&quot; 1000)   ; Limit to 1KB
+</pre></div>
+</dd></dl>
+
+<dl class="first-deffn def-block">
+<dt class="deffn def-line" id="index-forj_002dlist_002dfiles"><span class="category-def">Function: </span><span><strong class="def-name">forj-list-files</strong> <var class="def-var-arguments">&amp;optional directory pattern</var><a class="copiable-link" href="#index-forj_002dlist_002dfiles"> &para;</a></span></dt>
+<dd><p>List files in DIRECTORY matching optional PATTERN.
+</p>
+<dl class="table">
+<dt><var class="var">directory</var></dt>
+<dd><p>Directory to scan (optional, defaults to current directory).
+</p></dd>
+<dt><var class="var">pattern</var></dt>
+<dd><p>Regular expression pattern to match (optional).
+</p></dd>
+</dl>
+
+<p><strong class="strong">Returns:</strong> List of file paths.
+</p>
+<p><strong class="strong">Example:</strong>
+</p><div class="example lisp">
+<pre class="lisp-preformatted">(forj-list-files)                   ; All supported files
+(forj-list-files &quot;.&quot; &quot;\\.el$&quot;)      ; Only .el files
+</pre></div>
+</dd></dl>
+
+<dl class="first-deffn def-block">
+<dt class="deffn def-line" id="index-forj_002dwrite_002dfile"><span class="category-def">Function: </span><span><strong class="def-name">forj-write-file</strong> <var class="def-var-arguments">file-path content &amp;optional no-backup</var><a class="copiable-link" href="#index-forj_002dwrite_002dfile"> &para;</a></span></dt>
+<dd><p>Write CONTENT to FILE-PATH with backup and validation.
+</p>
+<dl class="table">
+<dt><var class="var">file-path</var></dt>
+<dd><p>Path where to write the file.
+</p></dd>
+<dt><var class="var">content</var></dt>
+<dd><p>String content to write.
+</p></dd>
+<dt><var class="var">no-backup</var></dt>
+<dd><p>Skip backup creation if non-nil (optional).
+</p></dd>
+</dl>
+
+<p><strong class="strong">Returns:</strong> Property list with operation results:
+</p><div class="example lisp">
+<pre class="lisp-preformatted">(:success t 
+ :backup-path &quot;file.el.bak.20250810-143022&quot;
+ :modified-time (25086 12345))
+</pre></div>
+
+<p>Features atomic operations, syntax validation for .el files, and automatic backups.
+</p></dd></dl>
+
+<dl class="first-deffn def-block">
+<dt class="deffn def-line" id="index-forj_002dedit_002dfile_002dregion"><span class="category-def">Function: </span><span><strong class="def-name">forj-edit-file-region</strong> <var class="def-var-arguments">file-path start-line end-line new-content &amp;optional no-backup</var><a class="copiable-link" href="#index-forj_002dedit_002dfile_002dregion"> &para;</a></span></dt>
+<dd><p>Edit specific region in FILE-PATH from START-LINE to END-LINE.
+</p>
+<dl class="table">
+<dt><var class="var">file-path</var></dt>
+<dd><p>Path to file to edit.
+</p></dd>
+<dt><var class="var">start-line</var></dt>
+<dd><p>Starting line number (1-based).
+</p></dd>
+<dt><var class="var">end-line</var></dt>
+<dd><p>Ending line number (1-based).
+</p></dd>
+<dt><var class="var">new-content</var></dt>
+<dd><p>New content to replace the region.
+</p></dd>
+<dt><var class="var">no-backup</var></dt>
+<dd><p>Skip backup creation if non-nil (optional).
+</p></dd>
+</dl>
+
+<p><strong class="strong">Returns:</strong> Property list with operation results including lines changed.
+</p>
+<p>Provides surgical file editing with backup and validation.
+</p></dd></dl>
+
+<hr>
+</div>
+<div class="section-level-extent" id="Conversation-System">
+<div class="nav-panel">
+<p>
+Next: <a href="#Directory-Operations" accesskey="n" rel="next">Directory Operations</a>, Previous: <a href="#API-File-Operations" accesskey="p" rel="prev">File Operations</a>, Up: <a href="#API-Reference" accesskey="u" rel="up">API Reference</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<h3 class="section" id="Conversation-System-1"><span>4.4 Conversation System<a class="copiable-link" href="#Conversation-System-1"> &para;</a></span></h3>
+
+<dl class="first-deffn def-block">
+<dt class="deffn def-line" id="index-forj_002dadd_002dto_002dhistory"><span class="category-def">Function: </span><span><strong class="def-name">forj-add-to-history</strong> <var class="def-var-arguments">role content</var><a class="copiable-link" href="#index-forj_002dadd_002dto_002dhistory"> &para;</a></span></dt>
+<dd><p>Add a conversation turn to history with ROLE and CONTENT.
+</p>
+<dl class="table">
+<dt><var class="var">role</var></dt>
+<dd><p>Symbol indicating the speaker: <code class="code">'user</code>, <code class="code">'assistant</code>, or <code class="code">'system</code>.
+</p></dd>
+<dt><var class="var">content</var></dt>
+<dd><p>String containing the conversation content.
+</p></dd>
+</dl>
+
+<p>Automatically adds timestamp and updates the conversation display.
+</p></dd></dl>
+
+<dl class="first-deffn def-block">
+<dt class="deffn def-line" id="index-forj_002dconversation_002dhistory"><span class="category-def">Function: </span><span><strong class="def-name">forj-conversation-history</strong><a class="copiable-link" href="#index-forj_002dconversation_002dhistory"> &para;</a></span></dt>
+<dd><p>Return the current conversation history.
+</p>
+<p><strong class="strong">Returns:</strong> List of conversation entries, each containing:
+</p><div class="example lisp">
+<pre class="lisp-preformatted">(:role user :content &quot;Hello&quot; :timestamp &quot;2025-08-10 14:30:15&quot;)
+</pre></div>
+</dd></dl>
+
+<dl class="first-deffn def-block">
+<dt class="deffn def-line" id="index-forj_002dset_002dactivity"><span class="category-def">Function: </span><span><strong class="def-name">forj-set-activity</strong> <var class="def-var-arguments">status</var><a class="copiable-link" href="#index-forj_002dset_002dactivity"> &para;</a></span></dt>
+<dd><p>Set current activity STATUS and update conversation buffer display.
+</p>
+<dl class="table">
+<dt><var class="var">status</var></dt>
+<dd><p>String describing current activity, or nil to clear.
+</p></dd>
+</dl>
+
+<p>Used to show progress indicators like &quot;Reading file...&quot; or &quot;Generating response...&quot;.
+</p></dd></dl>
+
+<hr>
+</div>
+<div class="section-level-extent" id="Directory-Operations">
+<div class="nav-panel">
+<p>
+Next: <a href="#API-Git-Integration" accesskey="n" rel="next">Git Integration</a>, Previous: <a href="#Conversation-System" accesskey="p" rel="prev">Conversation System</a>, Up: <a href="#API-Reference" accesskey="u" rel="up">API Reference</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<h3 class="section" id="Directory-Operations-1"><span>4.5 Directory Operations<a class="copiable-link" href="#Directory-Operations-1"> &para;</a></span></h3>
+
+<dl class="first-deffn def-block">
+<dt class="deffn def-line" id="index-forj_002dbrowse_002dfiles"><span class="category-def">Interactive Function: </span><span><strong class="def-name">forj-browse-files</strong> <var class="def-var-arguments">&amp;optional directory</var><a class="copiable-link" href="#index-forj_002dbrowse_002dfiles"> &para;</a></span></dt>
+<dd><p>Interactive file browser for selecting project files.
+</p>
+<dl class="table">
+<dt><var class="var">directory</var></dt>
+<dd><p>Directory to browse (optional, defaults to current directory).
+</p></dd>
+</dl>
+
+<p><strong class="strong">Returns:</strong> Selected file path or nil if cancelled.
+</p>
+<p>Displays files with rich metadata:
+</p><div class="example">
+<pre class="example-preformatted">forj.el [elisp, 15234 bytes, 2025-08-10 14:30]
+README.md [markdown, 8456 bytes, 2025-08-10 12:15]  
+</pre></div>
+</dd></dl>
+
+<dl class="first-deffn def-block">
+<dt class="deffn def-line" id="index-forj_002dscan_002ddirectory_002drecursive"><span class="category-def">Function: </span><span><strong class="def-name">forj-scan-directory-recursive</strong> <var class="def-var-arguments">&amp;optional directory max-depth max-files</var><a class="copiable-link" href="#index-forj_002dscan_002ddirectory_002drecursive"> &para;</a></span></dt>
+<dd><p>Recursively scan DIRECTORY for project files with limits.
+</p>
+<dl class="table">
+<dt><var class="var">directory</var></dt>
+<dd><p>Directory to scan (optional, defaults to current directory).
+</p></dd>
+<dt><var class="var">max-depth</var></dt>
+<dd><p>Maximum recursion depth (optional, defaults to 5).
+</p></dd>
+<dt><var class="var">max-files</var></dt>
+<dd><p>Maximum files to find (optional, defaults to 100).
+</p></dd>
+</dl>
+
+<p><strong class="strong">Returns:</strong> List of file metadata property lists.
+</p>
+<p><strong class="strong">Example:</strong>
+</p><div class="example lisp">
+<pre class="lisp-preformatted">(forj-scan-directory-recursive &quot;.&quot; 3 50)
+</pre></div>
+</dd></dl>
+
+<dl class="first-deffn def-block">
+<dt class="deffn def-line" id="index-forj_002dscan_002dand_002ddisplay_002dproject"><span class="category-def">Interactive Function: </span><span><strong class="def-name">forj-scan-and-display-project</strong> <var class="def-var-arguments">&amp;optional directory</var><a class="copiable-link" href="#index-forj_002dscan_002dand_002ddisplay_002dproject"> &para;</a></span></dt>
+<dd><p>Comprehensive project scanner with conversation logging.
+</p>
+<dl class="table">
+<dt><var class="var">directory</var></dt>
+<dd><p>Directory to analyze (optional, defaults to current directory).
+</p></dd>
+</dl>
+
+<p>Analyzes project structure and logs detailed statistics to the conversation buffer.
+</p></dd></dl>
+
+<hr>
+</div>
+<div class="section-level-extent" id="API-Git-Integration">
+<div class="nav-panel">
+<p>
+Next: <a href="#File-Locking" accesskey="n" rel="next">File Locking</a>, Previous: <a href="#Directory-Operations" accesskey="p" rel="prev">Directory Operations</a>, Up: <a href="#API-Reference" accesskey="u" rel="up">API Reference</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<h3 class="section" id="Git-Integration-2"><span>4.6 Git Integration<a class="copiable-link" href="#Git-Integration-2"> &para;</a></span></h3>
+
+<dl class="first-deffn def-block">
+<dt class="deffn def-line" id="index-forj_002din_002dgit_002drepo_002dp"><span class="category-def">Function: </span><span><strong class="def-name">forj-in-git-repo-p</strong> <var class="def-var-arguments">&amp;optional directory</var><a class="copiable-link" href="#index-forj_002din_002dgit_002drepo_002dp"> &para;</a></span></dt>
+<dd><p>Check if DIRECTORY is in a Git repository.
+</p>
+<dl class="table">
+<dt><var class="var">directory</var></dt>
+<dd><p>Directory to check (optional, defaults to current directory).
+</p></dd>
+</dl>
+
+<p><strong class="strong">Returns:</strong> Git root directory path if in repository, nil otherwise.
+</p></dd></dl>
+
+<dl class="first-deffn def-block">
+<dt class="deffn def-line" id="index-forj_002dgit_002dfile_002dstatus"><span class="category-def">Function: </span><span><strong class="def-name">forj-git-file-status</strong> <var class="def-var-arguments">file-path</var><a class="copiable-link" href="#index-forj_002dgit_002dfile_002dstatus"> &para;</a></span></dt>
+<dd><p>Get Git status information for FILE-PATH.
+</p>
+<dl class="table">
+<dt><var class="var">file-path</var></dt>
+<dd><p>Path to file to check.
+</p></dd>
+</dl>
+
+<p><strong class="strong">Returns:</strong> Property list with Git status:
+</p><div class="example lisp">
+<pre class="lisp-preformatted">(:status modified :staged nil :modified t :untracked nil)
+</pre></div>
+
+<p>Possible status values: <code class="code">'clean</code>, <code class="code">'modified</code>, <code class="code">'staged</code>, <code class="code">'staged-and-modified</code>, <code class="code">'untracked</code>.
+</p></dd></dl>
+
+<dl class="first-deffn def-block">
+<dt class="deffn def-line" id="index-forj_002dwrite_002dfile_002dwith_002dgit_002dawareness"><span class="category-def">Function: </span><span><strong class="def-name">forj-write-file-with-git-awareness</strong> <var class="def-var-arguments">file-path content &amp;optional no-backup</var><a class="copiable-link" href="#index-forj_002dwrite_002dfile_002dwith_002dgit_002dawareness"> &para;</a></span></dt>
+<dd><p>Write file with Git integration and status checking.
+</p>
+<p>Extends <code class="code">forj-write-file</code> with:
+</p><ul class="itemize mark-bullet">
+<li>Git status warnings for uncommitted changes  
+</li><li>Optional auto-staging after successful write
+</li><li>Conversation logging of Git operations
+</li></ul>
+</dd></dl>
+
+<hr>
+</div>
+<div class="section-level-extent" id="File-Locking">
+<div class="nav-panel">
+<p>
+Next: <a href="#Utility-Functions" accesskey="n" rel="next">Utility Functions</a>, Previous: <a href="#API-Git-Integration" accesskey="p" rel="prev">Git Integration</a>, Up: <a href="#API-Reference" accesskey="u" rel="up">API Reference</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<h3 class="section" id="File-Locking-3"><span>4.7 File Locking<a class="copiable-link" href="#File-Locking-3"> &para;</a></span></h3>
+
+<dl class="first-deffn def-block">
+<dt class="deffn def-line" id="index-forj_002dlock_002dfile"><span class="category-def">Function: </span><span><strong class="def-name">forj-lock-file</strong> <var class="def-var-arguments">file-path &amp;optional timeout</var><a class="copiable-link" href="#index-forj_002dlock_002dfile"> &para;</a></span></dt>
+<dd><p>Lock FILE-PATH for exclusive access.
+</p>
+<dl class="table">
+<dt><var class="var">file-path</var></dt>
+<dd><p>Path to file to lock.
+</p></dd>
+<dt><var class="var">timeout</var></dt>
+<dd><p>Timeout in seconds (optional, defaults to 30).
+</p></dd>
+</dl>
+
+<p><strong class="strong">Returns:</strong> Property list with lock results:
+</p><div class="example lisp">
+<pre class="lisp-preformatted">(:success t :lock-id &quot;12345-67890&quot;)
+</pre></div>
+
+<p>Creates a <samp class="file">.forj-lock</samp> file to prevent concurrent access.
+</p></dd></dl>
+
+<dl class="first-deffn def-block">
+<dt class="deffn def-line" id="index-forj_002dunlock_002dfile"><span class="category-def">Function: </span><span><strong class="def-name">forj-unlock-file</strong> <var class="def-var-arguments">file-path lock-id</var><a class="copiable-link" href="#index-forj_002dunlock_002dfile"> &para;</a></span></dt>
+<dd><p>Unlock FILE-PATH using LOCK-ID.
+</p>
+<dl class="table">
+<dt><var class="var">file-path</var></dt>
+<dd><p>Path to file to unlock.  
+</p></dd>
+<dt><var class="var">lock-id</var></dt>
+<dd><p>Lock identifier from <code class="code">forj-lock-file</code>.
+</p></dd>
+</dl>
+
+<p><strong class="strong">Returns:</strong> Property list indicating success or failure.
+</p></dd></dl>
+
+<dl class="first-deffn def-block">
+<dt class="deffn def-line" id="index-forj_002dwith_002dfile_002dlock"><span class="category-def">Macro: </span><span><strong class="def-name">forj-with-file-lock</strong> <var class="def-var-arguments">file-path &amp;rest body</var><a class="copiable-link" href="#index-forj_002dwith_002dfile_002dlock"> &para;</a></span></dt>
+<dd><p>Execute BODY with FILE-PATH locked, automatically unlocking when done.
+</p>
+<dl class="table">
+<dt><var class="var">file-path</var></dt>
+<dd><p>Path to file to lock during execution.
+</p></dd>
+<dt><var class="var">body</var></dt>
+<dd><p>Forms to execute while file is locked.
+</p></dd>
+</dl>
+
+<p><strong class="strong">Example:</strong>
+</p><div class="example lisp">
+<pre class="lisp-preformatted">(forj-with-file-lock &quot;important.el&quot;
+  (let ((content (forj-read-file &quot;important.el&quot;)))
+    (forj-write-file &quot;important.el&quot; (concat content &quot;\n;; Added&quot;))))
+</pre></div>
+</dd></dl>
+
+<hr>
+</div>
+<div class="section-level-extent" id="Utility-Functions">
+<div class="nav-panel">
+<p>
+Next: <a href="#Customization-Variables" accesskey="n" rel="next">Customization Variables</a>, Previous: <a href="#File-Locking" accesskey="p" rel="prev">File Locking</a>, Up: <a href="#API-Reference" accesskey="u" rel="up">API Reference</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<h3 class="section" id="Utility-Functions-1"><span>4.8 Utility Functions<a class="copiable-link" href="#Utility-Functions-1"> &para;</a></span></h3>
+
+<dl class="first-deffn def-block">
+<dt class="deffn def-line" id="index-forj_002dfile_002dmetadata"><span class="category-def">Function: </span><span><strong class="def-name">forj-file-metadata</strong> <var class="def-var-arguments">file-path</var><a class="copiable-link" href="#index-forj_002dfile_002dmetadata"> &para;</a></span></dt>
+<dd><p>Get comprehensive metadata for FILE-PATH.
+</p>
+<dl class="table">
+<dt><var class="var">file-path</var></dt>
+<dd><p>Path to file for metadata extraction.
+</p></dd>
+</dl>
+
+<p><strong class="strong">Returns:</strong> Property list with file information:
+</p><div class="example lisp">
+<pre class="lisp-preformatted">(:path &quot;/path/file.el&quot; :size 15234 :modified-time (25086 12345)
+ :type elisp :readable t :writable t)
+</pre></div>
+</dd></dl>
+
+<dl class="first-deffn def-block">
+<dt class="deffn def-line" id="index-forj_002dbackup_002dfile"><span class="category-def">Function: </span><span><strong class="def-name">forj-backup-file</strong> <var class="def-var-arguments">file-path &amp;optional backup-name</var><a class="copiable-link" href="#index-forj_002dbackup_002dfile"> &para;</a></span></dt>
+<dd><p>Create timestamped backup of FILE-PATH.
+</p>
+<dl class="table">
+<dt><var class="var">file-path</var></dt>
+<dd><p>Path to file to backup.
+</p></dd>
+<dt><var class="var">backup-name</var></dt>
+<dd><p>Custom backup filename (optional).
+</p></dd>
+</dl>
+
+<p><strong class="strong">Returns:</strong> Property list with backup results including backup path.
+</p></dd></dl>
+
+<dl class="first-deffn def-block">
+<dt class="deffn def-line" id="index-forj_002drestore_002dbackup"><span class="category-def">Function: </span><span><strong class="def-name">forj-restore-backup</strong> <var class="def-var-arguments">backup-path original-path</var><a class="copiable-link" href="#index-forj_002drestore_002dbackup"> &para;</a></span></dt>
+<dd><p>Restore ORIGINAL-PATH from BACKUP-PATH.
+</p>
+<dl class="table">
+<dt><var class="var">backup-path</var></dt>
+<dd><p>Path to backup file.
+</p></dd>
+<dt><var class="var">original-path</var></dt>
+<dd><p>Path where to restore the file.  
+</p></dd>
+</dl>
+
+<p><strong class="strong">Returns:</strong> Property list with restoration results including restored file size.
+</p></dd></dl>
+
+<hr>
+</div>
+<div class="section-level-extent" id="Customization-Variables">
+<div class="nav-panel">
+<p>
+Previous: <a href="#Utility-Functions" accesskey="p" rel="prev">Utility Functions</a>, Up: <a href="#API-Reference" accesskey="u" rel="up">API Reference</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<h3 class="section" id="Customization-Variables-1"><span>4.9 Customization Variables<a class="copiable-link" href="#Customization-Variables-1"> &para;</a></span></h3>
+
+<dl class="first-defvr first-defopt-alias-first-defvr def-block">
+<dt class="defvr defopt-alias-defvr def-line" id="index-forj_002dconversation_002dbuffer-2"><span class="category-def">User Option: </span><span><strong class="def-name">forj-conversation-buffer</strong><a class="copiable-link" href="#index-forj_002dconversation_002dbuffer-2"> &para;</a></span></dt>
+<dd><p>Name of buffer used for conversation display.
+Default: <code class="code">&quot;*forj*&quot;</code>
+</p></dd></dl>
+
+<dl class="first-defvr first-defopt-alias-first-defvr def-block">
+<dt class="defvr defopt-alias-defvr def-line" id="index-forj_002dmax_002dfile_002dsize-1"><span class="category-def">User Option: </span><span><strong class="def-name">forj-max-file-size</strong><a class="copiable-link" href="#index-forj_002dmax_002dfile_002dsize-1"> &para;</a></span></dt>
+<dd><p>Maximum file size to read in bytes.
+Default: <code class="code">50000</code>
+</p></dd></dl>
+
+<dl class="first-defvr first-defopt-alias-first-defvr def-block">
+<dt class="defvr defopt-alias-defvr def-line" id="index-forj_002dsupported_002dextensions-1"><span class="category-def">User Option: </span><span><strong class="def-name">forj-supported-extensions</strong><a class="copiable-link" href="#index-forj_002dsupported_002dextensions-1"> &para;</a></span></dt>
+<dd><p>List of file extensions for project context.
+Default: <code class="code">'(&quot;el&quot; &quot;md&quot; &quot;txt&quot; &quot;org&quot; &quot;lisp&quot;)</code>
+</p></dd></dl>
+
+<dl class="first-defvr first-defopt-alias-first-defvr def-block">
+<dt class="defvr defopt-alias-defvr def-line" id="index-forj_002dexcluded_002dpatterns-1"><span class="category-def">User Option: </span><span><strong class="def-name">forj-excluded-patterns</strong><a class="copiable-link" href="#index-forj_002dexcluded_002dpatterns-1"> &para;</a></span></dt>
+<dd><p>Glob patterns for files/directories to exclude.
+Default: <code class="code">'(&quot;.git&quot; &quot;.DS_Store&quot; &quot;*.elc&quot; &quot;*.log&quot; &quot;*~&quot;)</code>
+</p></dd></dl>
+
+<dl class="first-defvr first-defopt-alias-first-defvr def-block">
+<dt class="defvr defopt-alias-defvr def-line" id="index-forj_002dconfirm_002ddestructive_002doperations-1"><span class="category-def">User Option: </span><span><strong class="def-name">forj-confirm-destructive-operations</strong><a class="copiable-link" href="#index-forj_002dconfirm_002ddestructive_002doperations-1"> &para;</a></span></dt>
+<dd><p>Whether to confirm before destructive operations.
+Default: <code class="code">t</code>
+</p></dd></dl>
+
+<dl class="first-defvr first-defopt-alias-first-defvr def-block">
+<dt class="defvr defopt-alias-defvr def-line" id="index-forj_002denable_002dgit_002dintegration-1"><span class="category-def">User Option: </span><span><strong class="def-name">forj-enable-git-integration</strong><a class="copiable-link" href="#index-forj_002denable_002dgit_002dintegration-1"> &para;</a></span></dt>
+<dd><p>Whether to enable Git repository features.
+Default: <code class="code">t</code>
+</p></dd></dl>
+
+<dl class="first-defvr first-defopt-alias-first-defvr def-block">
+<dt class="defvr defopt-alias-defvr def-line" id="index-forj_002dwarn_002duncommitted_002dchanges-1"><span class="category-def">User Option: </span><span><strong class="def-name">forj-warn-uncommitted-changes</strong><a class="copiable-link" href="#index-forj_002dwarn_002duncommitted_002dchanges-1"> &para;</a></span></dt>
+<dd><p>Whether to warn before modifying files with Git changes.  
+Default: <code class="code">t</code>
+</p></dd></dl>
+
+<dl class="first-defvr first-defopt-alias-first-defvr def-block">
+<dt class="defvr defopt-alias-defvr def-line" id="index-forj_002dauto_002dstage_002dchanges-1"><span class="category-def">User Option: </span><span><strong class="def-name">forj-auto-stage-changes</strong><a class="copiable-link" href="#index-forj_002dauto_002dstage_002dchanges-1"> &para;</a></span></dt>
+<dd><p>Whether to auto-stage changes after edits.
+Default: <code class="code">nil</code>
+</p></dd></dl>
+<hr>
+</div>
+</div>
+<div class="chapter-level-extent" id="Troubleshooting">
+<div class="nav-panel">
+<p>
+Next: <a href="#Index" accesskey="n" rel="next">Index</a>, Previous: <a href="#API-Reference" accesskey="p" rel="prev">API Reference</a>, Up: <a href="#Top" accesskey="u" rel="up">Forj Manual</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<h2 class="chapter" id="Troubleshooting-1"><span>5 Troubleshooting<a class="copiable-link" href="#Troubleshooting-1"> &para;</a></span></h2>
+
+<p>This chapter covers common issues and their solutions when using Forj.el.
+</p>
+
+<ul class="mini-toc">
+<li><a href="#Installation-Issues" accesskey="1">Installation Issues</a></li>
+<li><a href="#API-Problems" accesskey="2">API Problems</a></li>
+<li><a href="#Performance-Issues" accesskey="3">Performance Issues</a></li>
+<li><a href="#File-Operation-Errors" accesskey="4">File Operation Errors</a></li>
+<li><a href="#Git-Integration-Issues" accesskey="5">Git Integration Issues</a></li>
+<li><a href="#Debug-Mode" accesskey="6">Debug Mode</a></li>
+</ul>
+<hr>
+<div class="section-level-extent" id="Installation-Issues">
+<div class="nav-panel">
+<p>
+Next: <a href="#API-Problems" accesskey="n" rel="next">API Problems</a>, Up: <a href="#Troubleshooting" accesskey="u" rel="up">Troubleshooting</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<h3 class="section" id="Installation-Issues-1"><span>5.1 Installation Issues<a class="copiable-link" href="#Installation-Issues-1"> &para;</a></span></h3>
+
+<ul class="mini-toc">
+<li><a href="#Package-Loading-Errors" accesskey="1">Package Loading Errors</a></li>
+<li><a href="#Missing-Dependencies" accesskey="2">Missing Dependencies</a></li>
+</ul>
+<div class="subsection-level-extent" id="Package-Loading-Errors">
+<h4 class="subsection"><span>5.1.1 Package Loading Errors<a class="copiable-link" href="#Package-Loading-Errors"> &para;</a></span></h4>
+
+<p><strong class="strong">Problem:</strong> <code class="code">Cannot open load file: No such file or directory, forj</code>
+</p>
+<p><strong class="strong">Solution:</strong>
+</p><ol class="enumerate">
+<li> Verify the installation path:
+<div class="example lisp">
+<pre class="lisp-preformatted">(add-to-list 'load-path &quot;/correct/path/to/forj.el&quot;)
+</pre></div>
+
+</li><li> Check file permissions:
+<div class="example">
+<pre class="example-preformatted">ls -la /path/to/forj.el/forj.el
+</pre></div>
+
+</li><li> Reload your Emacs configuration:
+<div class="example">
+<pre class="example-preformatted">M-x eval-buffer
+</pre></div>
+</li></ol>
+
+</div>
+<div class="subsection-level-extent" id="Missing-Dependencies">
+<h4 class="subsection"><span>5.1.2 Missing Dependencies<a class="copiable-link" href="#Missing-Dependencies"> &para;</a></span></h4>
+
+<p><strong class="strong">Problem:</strong> <code class="code">Symbol's function definition is void: cl-lib</code>
+</p>
+<p><strong class="strong">Solution:</strong> Ensure you have a recent Emacs version (26.1+) or install missing packages:
+</p><div class="example lisp">
+<pre class="lisp-preformatted">(package-install 'cl-lib)
+</pre></div>
+
+<hr>
+</div>
+</div>
+<div class="section-level-extent" id="API-Problems">
+<div class="nav-panel">
+<p>
+Next: <a href="#Performance-Issues" accesskey="n" rel="next">Performance Issues</a>, Previous: <a href="#Installation-Issues" accesskey="p" rel="prev">Installation Issues</a>, Up: <a href="#Troubleshooting" accesskey="u" rel="up">Troubleshooting</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<h3 class="section" id="API-Problems-1"><span>5.2 API Problems<a class="copiable-link" href="#API-Problems-1"> &para;</a></span></h3>
+
+<ul class="mini-toc">
+<li><a href="#API-Key-Not-Found" accesskey="1">API Key Not Found</a></li>
+<li><a href="#Connection-Timeouts" accesskey="2">Connection Timeouts</a></li>
+<li><a href="#Invalid-API-Responses" accesskey="3">Invalid API Responses</a></li>
+</ul>
+<div class="subsection-level-extent" id="API-Key-Not-Found">
+<h4 class="subsection"><span>5.2.1 API Key Not Found<a class="copiable-link" href="#API-Key-Not-Found"> &para;</a></span></h4>
+
+<p><strong class="strong">Problem:</strong> <code class="code">GEMINI_API_KEY environment variable not set</code>
+</p>
+<p><strong class="strong">Solutions:</strong>
+</p><ol class="enumerate">
+<li> Set environment variable:
+<div class="example">
+<pre class="example-preformatted">export GEMINI_API_KEY=&quot;your-api-key-here&quot;
+</pre></div>
+
+</li><li> Restart Emacs to pick up new environment variables.
+
+</li><li> Verify the key is set:
+<div class="example lisp">
+<pre class="lisp-preformatted">(getenv &quot;GEMINI_API_KEY&quot;)
+</pre></div>
+</li></ol>
+
+</div>
+<div class="subsection-level-extent" id="Connection-Timeouts">
+<h4 class="subsection"><span>5.2.2 Connection Timeouts<a class="copiable-link" href="#Connection-Timeouts"> &para;</a></span></h4>
+
+<p><strong class="strong">Problem:</strong> <code class="code">API request timed out after 30 seconds</code>
+</p>
+<p><strong class="strong">Solutions:</strong>
+</p><ol class="enumerate">
+<li> Increase timeout for slow connections:
+<div class="example lisp">
+<pre class="lisp-preformatted">(setq forj-api-timeout 60)  ; 60 seconds
+</pre></div>
+
+</li><li> Check internet connectivity:
+<div class="example">
+<pre class="example-preformatted">curl -I https://generativelanguage.googleapis.com
+</pre></div>
+
+</li><li> Verify API key validity by testing with curl:
+<div class="example">
+<pre class="example-preformatted">curl -H &quot;x-goog-api-key: YOUR_KEY&quot; \
+  https://generativelanguage.googleapis.com/v1beta/models
+</pre></div>
+</li></ol>
+
+</div>
+<div class="subsection-level-extent" id="Invalid-API-Responses">
+<h4 class="subsection"><span>5.2.3 Invalid API Responses<a class="copiable-link" href="#Invalid-API-Responses"> &para;</a></span></h4>
+
+<p><strong class="strong">Problem:</strong> <code class="code">Invalid response format</code>
+</p>
+<p><strong class="strong">Solutions:</strong>
+</p><ol class="enumerate">
+<li> Check API key permissions and quotas in Google Cloud Console.
+
+</li><li> Verify the model name is correct:
+<div class="example lisp">
+<pre class="lisp-preformatted">(setq forj-api-model &quot;gemini-2.0-flash-exp&quot;)
+</pre></div>
+
+</li><li> Enable debug mode to see raw responses:
+<div class="example lisp">
+<pre class="lisp-preformatted">(setq forj-debug t)
+</pre></div>
+</li></ol>
+
+<hr>
+</div>
+</div>
+<div class="section-level-extent" id="Performance-Issues">
+<div class="nav-panel">
+<p>
+Next: <a href="#File-Operation-Errors" accesskey="n" rel="next">File Operation Errors</a>, Previous: <a href="#API-Problems" accesskey="p" rel="prev">API Problems</a>, Up: <a href="#Troubleshooting" accesskey="u" rel="up">Troubleshooting</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<h3 class="section" id="Performance-Issues-1"><span>5.3 Performance Issues<a class="copiable-link" href="#Performance-Issues-1"> &para;</a></span></h3>
+
+<ul class="mini-toc">
+<li><a href="#Slow-Response-Times" accesskey="1">Slow Response Times</a></li>
+<li><a href="#High-Memory-Usage" accesskey="2">High Memory Usage</a></li>
+</ul>
+<div class="subsection-level-extent" id="Slow-Response-Times">
+<h4 class="subsection"><span>5.3.1 Slow Response Times<a class="copiable-link" href="#Slow-Response-Times"> &para;</a></span></h4>
+
+<p><strong class="strong">Problem:</strong> AI responses taking too long.
+</p>
+<p><strong class="strong">Solutions:</strong>
+</p><ol class="enumerate">
+<li> Reduce file size limits:
+<div class="example lisp">
+<pre class="lisp-preformatted">(setq forj-max-file-size 20000)  ; 20KB limit
+</pre></div>
+
+</li><li> Clear conversation history:
+<div class="example">
+<pre class="example-preformatted">M-x forj-clear-conversation
+</pre></div>
+
+</li><li> Limit project scanning:
+<div class="example lisp">
+<pre class="lisp-preformatted">(forj-scan-directory-recursive &quot;.&quot; 2 25)  ; 2 levels, 25 files max
+</pre></div>
+</li></ol>
+
+</div>
+<div class="subsection-level-extent" id="High-Memory-Usage">
+<h4 class="subsection"><span>5.3.2 High Memory Usage<a class="copiable-link" href="#High-Memory-Usage"> &para;</a></span></h4>
+
+<p><strong class="strong">Problem:</strong> Emacs consuming excessive memory.
+</p>
+<p><strong class="strong">Solutions:</strong>
+</p><ol class="enumerate">
+<li> Monitor conversation buffer size:
+<div class="example">
+<pre class="example-preformatted">M-x forj-conversation-buffer
+M-x buffer-size
+</pre></div>
+
+</li><li> Regularly clear large conversations:
+<div class="example lisp">
+<pre class="lisp-preformatted">(forj-clear-conversation)
+</pre></div>
+
+</li><li> Adjust file reading limits:
+<div class="example lisp">
+<pre class="lisp-preformatted">(setq forj-max-file-size 10000)  ; Smaller limit
+</pre></div>
+</li></ol>
+
+<hr>
+</div>
+</div>
+<div class="section-level-extent" id="File-Operation-Errors">
+<div class="nav-panel">
+<p>
+Next: <a href="#Git-Integration-Issues" accesskey="n" rel="next">Git Integration Issues</a>, Previous: <a href="#Performance-Issues" accesskey="p" rel="prev">Performance Issues</a>, Up: <a href="#Troubleshooting" accesskey="u" rel="up">Troubleshooting</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<h3 class="section" id="File-Operation-Errors-1"><span>5.4 File Operation Errors<a class="copiable-link" href="#File-Operation-Errors-1"> &para;</a></span></h3>
+
+<ul class="mini-toc">
+<li><a href="#Permission-Denied" accesskey="1">Permission Denied</a></li>
+<li><a href="#Syntax-Validation-Errors" accesskey="2">Syntax Validation Errors</a></li>
+<li><a href="#File-Locking-Issues" accesskey="3">File Locking Issues</a></li>
+</ul>
+<div class="subsection-level-extent" id="Permission-Denied">
+<h4 class="subsection"><span>5.4.1 Permission Denied<a class="copiable-link" href="#Permission-Denied"> &para;</a></span></h4>
+
+<p><strong class="strong">Problem:</strong> <code class="code">File not writable: permission denied</code>
+</p>
+<p><strong class="strong">Solutions:</strong>
+</p><ol class="enumerate">
+<li> Check file permissions:
+<div class="example">
+<pre class="example-preformatted">ls -la filename.el
+</pre></div>
+
+</li><li> Ensure directory is writable:
+<div class="example">
+<pre class="example-preformatted">ls -ld /path/to/directory/
+</pre></div>
+
+</li><li> Use sudo for system files (not recommended for regular development):
+<div class="example">
+<pre class="example-preformatted">sudo emacs filename.el
+</pre></div>
+</li></ol>
+
+</div>
+<div class="subsection-level-extent" id="Syntax-Validation-Errors">
+<h4 class="subsection"><span>5.4.2 Syntax Validation Errors<a class="copiable-link" href="#Syntax-Validation-Errors"> &para;</a></span></h4>
+
+<p><strong class="strong">Problem:</strong> <code class="code">Invalid Emacs Lisp syntax detected</code>
+</p>
+<p><strong class="strong">Solutions:</strong>
+</p><ol class="enumerate">
+<li> Use the detailed syntax checker:
+<div class="example">
+<pre class="example-preformatted">M-x forj-check-syntax
+</pre></div>
+
+</li><li> Check for common issues:
+<ul class="itemize mark-bullet">
+<li>Unmatched parentheses, brackets, or braces
+</li><li>Unclosed string literals  
+</li><li>Missing semicolons in comments
+</li></ul>
+
+</li><li> Get AI help with syntax errors:
+<div class="example">
+<pre class="example-preformatted">M-x forj-prompt RET &quot;Fix the syntax errors in this code&quot;
+</pre></div>
+</li></ol>
+
+</div>
+<div class="subsection-level-extent" id="File-Locking-Issues">
+<h4 class="subsection"><span>5.4.3 File Locking Issues<a class="copiable-link" href="#File-Locking-Issues"> &para;</a></span></h4>
+
+<p><strong class="strong">Problem:</strong> <code class="code">File is locked by another process</code>
+</p>
+<p><strong class="strong">Solutions:</strong>
+</p><ol class="enumerate">
+<li> Check for stale lock files:
+<div class="example">
+<pre class="example-preformatted">ls -la filename.el.forj-lock
+</pre></div>
+
+</li><li> Remove stale locks manually:
+<div class="example">
+<pre class="example-preformatted">rm filename.el.forj-lock
+</pre></div>
+
+</li><li> Increase lock timeout:
+<div class="example lisp">
+<pre class="lisp-preformatted">(forj-lock-file &quot;file.el&quot; 120)  ; 2 minute timeout
+</pre></div>
+</li></ol>
+
+<hr>
+</div>
+</div>
+<div class="section-level-extent" id="Git-Integration-Issues">
+<div class="nav-panel">
+<p>
+Next: <a href="#Debug-Mode" accesskey="n" rel="next">Debug Mode</a>, Previous: <a href="#File-Operation-Errors" accesskey="p" rel="prev">File Operation Errors</a>, Up: <a href="#Troubleshooting" accesskey="u" rel="up">Troubleshooting</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<h3 class="section" id="Git-Integration-Issues-1"><span>5.5 Git Integration Issues<a class="copiable-link" href="#Git-Integration-Issues-1"> &para;</a></span></h3>
+
+<ul class="mini-toc">
+<li><a href="#Git-Commands-Not-Found" accesskey="1">Git Commands Not Found</a></li>
+<li><a href="#Git-Status-Errors" accesskey="2">Git Status Errors</a></li>
+</ul>
+<div class="subsection-level-extent" id="Git-Commands-Not-Found">
+<h4 class="subsection"><span>5.5.1 Git Commands Not Found<a class="copiable-link" href="#Git-Commands-Not-Found"> &para;</a></span></h4>
+
+<p><strong class="strong">Problem:</strong> <code class="code">git: command not found</code>
+</p>
+<p><strong class="strong">Solutions:</strong>
+</p><ol class="enumerate">
+<li> Verify Git installation:
+<div class="example">
+<pre class="example-preformatted">which git
+git --version
+</pre></div>
+
+</li><li> Install Git if missing:
+<div class="example">
+<pre class="example-preformatted"># macOS
+brew install git
+
+# Ubuntu/Debian  
+sudo apt-get install git
+
+# Windows
+# Download from https://git-scm.com/
+</pre></div>
+
+</li><li> Update Emacs exec-path if needed:
+<div class="example lisp">
+<pre class="lisp-preformatted">(add-to-list 'exec-path &quot;/usr/local/bin&quot;)
+</pre></div>
+</li></ol>
+
+</div>
+<div class="subsection-level-extent" id="Git-Status-Errors">
+<h4 class="subsection"><span>5.5.2 Git Status Errors<a class="copiable-link" href="#Git-Status-Errors"> &para;</a></span></h4>
+
+<p><strong class="strong">Problem:</strong> <code class="code">Not in a git repository</code>
+</p>
+<p><strong class="strong">Solutions:</strong>
+</p><ol class="enumerate">
+<li> Initialize Git repository:
+<div class="example">
+<pre class="example-preformatted">git init
+</pre></div>
+
+</li><li> Disable Git integration if not needed:
+<div class="example lisp">
+<pre class="lisp-preformatted">(setq forj-enable-git-integration nil)
+</pre></div>
+
+</li><li> Check if you&rsquo;re in the right directory:
+<div class="example">
+<pre class="example-preformatted">pwd
+git status
+</pre></div>
+</li></ol>
+
+<hr>
+</div>
+</div>
+<div class="section-level-extent" id="Debug-Mode">
+<div class="nav-panel">
+<p>
+Previous: <a href="#Git-Integration-Issues" accesskey="p" rel="prev">Git Integration Issues</a>, Up: <a href="#Troubleshooting" accesskey="u" rel="up">Troubleshooting</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<h3 class="section" id="Debug-Mode-1"><span>5.6 Debug Mode<a class="copiable-link" href="#Debug-Mode-1"> &para;</a></span></h3>
+
+<ul class="mini-toc">
+<li><a href="#Enabling-Debug-Logging" accesskey="1">Enabling Debug Logging</a></li>
+<li><a href="#Debug-Information-to-Collect" accesskey="2">Debug Information to Collect</a></li>
+<li><a href="#Common-Debug-Commands" accesskey="3">Common Debug Commands</a></li>
+<li><a href="#Reporting-Issues" accesskey="4">Reporting Issues</a></li>
+</ul>
+<div class="subsection-level-extent" id="Enabling-Debug-Logging">
+<h4 class="subsection"><span>5.6.1 Enabling Debug Logging<a class="copiable-link" href="#Enabling-Debug-Logging"> &para;</a></span></h4>
+
+<p>Enable detailed logging for troubleshooting:
+</p>
+<div class="example lisp">
+<pre class="lisp-preformatted">;; Enable debug mode
+(setq forj-debug t)
+(setq forj-log-level 'debug)
+
+;; Watch the *Messages* buffer for details  
+(with-current-buffer &quot;*Messages*&quot;
+  (goto-char (point-max)))
+</pre></div>
+
+</div>
+<div class="subsection-level-extent" id="Debug-Information-to-Collect">
+<h4 class="subsection"><span>5.6.2 Debug Information to Collect<a class="copiable-link" href="#Debug-Information-to-Collect"> &para;</a></span></h4>
+
+<p>When reporting issues, include:
+</p>
+<ol class="enumerate">
+<li> Emacs version:
+<div class="example">
+<pre class="example-preformatted">M-x emacs-version
+</pre></div>
+
+</li><li> Forj.el version and commit:
+<div class="example">
+<pre class="example-preformatted">git log -1 --oneline
+</pre></div>
+
+</li><li> Error messages from *Messages* buffer
+
+</li><li> Minimal reproduction case
+
+</li><li> System information:
+<div class="example lisp">
+<pre class="lisp-preformatted">(message &quot;System: %s %s&quot; system-type system-configuration)  
+</pre></div>
+</li></ol>
+
+</div>
+<div class="subsection-level-extent" id="Common-Debug-Commands">
+<h4 class="subsection"><span>5.6.3 Common Debug Commands<a class="copiable-link" href="#Common-Debug-Commands"> &para;</a></span></h4>
+
+<div class="example lisp">
+<pre class="lisp-preformatted">;; Check configuration
+(customize-group 'forj)
+
+;; Test API connectivity  
+(forj-prompt &quot;test&quot;)
+
+;; Check file permissions
+(file-readable-p &quot;filename.el&quot;)
+(file-writable-p &quot;filename.el&quot;)
+
+;; Check Git integration
+(forj-in-git-repo-p)
+(forj-git-file-status &quot;filename.el&quot;)
+
+;; Validate syntax
+(forj-check-syntax)
+(forj-paren-check &quot;(defun test ())&quot;)
+</pre></div>
+
+</div>
+<div class="subsection-level-extent" id="Reporting-Issues">
+<h4 class="subsection"><span>5.6.4 Reporting Issues<a class="copiable-link" href="#Reporting-Issues"> &para;</a></span></h4>
+
+<p>If problems persist:
+</p>
+<ol class="enumerate">
+<li> Check existing issues: <a class="url" href="https://github.com/username/forj.el/issues">https://github.com/username/forj.el/issues</a>
+
+</li><li> Create detailed bug report with:
+<ul class="itemize mark-bullet">
+<li>Steps to reproduce
+</li><li>Expected vs actual behavior
+</li><li>Debug logs and error messages  
+</li><li>System and Emacs version info
+</li></ul>
+
+</li><li> For urgent issues, include <code class="code">[URGENT]</code> in the title
+</li></ol>
+
+<hr>
+</div>
+</div>
+</div>
+<div class="unnumbered-level-extent" id="Index">
+<div class="nav-panel">
+<p>
+Previous: <a href="#Troubleshooting" accesskey="p" rel="prev">Troubleshooting</a>, Up: <a href="#Top" accesskey="u" rel="up">Forj Manual</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<h2 class="unnumbered" id="Index-1"><span>Index<a class="copiable-link" href="#Index-1"> &para;</a></span></h2>
+
+
+</div>
+</div>
+
+
+
+</body>
+</html>
