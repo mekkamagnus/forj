@@ -2,6 +2,16 @@
 
 (require 'cl-lib)
 
+;; Load centralized error handling system
+(let ((error-file (expand-file-name "forj-error-system.el" (file-name-directory (or load-file-name buffer-file-name)))))
+  (if (file-exists-p error-file)
+      (progn
+        (message "Loading forj-error-system.el...")
+        (load-file error-file))
+    ;; Fallback: try require if file not found
+    (when (locate-library "forj-error-system")
+      (require 'forj-error-system))))
+
 ;; Load API integration module - always reload to get latest changes
 (let ((api-file (expand-file-name "forj-api.el" (file-name-directory (or load-file-name buffer-file-name)))))
   (if (file-exists-p api-file)
@@ -11,6 +21,80 @@
     ;; Fallback: try require if file not found
     (when (locate-library "forj-api")
       (require 'forj-api))))
+
+;; Load Context Management System (Specification 002) in dependency order
+(let ((context-loaded nil)
+      (context-available nil)
+      (context-suggestions-available nil))
+  
+  ;; Load forj-context.el first (base dependency)
+  (let ((context-file (expand-file-name "forj-context.el" (file-name-directory (or load-file-name buffer-file-name)))))
+    (when (file-exists-p context-file)
+      (condition-case err
+          (progn
+            (message "Loading forj-context.el...")
+            (load-file context-file)
+            (setq context-available t))
+        (error
+         (message "Warning: Failed to load forj-context.el: %s" (error-message-string err))))))
+  
+  ;; Load forj-context-suggestions.el (depends on forj-context)
+  (let ((suggestions-file (expand-file-name "forj-context-suggestions.el" (file-name-directory (or load-file-name buffer-file-name)))))
+    (when (file-exists-p suggestions-file)
+      (condition-case err
+          (progn
+            (message "Loading forj-context-suggestions.el...")
+            (load-file suggestions-file)
+            (setq context-suggestions-available t))
+        (error
+         (message "Warning: Failed to load forj-context-suggestions.el: %s" (error-message-string err))))))
+  
+  ;; Load forj-prompt-interface.el (depends on both previous modules)
+  (let ((interface-file (expand-file-name "forj-prompt-interface.el" (file-name-directory (or load-file-name buffer-file-name)))))
+    (when (file-exists-p interface-file)
+      (condition-case err
+          (progn
+            (message "Loading forj-prompt-interface.el...")
+            (load-file interface-file)
+            ;; Set availability flags in the loaded module
+            (when (boundp 'forj-context-available)
+              (set 'forj-context-available context-available))
+            (when (boundp 'forj-context-suggestions-available)
+              (set 'forj-context-suggestions-available context-suggestions-available))
+            (setq context-loaded t))
+        (error
+         (message "Warning: Failed to load forj-prompt-interface.el: %s" (error-message-string err))))))
+  
+  ;; If context system failed to load, provide fallback forj-start function
+  (unless context-loaded
+    (message "Context system unavailable, providing fallback forj-start function")
+    (defun forj-start ()
+      "Launch Forj application (fallback version without context management)."
+      (interactive)
+      (let ((buffer (forj-conversation-buffer)))
+        (with-current-buffer buffer
+          (let ((inhibit-read-only t))
+            (goto-char (point-max))
+            (insert "\n\n=== Forj.el Started (Basic Mode) ===\n")
+            (insert "Context management system not available.\n")
+            (insert "Use M-x forj-prompt for basic AI assistance.\n\n")))
+        (display-buffer buffer)
+        (message "Forj started in basic mode. Use M-x forj-prompt for AI assistance.")))))
+
+;; Load UI integration system (Phase 1.6 UI/UX Enhancement)
+(let ((ui-file (expand-file-name "forj-ui-integration.el" (file-name-directory (or load-file-name buffer-file-name)))))
+  (when (file-exists-p ui-file)
+    (condition-case err
+        (progn
+          (message "Loading forj UI integration system...")
+          (load-file ui-file)
+          ;; Initialize UI system if auto-setup is enabled
+          (when (and (featurep 'forj-ui-integration) 
+                     (boundp 'forj-ui-auto-setup)
+                     forj-ui-auto-setup)
+            (run-with-idle-timer 0.5 nil #'forj-ui-setup-main-integration)))
+      (error
+       (message "Warning: Failed to load forj UI system: %s" (error-message-string err))))))
 
 ;; Package info
 (defgroup forj nil "AI co-pilot for Emacs." :prefix "forj-" :group 'tools)
@@ -161,13 +245,20 @@ Returns structured data with detailed error reporting for AI consumption."
   (let ((buffer (get-buffer forj-conversation-buffer)))
     (when buffer
       (with-current-buffer buffer
-        (let ((inhibit-read-only t))
-          (save-excursion
-            (goto-char (point-max))
-            (insert (format "\n[%s] %s:\n%s\n"
-                           (plist-get entry :timestamp)
-                           (upcase (symbol-name (plist-get entry :role)))
-                           (plist-get entry :content)))))))))
+        (let ((inhibit-read-only t)
+              (role (plist-get entry :role))
+              (content (plist-get entry :content))
+              (timestamp (plist-get entry :timestamp)))
+          ;; Use enhanced UI system if available
+          (if (and (featurep 'forj-ui-integration) forj-ui-initialized)
+              (forj-ui-display-message role content (current-time))
+            ;; Fallback to basic display
+            (save-excursion
+              (goto-char (point-max))
+              (insert (format "\n[%s] %s:\n%s\n"
+                             timestamp
+                             (upcase (symbol-name role))
+                             content)))))))))
 
 (defun forj-conversation-history ()
   "Return the current conversation history."
@@ -178,7 +269,21 @@ Returns structured data with detailed error reporting for AI consumption."
   "Major mode for the Forj conversation buffer."
   (setq buffer-read-only t)
   (setq truncate-lines t)
-  (setq word-wrap t))
+  (setq word-wrap t)
+  
+  ;; Enable syntax highlighting and UI components
+  (when (featurep 'forj-ui-integration)
+    ;; Set up syntax highlighting for code blocks
+    (when (featurep 'forj-syntax-highlight)
+      (forj-setup-conversation-highlighting))
+    
+    ;; Set up markdown rendering  
+    (when (featurep 'forj-markdown)
+      (forj-setup-conversation-markdown))
+    
+    ;; Apply theme
+    (when (featurep 'forj-theme)
+      (forj-apply-theme))))
 
 (defun forj-conversation-buffer ()
   "Create or switch to the Forj conversation buffer."
@@ -188,13 +293,19 @@ Returns structured data with detailed error reporting for AI consumption."
       (forj-conversation-mode)
       (unless (> (buffer-size) 0)
         (let ((inhibit-read-only t))
-          (insert "Forj AI Assistant\n")
-          (insert "================\n\n")
-          (insert "Type your prompt below and press RET to send.\n\n")
-          (insert "Commands:\n")
-          (insert "- M-x forj-prompt: Start a new conversation\n")
-          (insert "- M-x forj-clear-conversation: Clear this buffer\n\n")
-          (insert "---\n\n"))))
+          ;; Use enhanced UI system if available
+          (if (and (featurep 'forj-ui-integration) forj-ui-initialized)
+              (progn
+                (forj-insert-buffer-header)
+                (forj-setup-buffer-layout))
+            ;; Fallback to basic UI
+            (insert "Forj AI Assistant\n")
+            (insert "================\n\n")
+            (insert "Type your prompt below and press RET to send.\n\n")
+            (insert "Commands:\n")
+            (insert "- M-x forj-start: Start a new conversation\n")
+            (insert "- M-x forj-clear-conversation: Clear this buffer\n\n")
+            (insert "---\n\n")))))
     (display-buffer buffer)
     buffer))
 
@@ -212,7 +323,7 @@ Returns structured data with detailed error reporting for AI consumption."
           (insert "================\n\n")
           (insert "Type your prompt below and press RET to send.\n\n")
           (insert "Commands:\n")
-          (insert "- M-x forj-prompt: Start a new conversation\n")
+          (insert "- M-x forj-start: Start a new conversation\n")
           (insert "- M-x forj-clear-conversation: Clear this buffer\n\n")
           (insert "---\n\n"))))))
 
@@ -222,12 +333,10 @@ Returns structured data with detailed error reporting for AI consumption."
 If MAX-SIZE is specified, only read up to that many bytes.
 Returns file contents as string, or signals file-error if file cannot be read."
   (let ((size-limit (or max-size forj-max-file-size)))
-    (condition-case err
-        (with-temp-buffer
-          (insert-file-contents file-path nil 0 size-limit)
-          (buffer-string))
-      (file-error
-       (signal 'file-error (list "Cannot read file" file-path (error-message-string err)))))))
+    (forj-with-error-handling 'file-error
+      (with-temp-buffer
+        (insert-file-contents file-path nil 0 size-limit)
+        (buffer-string)))))
 
 (defun forj-list-files (&optional directory pattern)
   "List files in DIRECTORY matching optional PATTERN.
@@ -462,12 +571,13 @@ Uses atomic operations to prevent file corruption."
             (let ((validation-result (forj-paren-check content)))
               (unless (eq (plist-get validation-result :status) 'balanced)
                 (let ((error-info (plist-get validation-result :error)))
-                  (signal 'file-error 
-                         (list "Invalid Emacs Lisp syntax"
-                               (plist-get error-info :message)
-                               (format "Line %d, Column %d"
-                                      (plist-get error-info :line)
-                                      (plist-get error-info :col))))))))
+                  (forj-validation-error "Invalid Emacs Lisp syntax before file write"
+                                       :context "Pre-write syntax validation"
+                                       :file absolute-path
+                                       :details error-info
+                                       :recovery '("Fix syntax errors in content"
+                                                  "Check parentheses balance"
+                                                  "Verify code structure"))))))
           
           ;; Create backup if file exists and backup is not disabled
           (when (and file-exists (not no-backup))

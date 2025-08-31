@@ -8,6 +8,7 @@
 
 (require 'json)
 (require 'url)
+(require 'forj-error-system)
 
 ;; Forward declarations for functions from main forj.el
 (declare-function forj-scan-directory-recursive "forj" (&optional directory max-depth max-files))
@@ -32,7 +33,11 @@
 (defun forj-get-api-key ()
   "Retrieve Gemini API key from environment variable GEMINI_API_KEY."
   (or (getenv "GEMINI_API_KEY")
-      (error "GEMINI_API_KEY environment variable not set")))
+      (forj-user-error "GEMINI_API_KEY environment variable not set"
+                       :context "API configuration"
+                       :recovery '("Set the GEMINI_API_KEY environment variable"
+                                  "Restart Emacs after setting the variable"
+                                  "Verify the API key is correct"))))
 
 (defun forj-build-api-url ()
   "Build the Gemini API URL for the configured model."
@@ -41,9 +46,11 @@
 
 (defun forj-build-payload (prompt &optional context)
   "Build JSON payload for API request with PROMPT and optional CONTEXT."
-  (let ((full-prompt (if context
-                         (format "Context: %s\n\nUser: %s" context prompt)
-                       prompt)))
+  (let* ((clean-prompt (forj-clean-multibyte-text prompt))
+         (clean-context (when context (forj-clean-multibyte-text context)))
+         (full-prompt (if clean-context
+                         (format "Context: %s\n\nUser: %s" clean-context clean-prompt)
+                       clean-prompt)))
     ;; Encode to UTF-8 bytes to handle multibyte characters
     (encode-coding-string 
      (json-encode
@@ -53,55 +60,142 @@
 (defun forj-api-request (prompt &optional context)
   "Send PROMPT to Gemini API with optional CONTEXT and return response."
   (condition-case err
-      (let* ((api-key (forj-get-api-key))
-             (url (forj-build-api-url))
-             (payload (forj-build-payload prompt context))
-             (url-request-method "POST")
-             (url-request-extra-headers
-              `(("Content-Type" . "application/json")
-                ("x-goog-api-key" . ,api-key)))
-             (url-request-data payload)
-             (response-buffer (url-retrieve-synchronously url nil nil forj-api-timeout)))
-        (if response-buffer
-            (with-current-buffer response-buffer
-              (goto-char (point-min))
-              (if (re-search-forward "\r?\n\r?\n" nil t)
-                  (let ((response (json-read)))
-                    (kill-buffer response-buffer)
-                    (forj-parse-api-response response))
-                (progn
-                  (kill-buffer response-buffer)
-                  (forj-handle-api-error "Invalid response format")
-                  nil)))
-          (forj-handle-api-error "No response from API")
-          nil))
+      (forj-with-error-handling 'api-error
+        (let* ((api-key (forj-get-api-key))
+           (url (forj-build-api-url))
+           (payload (forj-build-payload prompt context))
+           (url-request-method "POST")
+           (url-request-extra-headers
+            `(("Content-Type" . "application/json")
+              ("x-goog-api-key" . ,api-key)))
+           (url-request-data payload)
+           (response-buffer (progn
+                             (message "Attempting HTTP request...")
+                             (url-retrieve-synchronously url nil nil forj-api-timeout))))
+      (message "HTTP request completed. Response buffer: %s" response-buffer)
+      (if response-buffer
+          (with-current-buffer response-buffer
+            (goto-char (point-min))
+            (message "Raw response buffer content: %s" (buffer-string))
+            (if (re-search-forward "\r?\n\r?\n" nil t)
+                (let* ((json-start (point))
+                       (raw-content (buffer-substring json-start (point-max)))
+                       ;; Handle chunked transfer encoding - remove chunk size lines
+                       (json-content (with-temp-buffer
+                                      (insert raw-content)
+                                      ;; Remove chunk size lines (hex numbers followed by CRLF)
+                                      (goto-char (point-min))
+                                      (while (re-search-forward "^[0-9a-fA-F]+\r?\n" nil t)
+                                        (replace-match ""))
+                                      ;; Remove trailing chunk markers
+                                      (goto-char (point-min))
+                                      (while (re-search-forward "\r?\n0\r?\n\r?\n" nil t)
+                                        (replace-match ""))
+                                      (buffer-string))))
+                  (message "Processed JSON content to parse: %s" (substring json-content 0 (min 200 (length json-content))))
+                  (condition-case json-err
+                      (let ((response (with-temp-buffer
+                                       (insert json-content)
+                                       (goto-char (point-min))
+                                       (json-read))))
+                        (kill-buffer response-buffer)
+                        (message "Successfully parsed JSON response")
+                        (forj-parse-api-response response))
+                    (error
+                     (kill-buffer response-buffer)
+                     (forj-api-error (format "JSON parsing failed: %s" (error-message-string json-err))
+                                    :context "JSON parsing error"
+                                    :details `(:json-content ,json-content :error ,json-err)
+                                    :recovery '("Check response format"
+                                               "Verify API response structure"
+                                               "Check network response"))
+                     nil)))
+              (progn
+                (kill-buffer response-buffer)
+                (forj-api-error "Invalid response format - no HTTP headers found"
+                               :context "HTTP response format"
+                               :details `(:buffer-content ,(buffer-string))
+                               :recovery '("Check API endpoint is correct"
+                                          "Verify network connectivity"
+                                          "Review API documentation"))
+                nil)))
+        (forj-api-error "No response from API"
+                       :context "HTTP request"
+                       :details `(:url ,url :timeout ,forj-api-timeout)
+                       :recovery '("Check internet connectivity"
+                                  "Verify API service status"
+                                  "Increase timeout value"
+                                  "Try again in a few moments"))
+        nil)))
     (error
-     (forj-handle-api-error (error-message-string err))
+     (message "API request failed with error: %s" (error-message-string err))
      nil)))
 
 (defun forj-parse-api-response (response)
   "Parse Gemini API RESPONSE and extract text content."
-  (let ((candidates (cdr (assq 'candidates response))))
-    (when candidates
-      (let ((content (cdr (assq 'content (aref candidates 0)))))
-        (when content
-          (let ((parts (cdr (assq 'parts content))))
-            (when parts
-              (cdr (assq 'text (aref parts 0))))))))))
+  (condition-case err
+      (let ((candidates (cdr (assq 'candidates response))))
+        (if candidates
+            (let ((content (cdr (assq 'content (aref candidates 0)))))
+              (if content
+                  (let ((parts (cdr (assq 'parts content))))
+                    (if parts
+                        (let ((text (cdr (assq 'text (aref parts 0)))))
+                          (when text
+                            (message "AI response extracted successfully")
+                            text))
+                      (forj-api-error "No parts found in API response content"
+                                     :context "API response parsing"
+                                     :details `(:response-structure ,response))))
+                (forj-api-error "No content found in API response"
+                               :context "API response parsing"
+                               :details `(:candidates ,candidates))))
+          (forj-api-error "No candidates found in API response"
+                         :context "API response parsing"
+                         :details `(:response-keys ,(mapcar #'car response)))))
+    (error
+     (forj-api-error "Failed to parse API response"
+                    :context "JSON parsing"
+                    :details `(:error ,(error-message-string err)
+                              :response-type ,(type-of response))
+                    :recovery '("Check API response format"
+                               "Verify JSON structure"
+                               "Review API documentation"))
+     nil)))
 
 (defun forj-validate-response (response)
   "Validate AI RESPONSE using forj-paren-check."
-  (condition-case nil
+  (condition-case err
       (if (fboundp 'forj-paren-check)
           (let ((result (forj-paren-check response)))
-            (eq (plist-get result :status) 'balanced))
+            (if (eq (plist-get result :status) 'balanced)
+                t
+              (forj-validation-error "AI response contains syntax errors"
+                                   :context "Response validation"
+                                   :details `(:validation-result ,result)
+                                   :recovery '("Request corrected response from AI"
+                                              "Check for unbalanced parentheses"
+                                              "Verify code syntax"))
+              nil))
         ;; Fallback to basic syntax check if forj-paren-check not available
         (with-temp-buffer
           (insert response)
-          (condition-case nil
+          (condition-case syntax-err
               (progn (check-parens) t)
-            (error nil))))
-    (error nil)))
+            (error 
+             (forj-validation-error "Response failed basic syntax check"
+                                  :context "Basic validation fallback"
+                                  :details `(:syntax-error ,(error-message-string syntax-err))
+                                  :recovery '("Use forj-paren-check for better validation"
+                                             "Check response format manually"))
+             nil))))
+    (error
+     (forj-validation-error "Response validation failed unexpectedly"
+                          :context "Validation system error"
+                          :details `(:error ,(error-message-string err))
+                          :recovery '("Check validation system"
+                                     "Report validation bug"))
+     nil)))
 
 (defun forj-build-context ()
   "Build context from current project and conversation."
@@ -178,21 +272,52 @@
                            ", "))
       "No project files found")))
 
+(defun forj-clean-multibyte-text (text)
+  "Remove problematic multibyte characters from TEXT for HTTP requests."
+  (with-temp-buffer
+    (insert text)
+    ;; Replace all box-drawing and problematic Unicode characters with ASCII
+    (goto-char (point-min))
+    (while (re-search-forward "[█░▀▄▌▐▀▄▌▐■□▪▫◆◇┌┐└┘│─┬┴┼├┤╭╮╰╯║═╔╗╚╝╬╠╣╦╩]+" nil t)
+      (replace-match "+" nil nil))
+    ;; Remove other problematic Unicode ranges
+    (goto-char (point-min))
+    (while (re-search-forward "[\u2500-\u257F\u2580-\u259F]+" nil t)
+      (replace-match "+" nil nil))
+    ;; Replace smart quotes with regular quotes
+    (goto-char (point-min))
+    (while (re-search-forward "\u201C\\|\u201D" nil t)
+      (replace-match "\"" nil nil))
+    (goto-char (point-min))
+    (while (re-search-forward "\u2018\\|\u2019" nil t)
+      (replace-match "'" nil nil))
+    ;; Replace em/en dashes with regular hyphens
+    (goto-char (point-min))
+    (while (re-search-forward "\u2013\\|\u2014" nil t)
+      (replace-match "-" nil nil))
+    ;; Remove any remaining non-ASCII characters that could cause issues
+    (goto-char (point-min))
+    (while (re-search-forward "[^\x00-\x7F]" nil t)
+      (replace-match "?" nil nil))
+    (buffer-string)))
+
 (defun forj-get-conversation-context ()
-  "Get recent conversation context."
-  (if (get-buffer "*forj-conversation*")
-      (with-current-buffer "*forj-conversation*"
-        (let ((content (buffer-string)))
-          (if (> (length content) 1000)
-              (concat "...\n" (substring content -800))
-            content)))
+  "Get recent conversation context with multibyte character filtering."
+  (if (get-buffer forj-conversation-buffer)
+      (with-current-buffer forj-conversation-buffer
+        (let* ((content (buffer-string))
+               (clean-content (forj-clean-multibyte-text content)))
+          (if (> (length clean-content) 1000)
+              (concat "...\n" (substring clean-content -800))
+            clean-content)))
     "No previous conversation"))
 
 (defun forj-prompt (user-input)
-  "Process USER-INPUT with AI and apply response."
+  "Process USER-INPUT with AI and apply response.
+This function maintains backward compatibility while supporting new context management."
   (interactive "sForj prompt: ")
   (message "Sending request to AI...")
-  ;; Display user input first
+  ;; Display user input first  
   (forj-display-user-input user-input)
   ;; Use enhanced context for code review prompts
   (let* ((use-code-context (or (string-match-p "review.*file\\|syntax.*error\\|code.*quality" user-input)
@@ -207,42 +332,75 @@
         (progn
           (forj-display-response response)
           ;; Show the conversation buffer to user
-          (display-buffer "*forj-conversation*")
+          (display-buffer (forj-conversation-buffer))
+          (when (yes-or-no-p "Apply AI suggestions? ")
+            (forj-apply-response response)))
+      (message "No response received from AI"))))
+
+;; Enhanced prompt processing function for context management integration
+(defun forj-process-prompt-with-context (prompt context-data)
+  "Process PROMPT with CONTEXT-DATA using new context management system.
+This is the new API entry point that works with the context management system."
+  (when (fboundp 'forj-add-to-history)
+    (forj-add-to-history 'user prompt))
+  
+  (message "Processing prompt with %d context sources..." (length context-data))
+  
+  ;; Format context for API
+  (let* ((formatted-context (forj-format-context-for-api context-data))
+         (enhanced-prompt (if (and context-data (not (string-empty-p formatted-context)))
+                             (format "Context:\n%s\n\nUser Request:\n%s"
+                                    formatted-context prompt)
+                           prompt))
+         (response (forj-api-request enhanced-prompt nil))) ; Don't use old context system
+    
+    (if response
+        (progn
+          (when (fboundp 'forj-add-to-history)
+            (forj-add-to-history 'assistant response))
+          (forj-display-response response)
+          ;; Show the conversation buffer to user
+          (display-buffer (forj-conversation-buffer))
           (when (yes-or-no-p "Apply AI suggestions? ")
             (forj-apply-response response)))
       (message "No response received from AI"))))
 
 (defun forj-display-user-input (input)
   "Display user INPUT in conversation buffer."
-  (let ((buffer (get-buffer-create "*forj-conversation*")))
+  (let ((buffer (forj-conversation-buffer)))
     (with-current-buffer buffer
-      (goto-char (point-max))
-      (insert "\n\n--- User ---\n" input)
-      (goto-char (point-max)))))
+      (let ((inhibit-read-only t))
+        (goto-char (point-max))
+        (insert "\n\n--- User ---\n" input)
+        ;; Apply syntax highlighting to the newly inserted content
+        (when (featurep 'forj-syntax-highlight)
+          (forj-highlight-code-blocks))
+        (goto-char (point-max))))))
 
 (defun forj-display-response (response)
   "Display AI RESPONSE in conversation buffer and show it to user."
-  (let ((buffer (get-buffer-create "*forj-conversation*")))
-    (with-current-buffer buffer
-      (goto-char (point-max))
-      (insert "\n\n--- AI Response ---\n" response)
-      ;; Move cursor to start of new response for easy reading
-      (goto-char (point-max)))
-    ;; Make sure buffer is visible
-    (display-buffer buffer)))
+  (when response
+    (let ((buffer (forj-conversation-buffer)))
+      (with-current-buffer buffer
+        (let ((inhibit-read-only t))
+          (goto-char (point-max))
+          (insert "\n\n--- AI Response ---\n" response)
+          ;; Apply syntax highlighting to the newly inserted content
+          (when (featurep 'forj-syntax-highlight)
+            (forj-highlight-code-blocks))
+          ;; Move cursor to start of new response for easy reading
+          (goto-char (point-max))))
+      ;; Make sure buffer is visible
+      (display-buffer buffer)
+      (message "AI response displayed in conversation buffer"))))
 
 (defun forj-handle-api-error (error-data)
-  "Handle API errors gracefully with user feedback."
-  (let* ((error-msg (format "API Error: %s" error-data))
-         (buffer (get-buffer-create "*forj-conversation*")))
-    (message error-msg)
-    (condition-case err
-        (with-current-buffer buffer
-          (goto-char (point-max))
-          (insert "\n⚠️ " error-msg "\n"))
-      (error (message "Buffer error while logging API error: %s" err)))
-    ;; Show the error to user
-    (display-buffer buffer)))
+  "Handle API errors gracefully with user feedback.
+  This function is deprecated - use forj-api-error instead."
+  (forj-api-error (format "Legacy API Error: %s" error-data)
+                 :context "Legacy error handler"
+                 :recovery '("Update code to use forj-api-error"
+                            "Check error handling implementation")))
 
 (defun forj-process-file-operations (response)
   "Process file operations from AI RESPONSE.

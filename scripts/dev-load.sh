@@ -22,7 +22,7 @@ fi
 
 echo -e "${GREEN}Starting Emacs with forj.el loaded...${NC}"
 echo "Commands to try:"
-echo "  M-x forj-prompt"
+echo "  M-x forj-start"
 echo "  M-x forj-check-syntax"
 echo "  M-x forj-show-conversation"
 echo "  M-x forj-version"
@@ -32,4 +32,4 @@ echo
 emacs -Q \
     -L "$PROJECT_DIR" \
     -l "$PROJECT_DIR/forj.el" \
-    --eval "(message \"forj.el loaded successfully! Try M-x forj-prompt\")"
+    --eval "(message \"forj.el loaded successfully! Try M-x forj-start\")"
