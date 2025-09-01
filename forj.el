@@ -284,6 +284,13 @@ Returns structured data with detailed error reporting for AI consumption."
   "Return the current conversation history."
   forj-conversation-history)
 
+;; Conversation mode keymap (must be defined before the mode)
+(defvar forj-conversation-mode-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map "p" 'forj-prompt)
+    map)
+  "Keymap for forj-conversation-mode.")
+
 ;; Conversation system
 (define-derived-mode forj-conversation-mode special-mode "Forj"
   "Major mode for the Forj conversation buffer."
@@ -321,9 +328,9 @@ Returns structured data with detailed error reporting for AI consumption."
             ;; Fallback to basic UI
             (insert "Forj AI Assistant\n")
             (insert "================\n\n")
-            (insert "Type your prompt below and press RET to send.\n\n")
+            (insert "Press 'p' to open prompt interface.\n\n")
             (insert "Commands:\n")
-            (insert "- M-x forj-start: Start a new conversation\n")
+            (insert "- p: Open prompt interface\n")
             (insert "- M-x forj-clear-conversation: Clear this buffer\n\n")
             (insert "---\n\n")))))
     (display-buffer buffer)
@@ -341,9 +348,9 @@ Returns structured data with detailed error reporting for AI consumption."
           (erase-buffer)
           (insert "Forj AI Assistant\n")
           (insert "================\n\n")
-          (insert "Type your prompt below and press RET to send.\n\n")
+          (insert "Press 'p' to open prompt interface.\n\n")
           (insert "Commands:\n")
-          (insert "- M-x forj-start: Start a new conversation\n")
+          (insert "- p: Open prompt interface\n")
           (insert "- M-x forj-clear-conversation: Clear this buffer\n\n")
           (insert "---\n\n"))))))
 

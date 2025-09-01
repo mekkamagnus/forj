@@ -40,7 +40,7 @@
   ;; because `forj-prompt-mode-map` follows the naming convention.
   (setq-local fill-column 80)
   (setq-local header-line-format
-              "Forj Prompt: @ for files, / for commands, C-c C-c Submit, C-c C-k Cancel")
+              "Forj: C-c C-c Submit, C-c C-k Cancel")
   
   ;; Enable word wrap
   (setq-local word-wrap t)
@@ -114,7 +114,7 @@ RETURN-BUFFER is optional buffer to return to after submission."
       (goto-char (point-min)))
     
     (pop-to-buffer buffer)
-    (message "Type your request. Use @ for files, / for commands, C-c C-c to submit")))
+    (message "Type your request. C-c C-c to submit, C-c C-k to cancel")))
 
 (defun forj-setup-prompt-buffer (&optional initial-text)
   "Initialize the prompt buffer with optional INITIAL-TEXT."
@@ -293,7 +293,7 @@ RETURN-BUFFER is optional buffer to return to after submission."
   "Launch Forj application directly to conversation buffer."
   (interactive)
   (let ((buffer (forj-conversation-buffer)))
-    (message "Forj AI Assistant ready. Type your prompt and press RET to send.")
+    (message "Forj AI Assistant ready. Press 'p' to open prompt interface.")
     buffer))
 
 
@@ -308,22 +308,11 @@ RETURN-BUFFER is optional buffer to return to after submission."
     (princ "  M-x forj-start  - Launch conversation buffer\n")
     (princ "  M-x forj-prompt - Open prompt interface directly\n\n")
     (princ "Conversation Buffer:\n")
-    (princ "  • Single unified interface for AI interactions\n")
-    (princ "  • Type prompts directly and press RET to send\n")
-    (princ "  • All context management happens seamlessly\n\n")
-    (princ "Prompt Interface:\n")
-    (princ "  @               - Insert file path and add to context\n")
-    (princ "  /               - Insert command\n")
+    (princ "  p               - Open prompt interface\n")
+    (princ "  • View AI responses and conversation history\n\n")
+    (princ "Prompt Interface (Minimal):\n")
     (princ "  C-c C-c         - Submit prompt\n")
-    (princ "  C-c C-k         - Cancel prompt\n")
-    (princ "  C-c C-s         - Show context suggestions\n")
-    (princ "  C-c C-l         - List selected context sources\n")
-    (princ "  C-c C-r         - Clear context sources\n\n")
-    (princ "Context Management:\n")
-    (princ "  • Automatic context suggestions based on prompt analysis\n")
-    (princ "  • Support for buffer, file, compilation, and project context\n")
-    (princ "  • Smart relevance scoring and size optimization\n")
-    (princ "  • Caching for improved performance\n")))
+    (princ "  C-c C-k         - Cancel prompt\n\n")))
 
 ;;; Integration Functions
 
