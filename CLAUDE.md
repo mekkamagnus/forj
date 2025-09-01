@@ -291,3 +291,174 @@ Forj.el is an AI co-pilot for Emacs with deep Emacs Lisp integration. Focus on c
 - Performance targets must be met for all documented features
 
 This RDD + TDD approach ensures Forj.el will have excellent user experience, comprehensive documentation, and robust implementation from the start.
+
+## Testing Interactive Features via TCP/Emacsclient
+
+### Overview
+
+For testing interactive Emacs features like forj's conversation interface, use emacsclient with TCP socket connection to programmatically interact with a running Emacs instance. This enables automated testing of UI components, conversation flows, and user interaction patterns.
+
+### Setup Requirements
+
+1. **Running Emacs Instance**: Start Emacs with server enabled
+2. **Socket Identification**: Locate the Emacs server socket path
+3. **TCP Connection**: Use emacsclient with proper socket parameters
+
+### Socket Discovery
+
+Find your Emacs server socket:
+```bash
+# Typical socket locations:
+/var/folders/*/T/emacs*/server
+/tmp/emacs*/server
+~/.emacs.d/server/server
+```
+
+Example socket path:
+```bash
+/var/folders/k7/9pkqzxmj2j9cfzv5nclrn_l80000gn/T/emacs501/server
+```
+
+### Testing Commands
+
+#### Basic Connection Test
+```bash
+emacsclient --socket-name "/path/to/socket" -e '(+ 1 2)'
+```
+
+#### Buffer Management
+```bash
+# List all buffers with file associations
+emacsclient --socket-name "/path/to/socket" -e '(mapcar (lambda (buf) (list (buffer-name buf) (buffer-file-name buf))) (buffer-list))'
+
+# Check current working directory
+emacsclient --socket-name "/path/to/socket" -e '(pwd)'
+
+# Switch to specific directory
+emacsclient --socket-name "/path/to/socket" -e '(cd "/path/to/project")'
+```
+
+#### Forj-Specific Testing
+
+**Kill and Restart Forj:**
+```bash
+# Kill forj conversation buffer
+emacsclient --socket-name "/path/to/socket" -e '(kill-buffer "*forj*")'
+
+# Reload forj.el
+emacsclient --socket-name "/path/to/socket" -e '(load-file "forj.el")'
+
+# Start forj
+emacsclient --socket-name "/path/to/socket" -e '(forj-start)'
+```
+
+**Submit Prompts Programmatically:**
+```bash
+# Create prompt buffer and submit (works around interactive limitations)
+emacsclient --socket-name "/path/to/socket" -e '(let ((prompt-text "What directory am I in")) (with-current-buffer (get-buffer-create "*forj-prompt*") (erase-buffer) (insert prompt-text) (forj-prompt-submit)))'
+```
+
+**Read Conversation Results:**
+```bash
+# Get conversation buffer contents
+emacsclient --socket-name "/path/to/socket" -e '(with-current-buffer "*forj*" (buffer-substring-no-properties (point-min) (point-max)))'
+
+# Check buffer status and size
+emacsclient --socket-name "/path/to/socket" -e '(with-current-buffer "*forj*" (list (buffer-name) (buffer-size) (if (buffer-modified-p) "MODIFIED" "saved")))'
+```
+
+### Testing Interactive Features
+
+#### Project-Specific Testing Workflow
+1. **Setup Test Environment:**
+   ```bash
+   # Switch to test project directory
+   emacsclient --socket-name "/path/to/socket" -e '(cd "/path/to/test/project")'
+   
+   # Clean slate - kill existing forj session
+   emacsclient --socket-name "/path/to/socket" -e '(kill-buffer "*forj*")'
+   
+   # Start fresh forj instance
+   emacsclient --socket-name "/path/to/socket" -e '(forj-start)'
+   ```
+
+2. **Test Specific Features:**
+   ```bash
+   # Test directory queries (reproduces troubleshooting scenario)
+   emacsclient --socket-name "/path/to/socket" -e '(let ((prompt-text "What directory am I in")) (with-current-buffer (get-buffer-create "*forj-prompt*") (erase-buffer) (insert prompt-text) (forj-prompt-submit)))'
+   
+   # Test file operations
+   emacsclient --socket-name "/path/to/socket" -e '(let ((prompt-text "List the files in this project")) (with-current-buffer (get-buffer-create "*forj-prompt*") (erase-buffer) (insert prompt-text) (forj-prompt-submit)))'
+   ```
+
+3. **Validate Results:**
+   ```bash
+   # Check if tools were triggered (expected behavior)
+   emacsclient --socket-name "/path/to/socket" -e '(with-current-buffer "*forj*" (save-excursion (goto-char (point-min)) (search-forward "tool-call" nil t)))'
+   
+   # Extract conversation for analysis
+   emacsclient --socket-name "/path/to/socket" -e '(with-current-buffer "*forj*" (buffer-substring-no-properties (point-min) (point-max)))'
+   ```
+
+### Test Automation Patterns
+
+#### Regression Testing Script Template
+```bash
+#!/bin/bash
+SOCKET="/var/folders/k7/9pkqzxmj2j9cfzv5nclrn_l80000gn/T/emacs501/server"
+
+# Function to run emacsclient commands
+run_emacs() {
+    emacsclient --socket-name "$SOCKET" -e "$1"
+}
+
+# Test setup
+run_emacs '(kill-buffer "*forj*")' > /dev/null 2>&1
+run_emacs '(load-file "forj.el")'
+run_emacs '(cd "/path/to/test/project")'
+run_emacs '(forj-start)'
+
+# Test case 1: Directory query
+echo "Testing directory query..."
+run_emacs '(let ((prompt-text "What directory am I in")) (with-current-buffer (get-buffer-create "*forj-prompt*") (erase-buffer) (insert prompt-text) (forj-prompt-submit)))'
+
+# Wait for response
+sleep 3
+
+# Validate result
+RESULT=$(run_emacs '(with-current-buffer "*forj*" (buffer-substring-no-properties (point-min) (point-max)))')
+if [[ $RESULT == *"tool-call"* ]]; then
+    echo "✅ PASS: Tool call triggered"
+else
+    echo "❌ FAIL: No tool call triggered"
+    echo "Response: $RESULT"
+fi
+```
+
+#### Error Reproduction Testing
+```bash
+# Reproduce specific issues for troubleshooting
+run_emacs '(let ((prompt-text "show me the current directory")) (with-current-buffer (get-buffer-create "*forj-prompt*") (erase-buffer) (insert prompt-text) (forj-prompt-submit)))'
+
+# Document exact response for specification writing
+RESPONSE=$(run_emacs '(with-current-buffer "*forj*" (buffer-substring-no-properties (point-min) (point-max)))')
+echo "Actual Response: $RESPONSE" >> troubleshooting-log.txt
+```
+
+### Best Practices
+
+1. **Socket Path Management**: Always verify socket path before testing
+2. **Buffer Cleanup**: Kill buffers between tests to ensure clean state
+3. **Response Timing**: Allow sufficient time for API calls to complete (3-5 seconds)
+4. **Error Handling**: Check for error messages in response content
+5. **State Isolation**: Use different project directories for independent tests
+6. **Documentation**: Record exact commands and responses for debugging
+
+### Integration with Development Workflow
+
+- **Specification Validation**: Use TCP testing to validate specification requirements match actual behavior
+- **Regression Prevention**: Automate critical user journey testing
+- **Performance Monitoring**: Measure response times for interactive features
+- **Edge Case Testing**: Programmatically test error conditions and recovery
+
+This TCP/emacsclient approach enables systematic testing of Emacs interactive features that would be difficult to test through traditional unit testing frameworks alone.
