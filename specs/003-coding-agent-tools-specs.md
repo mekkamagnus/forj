@@ -460,6 +460,7 @@ its Emacs mapping. All write/edit tools must validate `.el` content via
 - Integration tests (conversation loop):
   - Model emits a `tool-call`; Forj returns `tool-result`; model uses it
 
+
 ## 9. Non-Goals (MVP)
 
 - Git write operations (stage/commit/revert); read-only status only

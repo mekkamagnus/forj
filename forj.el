@@ -32,6 +32,16 @@
       (error
        (message "Warning: Failed to load forj-tools.el: %s" (error-message-string err))))))
 
+;; Load Natural Language Query Interpreter (Specification 004)
+(let ((query-file (expand-file-name "forj-query-interpreter.el" (file-name-directory (or load-file-name buffer-file-name)))))
+  (when (file-exists-p query-file)
+    (condition-case err
+        (progn
+          (message "Loading forj-query-interpreter.el...")
+          (load-file query-file))
+      (error
+       (message "Warning: Failed to load forj-query-interpreter.el: %s" (error-message-string err))))))
+
 ;; Load Context Management System (Specification 002) in dependency order
 (let ((context-loaded nil)
       (context-available nil)

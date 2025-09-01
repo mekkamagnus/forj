@@ -42,11 +42,28 @@ This specification defines a natural language query interpretation layer that si
 - **Tool Delegation:** Convert AI plan into one or more `tool-call` JSON objects and delegate to `forj-tools-dispatch` with full safety checks and approval gates.
 - **Rule-based Fallback:** If the AI API is unavailable or returns invalid output, fall back to lightweight pattern matching for common intents (list files, read file, search).
 
+### 2.3 Control Layer (Deterministic Orchestration)
+
+Control: Provides deterministic decision-making and process flow control.
+This component handles if/then logic, routing based on conditions, and
+process orchestration for predictable behavior.
+
+- Intent classification → route:
+  - Map model classification to control intents:
+    - `question` → `answer_only`
+    - `request` → `tool_plan`
+    - `complaint` → `escalate`
+- Confidence gating: thresholds govern auto-execute vs. dry-run vs. clarification
+- Budgets: enforce per-plan limits (time_ms, max_calls)
+- Safety: sandbox + approval gate always enforced before destructive ops
+- Termination: stop when budget/time is exhausted or no progress
+
 ## 3. Implementation Details
 
 ### 3.1 Frontend (forj-query-interpreter.el)
 
 - AI-first interpretation flow using Gemini via `forj-api.el`.
+- AI intent classification returns typed JSON: `{intent, confidence, reasoning}`
 - Deterministic JSON plan schema with confidence scoring and rationale.
 - Validation/normalization of AI-suggested arguments (paths, limits, flags).
 - Fallback to pattern registry when AI disabled/unavailable.
@@ -61,6 +78,22 @@ This specification defines a natural language query interpretation layer that si
 - Dispatcher remains unchanged; interpretation is a preprocessing step in the orchestrator.
 - All existing safety mechanisms and approval gates remain intact.
 - All tool result/error contracts preserved.
+
+Intent Classification JSON (AI):
+```
+{
+  "intent": "question" | "request" | "complaint",
+  "confidence": 0.0 – 1.0,
+  "reasoning": "short explanation"
+}
+```
+
+Intent Mapping (Control):
+```
+question  -> answer_only
+request   -> tool_plan
+complaint -> escalate
+```
 
 ### 3.3 AI Prompt + Fallback Patterns
 
@@ -84,6 +117,87 @@ AI Plan JSON Schema (returned by Gemini):
 }
 ```
 
+Reference Example (Python; for illustration only — Forj implementation is Elisp)
+```
+from openai import OpenAI
+from pydantic import BaseModel
+from typing import Literal
+
+
+class IntentClassification(BaseModel):
+    intent: Literal["question", "request", "complaint"]
+    confidence: float
+    reasoning: str
+
+
+def route_based_on_intent(user_input: str) -> tuple[str, IntentClassification]:
+    client = OpenAI()
+    response = client.responses.parse(
+        model="gpt-4o",
+        input=[
+            {
+                "role": "system",
+                "content": "Classify user input into one of three categories: question, request, or complaint. Provide your reasoning and confidence level.",
+            },
+            {"role": "user", "content": user_input},
+        ],
+        text_format=IntentClassification,
+    )
+
+    classification = response.output_parsed
+    intent = classification.intent
+
+    if intent == "question":
+        result = answer_question(user_input)
+    elif intent == "request":
+        result = process_request(user_input)
+    elif intent == "complaint":
+        result = handle_complaint(user_input)
+    else:
+        result = "I'm not sure how to help with that."
+
+    return result, classification
+
+
+def answer_question(question: str) -> str:
+    client = OpenAI()
+    response = client.responses.create(
+        model="gpt-4o", input=f"Answer this question: {question}"
+    )
+    return response.output[0].content[0].text
+
+
+def process_request(request: str) -> str:
+    return f"Processing your request: {request}"
+
+
+def handle_complaint(complaint: str) -> str:
+    return f"I understand your concern about: {complaint}. Let me escalate this."
+
+
+if __name__ == "__main__":
+    # Test different types of inputs
+    test_inputs = [
+        "What is machine learning?",
+        "Please schedule a meeting for tomorrow",
+        "I'm unhappy with the service quality",
+    ]
+
+    for user_input in test_inputs:
+        print(f"\nInput: {user_input}")
+        result, classification = route_based_on_intent(user_input)
+        print(
+            f"Intent: {classification.intent} (confidence: {classification.confidence})"
+        )
+        print(f"Reasoning: {classification.reasoning}")
+        print(f"Response: {result}")
+```
+
+Elisp Implementation Notes (authoritative):
+- Use `forj-api.el` (Gemini) to request intent classification and tool plans
+- Parse strict JSON; map intents per Control section; enforce sandbox/approval
+- Provide `defcustom` for thresholds/timeouts and a pattern fallback when AI is unavailable
+
 ## 4. Testing Strategy
 
 - **Unit Tests (test/test-forj-query-interpreter.el):**
@@ -99,6 +213,16 @@ AI Plan JSON Schema (returned by Gemini):
   - Interpretation latency budget (e.g., < 300ms average with AI; < 100ms fallback)
   - Memory usage for plan handling
   - Behavior under API timeouts/retries
+
+- **Interactive TCP testing (Critical)**
+  - Exercise query interpretation and tool execution directly against a running Emacs via `emacsclient` over TCP/socket (see CLAUDE.md: “Testing Interactive Features via TCP/Emacsclient”).
+  - Validate end-to-end flow: prompt submission → intent classification → AI plan → dispatcher tool-calls → tool-results rendered in `*forj*`.
+  - Recommended checks:
+    - Start/clean session: `(kill-buffer "*forj*")`, `(load-file "forj.el")`, `(forj-start)`
+    - Submit a natural-language query that should trigger tool usage (e.g., “List the files in this project”)
+    - Inspect `*forj*` for `tool-call`/`tool-result` blocks
+    - Confirm sandboxing and approval gates are enforced for destructive operations
+  - Automate with the regression script pattern from CLAUDE.md (socket discovery, run commands, assert on buffer content and timing)
 
 ## 5. Benefits
 
