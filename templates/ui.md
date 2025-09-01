@@ -218,26 +218,22 @@ Indicator Feedback  Result     Action   State
 └─────────────────────────────────────────────────────────┘
 ```
 
-### Enhanced Prompt Interface (Implemented)
+### Simplified Prompt Interface (Implemented)
 ```
 ┌─────────────────────────────────────────────────────────┐
-│ Forj Prompt Interface                               │ × │
+│ Forj: C-c C-c Submit, C-c C-k Cancel               │ × │
 ├─────────────────────────────────────────────────────────┤
-│ Enter your request (@ for files, / for commands):      │
 │                                                         │
 │ ┌─────────────────────────────────────────────────────┐ │
-│ │ Review @forj.el and @forj-api.el for improvements  │ │
+│ │ Review this function for improvements               │ │
 │ │                                                     │ │
-│ │ Context Sources: [2 files selected]                │ │
-│ │ • forj.el (15.2 KB, elisp)                        │ │
-│ │ • forj-api.el (12.8 KB, elisp)                    │ │
+│ │                                                     │ │
 │ └─────────────────────────────────────────────────────┘ │
 │                                                         │
-│ Suggested Context:                                      │
-│ • Current buffer (main.el)                             │
-│ • Recent compilation errors                             │
+│ Context: Automatically suggested based on prompt       │
+│ • Current buffer                                        │
+│ • Related project files                               │
 │                                                         │
-│ [C-c C-c to submit] [C-c C-k to cancel]               │
 └─────────────────────────────────────────────────────────┘
 ```
 

@@ -183,12 +183,154 @@ The system supports multiple interaction patterns with sophisticated context man
   - **Alternatives Considered:** OpenAI GPT API, Anthropic Claude API, local models, multiple provider support from start.
   - **Rationale:** Google Gemini provides excellent code generation capabilities, reasonable pricing, and good API stability. Focusing on a single provider initially allows for better optimization and testing. The architecture supports adding more providers in the future through the existing `forj-api-provider` abstraction.
 
+- **Decision:** We implemented comprehensive AI tools system instead of simple text-based interaction.
+  - **Context:** AI agents need reliable ways to interact with Emacs environment and file system to provide practical assistance.
+  - **Alternatives Considered:** Text-only responses, external script execution, limited file operations, web-based tools integration.
+  - **Rationale:** Native tools system provides secure, validated access to Emacs functionality while maintaining system stability. Tools are designed with proper error handling, validation, and recovery mechanisms. This approach enables the AI to perform actual work rather than just providing suggestions.
+
+## 7. LLM Tools System
+
+The forj-tools.el component implements a secure, JSON-based tool dispatch system that enables the AI agent to interact with the Emacs environment and file system. This system provides the practical capabilities that distinguish Forj.el from text-only AI assistants.
+
+### Architecture Overview
+
+**Tool Registry & Dispatch System:**
+- Centralized tool registry using hash table (`forj-tools--registry`)
+- JSON-based tool call format with request ID tracking
+- Structured response format with success/error indication
+- Security validation and project sandboxing for all operations
+
+**Core Security Model:**
+- **Project Root Enforcement:** All file operations restricted to project directory via `forj--normalize-path`
+- **Path Validation:** Comprehensive path sanitization preventing directory traversal attacks
+- **Approval Gates:** Configurable approval system for destructive operations (`forj-tools-approve-destructive`)
+- **Error Handling:** Comprehensive error classification and context preservation
+
+### Implemented Tools (6 Production-Ready)
+
+#### File System Operations
+- **`read_file`** - Read file contents with optional line range and size limits
+  - Features: UTF-8 encoding detection, truncation handling, line range selection
+  - Security: Path validation, project root enforcement, file existence checks
+  
+- **`list_files`** - Recursive directory listing with configurable depth and filtering
+  - Features: Hidden file control, symlink following options, file metadata extraction
+  - Security: Directory traversal protection, visited directory tracking
+
+- **`write_file`** - Write content to files with backup and validation options
+  - Features: Automatic backup creation, append mode, dry-run capability
+  - Security: Elisp syntax validation via `forj-paren-checker` integration
+  - Safety: Create-if-missing control, atomic write operations
+
+- **`search`** - Text search across project files with regex support
+  - Features: Case sensitivity control, path filtering, result limiting
+  - Performance: Configurable max results (`forj-tools-max-results` default 200)
+
+#### System Operations
+- **`run_shell`** - Execute shell commands with environment control
+  - Features: Custom working directory, environment variables, timeout handling
+  - Security: Project root restriction, command array validation
+  - Monitoring: Execution time tracking, exit code reporting
+
+#### Utility Operations  
+- **`get_current_directory`** - Retrieve current project root information
+  - Purpose: Debugging and context verification for AI agent
+  - Output: Relative and absolute path information
+
+### Stub Tools (5 Planned Features)
+
+The following tools are registered but return "not implemented yet" errors:
+- **`edit_region`** - Targeted text replacement within files
+- **`glob`** - Pattern-based file matching  
+- **`todo_write`** - Task management integration
+- **`task`** - Complex workflow orchestration
+- **`multi_edit`** - Batch editing operations across multiple files
+
+### JSON Tool Call Protocol
+
+**Request Format:**
+```json
+{
+  "id": "unique-request-id",
+  "name": "tool-name", 
+  "args": {
+    "param1": "value1",
+    "param2": "value2"
+  },
+  "meta": {
+    "context": "additional-context"
+  }
+}
+```
+
+**Response Format:**
+```json
+{
+  "id": "unique-request-id",
+  "name": "tool-name",
+  "ok": true,
+  "result": {
+    "data": "tool-specific-result"
+  }
+}
+```
+
+**Error Response Format:**
+```json
+{
+  "id": "unique-request-id", 
+  "name": "tool-name",
+  "ok": false,
+  "error": {
+    "type": "error-category",
+    "message": "human-readable-error"
+  }
+}
+```
+
+### Integration with Core System
+
+**API Integration (`forj-api.el`):**
+- Tools are invoked through structured prompts sent to Gemini API
+- Tool calls are parsed from AI responses and executed via `forj-tools-dispatch`
+- Results are fed back to the AI for continued conversation
+
+**Error System Integration (`forj-error-system.el`):**
+- All tool errors are classified and handled through central error system
+- Provides consistent error reporting and recovery suggestions
+- Maintains error context for debugging and analysis
+
+**Configuration Options:**
+- `forj-tools-max-results` - Default result limits for search operations
+- `forj-tools-approve-destructive` - Enable approval gates for dangerous operations  
+- `forj-tools-project-root` - Override default project root detection
+
+### Security Considerations
+
+**Sandboxing Strategy:**
+- All file operations restricted to `forj-tools-project-root` (defaults to `default-directory`)
+- Path validation prevents access to parent directories or system files
+- Shell command execution limited to project context
+
+**Validation Layers:**
+- Input validation for all tool parameters
+- File existence and permission checking
+- Elisp syntax validation for generated code
+- Approval workflows for destructive operations
+
+**Error Security:**
+- Comprehensive error logging without information leakage
+- Structured error responses prevent system information exposure
+- Safe failure modes maintain system stability
+
+This tools system enables Forj.el to provide practical AI assistance while maintaining security and system integrity through comprehensive validation and sandboxing mechanisms.
+
 - **Decision:** We implemented advanced context management system instead of simple prompt-response interaction.
   - **Context:** Initial implementation showed that context-aware AI assistance produces significantly better results than isolated prompts.
   - **Alternatives Considered:** Simple prompt system, manual context inclusion, file-based context loading.
-  - **Rationale:** Intelligent context collection and management enables the AI to provide more accurate, relevant, and actionable responses. The @ and / command system provides intuitive user control while automated suggestions reduce cognitive overhead.
+  - **Rationale:** Intelligent context collection and management enables the AI to provide more accurate, relevant, and actionable responses. Context suggestions work automatically without requiring complex command memorization.
 
-## 8. Implementation Status & Future Considerations
+## 9. Implementation Status & Future Considerations
 
 ### Current Status (Alpha)
 
@@ -210,6 +352,7 @@ The system supports multiple interaction patterns with sophisticated context man
 - Community feedback integration
 - Advanced refactoring capabilities
 - Multi-language support beyond Emacs Lisp
+- UI/UX refinements based on simplified design principles
 
 ### Out of Scope for v1.0
 
@@ -218,13 +361,13 @@ The system supports multiple interaction patterns with sophisticated context man
 - Official support for LLM APIs other than Gemini (experimental support may be added)
 - Real-time collaborative editing features
 
-## 9. Glossary
+## 10. Glossary
 
 - **ERT:** Emacs Lisp Regression Testing. The built-in testing framework for Emacs.
 - **MELPA:** The most popular community-driven package archive for Emacs.
 - **`defcustom`:** A macro used to define a user-configurable variable in Emacs.
 
-## 10. Further Reading
+## 11. Further Reading
 
 - **[Product Requirements Document (PRD)](./prd.md):** Outlines the product's purpose, features, and target audience.
 - **[Contributing Guide](./CONTRIBUTING.md):** Provides instructions for how to contribute to the project, including how to run tests and submit pull requests.

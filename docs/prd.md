@@ -5,7 +5,7 @@
 - **Product/Feature Name:** `Forj.el`
 - **Author(s):** Mekael
 - **Status:** Draft
-- **Last Updated:** August 6, 2025
+- **Last Updated:** September 1, 2025
 
 ## 2. Introduction & Vision
 
@@ -48,15 +48,48 @@
 - [x] ✅ Display conversation history in `*forj-conversation*` buffer.
 - [x] ✅ **ENHANCED**: Rich conversation display with syntax highlighting and theming.
 
-### Epic: Shell Command Execution
+### Epic: AI Tools System ✅ COMPLETED + ENHANCED
+
+#### Story: Core Tools Architecture
+
+- [x] ✅ Implement extensible tools framework for AI agent capabilities (P0).
+- [x] ✅ Design secure tool execution environment with proper sandboxing.
+- [x] ✅ **ENHANCED**: Comprehensive tools system with:
+  - Tool definition and registration framework
+  - Secure execution environment with validation
+  - Error handling and recovery mechanisms
+  - Integration with conversation flow and context management
+
+#### Story: File Operation Tools
+
+- [x] ✅ Implement file reading tools with size limits and validation (P0).
+- [x] ✅ Implement file writing tools with backup and atomic operations (P0).
+- [x] ✅ Implement directory scanning and project analysis tools (P1).
+- [x] ✅ **ENHANCED**: Advanced file operations with:
+  - Git integration and status awareness
+  - Syntax validation for Emacs Lisp files
+  - Metadata extraction and file type detection
+  - Secure file locking and concurrent access protection
+
+#### Story: Buffer Manipulation Tools
+
+- [x] ✅ Implement buffer reading tools for current and specified buffers (P0).
+- [x] ✅ Implement region replacement tools with undo integration (P0).
+- [x] ✅ Implement buffer analysis tools for context extraction (P1).
+- [x] ✅ **ENHANCED**: Sophisticated buffer operations with:
+  - Text property preservation
+  - Mode-aware content analysis
+  - Multi-buffer coordination
+  - Emacs integration with standard buffer functions
+
+#### Story: Shell Command Execution
 
 #### Status: DEFERRED TO v1.1
 Shell command execution was deprioritized in favor of advanced file operations and context management.
 
-#### Story: Execute Shell Commands
-
 - [ ] Implement function to execute arbitrary shell commands (P1).
 - [ ] Capture and display shell command output in a dedicated buffer.
+- [ ] Integrate with tools framework for secure command execution.
 
 ### Epic: Contextual Understanding ✅ COMPLETED + ENHANCED
 
@@ -109,6 +142,8 @@ Shell command execution was deprioritized in favor of advanced file operations a
 #### Story: Public Beta Release 🔬 IN PROGRESS
 
 - [x] ✅ Complete core functionality suitable for beta release.
+- [x] ✅ UI consistency fixes - simplified interface design.
+- [x] ✅ Advanced testing infrastructure with emacsclient integration.
 - [ ] 🔬 Prepare and release `Forj.el` on MELPA.
 - [ ] 🔬 Announce public beta to relevant Emacs communities.
 - [ ] 🔬 Finalize documentation and installation guides.
@@ -135,21 +170,24 @@ Shell command execution was deprioritized in favor of advanced file operations a
 
 ## 5. Implementation Summary & Status
 
-### ✅ ALPHA RELEASE COMPLETED (August 2025)
+### ✅ ALPHA RELEASE COMPLETED (September 2025)
 
 **Major Achievements:**
 - **100% Core Functionality**: All P0 and P1 features implemented and tested
-- **Enhanced Beyond Original Scope**: Advanced context management, UI system, comprehensive error handling
+- **Enhanced Beyond Original Scope**: Advanced context management, comprehensive tools system, UI system, comprehensive error handling
 - **Production-Ready Quality**: 33+ automated tests, robust security, performance optimization
-- **Rich User Experience**: Intuitive commands, beautiful UI, comprehensive documentation
+- **Simplified User Experience**: Minimal UI design with 'p' key workflow, consistent interfaces
+- **UI Consistency**: Fixed inconsistency between forj-start and forj-prompt interfaces
+- **Testing Infrastructure**: Advanced emacsclient testing for interactive features
 
 ### 🔬 BETA PREPARATION IN PROGRESS
 
 **Focus Areas:**
 - MELPA package preparation and submission
 - Community engagement and feedback collection
-- Final performance optimization and Polish
+- Final performance optimization and polish
 - Comprehensive user documentation
+- UI/UX refinement based on simplified design principles
 
 ### Constraints & Scope Evolution
 
@@ -159,13 +197,15 @@ Shell command execution was deprioritized in favor of advanced file operations a
   - ✅ Advanced context management (originally P2, delivered in Alpha)
   - ✅ Rich UI system (beyond original scope)
   - ✅ Comprehensive Git integration (beyond original scope)
+  - ✅ Comprehensive AI tools system (beyond original scope)
   - ✅ Extensive file operations (enhanced beyond requirements)
 
 ### Current Scope Boundaries
 
-- **In Scope for v1.0:** Native Emacs integration, Gemini API, keyboard-driven UX, comprehensive Elisp support
-- **Out of Scope for v1.0:** Voice input, external GUIs, official multi-provider support
-- **Future Considerations:** Additional AI providers, advanced refactoring, community extensions
+- **In Scope for v1.0:** Native Emacs integration, Gemini API, keyboard-driven UX, comprehensive Elisp support, minimal UI design, AI tools system
+- **Out of Scope for v1.0:** Voice input, external GUIs, official multi-provider support, complex UI features, shell command execution
+- **Future Considerations:** Additional AI providers, advanced refactoring, community extensions, enhanced UI based on user feedback, shell command tools, custom tool development API
+- **Recent Refinements:** Simplified UI approach prioritizing consistency and ease of use over feature complexity
 
 ## 6. Appendix
 

@@ -22,7 +22,7 @@ or any later version published by the Free Software Foundation.
 @titlepage
 @title Forj Manual
 @subtitle AI Co-pilot for Emacs Lisp Development
-@subtitle Version 1.0 (Alpha)
+@subtitle Version 1.0 (Alpha - Simplified UI)
 @author Forj.el Contributors
 
 @page
@@ -36,7 +36,7 @@ or any later version published by the Free Software Foundation.
 @node Top
 @top Forj Manual
 
-Forj.el is an AI co-pilot for Emacs that provides intelligent assistance for Emacs Lisp development. It offers AI-powered code analysis, refactoring, and validation with deep integration into your Emacs workflow.
+Forj.el is an AI co-pilot for Emacs that provides intelligent assistance for Emacs Lisp development. It offers AI-powered code analysis, refactoring, and validation with a simplified, consistent interface and deep integration into your Emacs workflow.
 
 @insertcopying
 @end ifnottex
