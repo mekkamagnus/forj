@@ -3,7 +3,7 @@
 (require 'cl-lib)
 
 ;; Load centralized error handling system
-(let ((error-file (expand-file-name "forj-error-system.el" (file-name-directory (or load-file-name buffer-file-name)))))
+(let ((error-file (expand-file-name "lib/forj-error-system.el" (file-name-directory (or load-file-name buffer-file-name)))))
   (if (file-exists-p error-file)
       (progn
         (message "Loading forj-error-system.el...")
@@ -13,7 +13,7 @@
       (require 'forj-error-system))))
 
 ;; Load API integration module - always reload to get latest changes
-(let ((api-file (expand-file-name "forj-api.el" (file-name-directory (or load-file-name buffer-file-name)))))
+(let ((api-file (expand-file-name "lib/forj-api.el" (file-name-directory (or load-file-name buffer-file-name)))))
   (if (file-exists-p api-file)
       (progn
         (message "Loading forj-api.el...")
@@ -23,7 +23,7 @@
       (require 'forj-api))))
 
 ;; Load Tools dispatcher (coding agent tools)
-(let ((tools-file (expand-file-name "forj-tools.el" (file-name-directory (or load-file-name buffer-file-name)))))
+(let ((tools-file (expand-file-name "lib/forj-tools.el" (file-name-directory (or load-file-name buffer-file-name)))))
   (when (file-exists-p tools-file)
     (condition-case err
         (progn
@@ -33,7 +33,7 @@
        (message "Warning: Failed to load forj-tools.el: %s" (error-message-string err))))))
 
 ;; Load Natural Language Query Interpreter (Specification 004)
-(let ((query-file (expand-file-name "forj-query-interpreter.el" (file-name-directory (or load-file-name buffer-file-name)))))
+(let ((query-file (expand-file-name "lib/forj-query-interpreter.el" (file-name-directory (or load-file-name buffer-file-name)))))
   (when (file-exists-p query-file)
     (condition-case err
         (progn
@@ -48,7 +48,7 @@
       (context-suggestions-available nil))
   
   ;; Load forj-context.el first (base dependency)
-  (let ((context-file (expand-file-name "forj-context.el" (file-name-directory (or load-file-name buffer-file-name)))))
+  (let ((context-file (expand-file-name "lib/forj-context.el" (file-name-directory (or load-file-name buffer-file-name)))))
     (when (file-exists-p context-file)
       (condition-case err
           (progn
@@ -59,7 +59,7 @@
          (message "Warning: Failed to load forj-context.el: %s" (error-message-string err))))))
   
   ;; Load forj-context-suggestions.el (depends on forj-context)
-  (let ((suggestions-file (expand-file-name "forj-context-suggestions.el" (file-name-directory (or load-file-name buffer-file-name)))))
+  (let ((suggestions-file (expand-file-name "lib/forj-context-suggestions.el" (file-name-directory (or load-file-name buffer-file-name)))))
     (when (file-exists-p suggestions-file)
       (condition-case err
           (progn
@@ -70,7 +70,7 @@
          (message "Warning: Failed to load forj-context-suggestions.el: %s" (error-message-string err))))))
   
   ;; Load forj-prompt-interface.el (depends on both previous modules)
-  (let ((interface-file (expand-file-name "forj-prompt-interface.el" (file-name-directory (or load-file-name buffer-file-name)))))
+  (let ((interface-file (expand-file-name "ui/forj-prompt-interface.el" (file-name-directory (or load-file-name buffer-file-name)))))
     (when (file-exists-p interface-file)
       (condition-case err
           (progn
@@ -102,7 +102,7 @@
         (message "Forj started in basic mode. Use M-x forj-prompt for AI assistance.")))))
 
 ;; Load UI integration system (Phase 1.6 UI/UX Enhancement)
-(let ((ui-file (expand-file-name "forj-ui-integration.el" (file-name-directory (or load-file-name buffer-file-name)))))
+(let ((ui-file (expand-file-name "ui/forj-ui-integration.el" (file-name-directory (or load-file-name buffer-file-name)))))
   (when (file-exists-p ui-file)
     (condition-case err
         (progn

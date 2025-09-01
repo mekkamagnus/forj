@@ -11,16 +11,28 @@
 
 ;; Load all UI component modules using load-file approach like main forj.el
 (let ((current-dir (file-name-directory (or load-file-name buffer-file-name)))
-      (modules '("forj-theme" "forj-syntax-highlight" "forj-markdown" 
-                 "forj-ui-components" "forj-progress" "forj-buffer-layout")))
-  (dolist (module modules)
+      (ui-modules '("forj-theme" "forj-syntax-highlight" "forj-markdown" 
+                    "forj-ui-components" "forj-buffer-layout"))
+      (lib-modules '("forj-progress")))
+  ;; Load UI modules from current directory
+  (dolist (module ui-modules)
     (let ((module-file (expand-file-name (concat module ".el") current-dir)))
       (if (file-exists-p module-file)
           (condition-case err
               (load-file module-file)
             (error
-             (message "Warning: Failed to load %s: %s" module (error-message-string err))))
-        (message "Warning: Module file not found: %s" module-file)))))
+             (message "Warning: Failed to load UI module %s: %s" module (error-message-string err))))
+        (message "Warning: UI module file not found: %s" module-file))))
+  
+  ;; Load lib modules from ../lib/ directory
+  (dolist (module lib-modules)
+    (let ((module-file (expand-file-name (concat "../lib/" module ".el") current-dir)))
+      (if (file-exists-p module-file)
+          (condition-case err
+              (load-file module-file)
+            (error
+             (message "Warning: Failed to load lib module %s: %s" module (error-message-string err))))
+        (message "Warning: Lib module file not found: %s" module-file)))))
 
 ;;; Integration Variables
 
