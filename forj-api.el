@@ -273,9 +273,28 @@
       "No project files found")))
 
 (defun forj-clean-multibyte-text (text)
-  "Remove problematic multibyte characters from TEXT for HTTP requests."
+  "Remove problematic multibyte characters from TEXT for HTTP requests.
+This function is specifically for cleaning content sent to APIs, not display content."
   (with-temp-buffer
     (insert text)
+    ;; First, extract meaningful content and skip UI formatting
+    ;; Remove header/footer UI elements that cause corruption
+    (goto-char (point-min))
+    (when (re-search-forward "FORJ AI CO-PILOT" nil t)
+      ;; Skip the entire header section
+      (when (re-search-forward "\n\n" nil t)
+        (delete-region (point-min) (point))))
+    
+    ;; Remove corrupted control sequences
+    (goto-char (point-min))
+    (while (re-search-forward "_C&.*?_" nil t)
+      (replace-match "" nil nil))
+    
+    ;; Remove corrupted separators
+    (goto-char (point-min))  
+    (while (re-search-forward "&-&.*?&-&.*?&_.*?&_.*?&-&.*?&-&" nil t)
+      (replace-match "" nil nil))
+    
     ;; Replace all box-drawing and problematic Unicode characters with ASCII
     (goto-char (point-min))
     (while (re-search-forward "[█░▀▄▌▐▀▄▌▐■□▪▫◆◇┌┐└┘│─┬┴┼├┤╭╮╰╯║═╔╗╚╝╬╠╣╦╩]+" nil t)
@@ -302,14 +321,21 @@
     (buffer-string)))
 
 (defun forj-get-conversation-context ()
-  "Get recent conversation context with multibyte character filtering."
+  "Get recent conversation context with multibyte character filtering.
+Only clean text when sending to API, not for display purposes."
   (if (get-buffer forj-conversation-buffer)
       (with-current-buffer forj-conversation-buffer
-        (let* ((content (buffer-string))
-               (clean-content (forj-clean-multibyte-text content)))
-          (if (> (length clean-content) 1000)
-              (concat "...\n" (substring clean-content -800))
-            clean-content)))
+        (let* ((content (buffer-string)))
+          ;; Extract only actual conversation content, not UI formatting
+          ;; Skip the header and UI elements for context
+          (let* ((content-start (if (string-match "\n\n.*---.*Response.*---" content)
+                                   (match-end 0)
+                                 0))
+                (actual-content (substring content content-start))
+                (clean-content (forj-clean-multibyte-text actual-content)))
+            (if (> (length clean-content) 1000)
+                (concat "...\n" (substring clean-content -800))
+              clean-content))))
     "No previous conversation"))
 
 (defun forj-prompt (user-input)
@@ -333,11 +359,11 @@ This function maintains backward compatibility while supporting new context mana
           (forj-display-response response)
           ;; Show the conversation buffer to user
           (display-buffer (forj-conversation-buffer))
-          (when (yes-or-no-p "Apply AI suggestions? ")
-            (forj-apply-response response)))
+          ;; Add non-blocking interactive buttons instead of blocking prompt
+          (forj-add-response-actions response))
       (message "No response received from AI"))))
 
-;; Enhanced prompt processing function for context management integration
+;; Enhanced prompt processing function with tool integration
 (defun forj-process-prompt-with-context (prompt context-data)
   "Process PROMPT with CONTEXT-DATA using new context management system.
 This is the new API entry point that works with the context management system."
@@ -346,14 +372,118 @@ This is the new API entry point that works with the context management system."
   
   (message "Processing prompt with %d context sources..." (length context-data))
   
-  ;; Format context for API
-  (let* ((formatted-context (forj-format-context-for-api context-data))
-         (enhanced-prompt (if (and context-data (not (string-empty-p formatted-context)))
-                             (format "Context:\n%s\n\nUser Request:\n%s"
-                                    formatted-context prompt)
-                           prompt))
-         (response (forj-api-request enhanced-prompt nil))) ; Don't use old context system
+  ;; Check if prompt should trigger tool calls before sending to AI
+  (let* ((tool-result (forj-check-for-tool-trigger prompt)))
+    (if tool-result
+        ;; Direct tool execution triggered
+        (progn
+          (message "Direct tool execution triggered")
+          (forj-display-response tool-result)
+          (display-buffer (forj-conversation-buffer)))
+      ;; Regular AI processing with tool-call detection
+      (let* ((formatted-context (forj-format-context-for-api context-data))
+             (enhanced-prompt (if (and context-data (not (string-empty-p formatted-context)))
+                                 (format "Context:\n%s\n\nUser Request:\n%s"
+                                        formatted-context prompt)
+                               prompt))
+             (response (forj-api-request enhanced-prompt nil))) ; Don't use old context system
+        
+        (if response
+            (progn
+              (when (fboundp 'forj-add-to-history)
+                (forj-add-to-history 'assistant response))
+              ;; Process response for tool calls before displaying
+              (let ((processed-response (forj-process-response-with-tools response)))
+                (forj-display-response processed-response))
+              ;; Show the conversation buffer to user
+              (display-buffer (forj-conversation-buffer))
+              ;; Add non-blocking interactive buttons instead of blocking prompt
+              (forj-add-response-actions response))
+          (message "No response received from AI"))))))
+
+;; Query Interpreter Integration (Specification 004)
+(defun forj-process-query-with-interpretation (query)
+  "Process QUERY using natural language interpretation layer.
+This function integrates the query interpreter with the main conversation flow."
+  (interactive "sForj query: ")
+  
+  ;; Add user input to conversation
+  (when (fboundp 'forj-add-to-history)
+    (forj-add-to-history 'user query))
+  (forj-display-user-input query)
+  
+  ;; Try query interpretation first if available
+  (if (fboundp 'forj-query-interpret)
+      (progn
+        (message "Interpreting natural language query...")
+        (let* ((interpretation (forj-query-interpret query))
+               (status (plist-get interpretation :status)))
+          
+          (pcase status
+            ('tool_plan
+             ;; Execute tools through interpretation
+             (message "Query interpreted as tool plan - executing tools...")
+             (let ((execution-result (forj-query-process query)))
+               (if (eq (plist-get execution-result :status) 'completed)
+                   (progn
+                     (when (fboundp 'forj-add-to-history)
+                       (forj-add-to-history 'assistant "Tools executed successfully through query interpretation"))
+                     (forj-display-response "✅ Query executed through natural language interpretation. Tool results have been processed."))
+                 (progn
+                   (when (fboundp 'forj-add-to-history)
+                     (forj-add-to-history 'assistant (format "Query interpretation failed: %s" 
+                                                            (plist-get execution-result :message))))
+                   (forj-display-response (format "❌ Query interpretation failed: %s\nFalling back to regular AI processing..." 
+                                                 (plist-get execution-result :message)))
+                   ;; Fall back to regular prompt processing
+                   (forj-fallback-to-regular-processing query)))))
+            
+            ('question
+             ;; Process as regular AI question
+             (message "Query interpreted as question - using AI processing...")
+             (when (fboundp 'forj-add-to-history)
+               (forj-add-to-history 'assistant "Query interpreted as question, processing with AI"))
+             (forj-fallback-to-regular-processing query))
+            
+            ('complaint
+             ;; Handle complaints
+             (message "Query interpreted as complaint - providing assistance...")
+             (when (fboundp 'forj-add-to-history)
+               (forj-add-to-history 'assistant "Query interpreted as complaint, offering assistance"))
+             (forj-display-response "I understand you may have concerns. How can I help address the issue you're experiencing?"))
+            
+            (_
+             ;; Unknown or error status - fall back
+             (message "Query interpretation uncertain - using regular AI processing...")
+             (forj-fallback-to-regular-processing query)))))
     
+    ;; Query interpreter not available - fall back to regular processing
+    (message "Query interpreter not available - using regular AI processing...")
+    (forj-fallback-to-regular-processing query)))
+
+(defun forj-add-response-actions (response)
+  "Add interactive action buttons to the conversation buffer for RESPONSE."
+  (let ((buffer (forj-conversation-buffer)))
+    (with-current-buffer buffer
+      (let ((inhibit-read-only t))
+        (goto-char (point-max))
+        (insert "\n")
+        (insert-button "✓ Apply" 
+                      'action (lambda (_button) 
+                                (forj-apply-response response)
+                                (message "AI suggestions applied"))
+                      'follow-link t)
+        (insert "  ")
+        (insert-button "✗ Dismiss" 
+                      'action (lambda (_button) 
+                                (message "AI suggestions dismissed"))
+                      'follow-link t)
+        (insert "\n\n")))))
+
+(defun forj-fallback-to-regular-processing (query)
+  "Fall back to regular AI processing for QUERY."
+  (let* ((context (forj-build-context))
+         (response (forj-api-request query context)))
     (if response
         (progn
           (when (fboundp 'forj-add-to-history)
@@ -361,8 +491,8 @@ This is the new API entry point that works with the context management system."
           (forj-display-response response)
           ;; Show the conversation buffer to user
           (display-buffer (forj-conversation-buffer))
-          (when (yes-or-no-p "Apply AI suggestions? ")
-            (forj-apply-response response)))
+          ;; Add non-blocking interactive buttons instead of blocking prompt
+          (forj-add-response-actions response))
       (message "No response received from AI"))))
 
 (defun forj-display-user-input (input)
@@ -384,7 +514,18 @@ This is the new API entry point that works with the context management system."
       (with-current-buffer buffer
         (let ((inhibit-read-only t))
           (goto-char (point-max))
-          (insert "\n\n--- AI Response ---\n" response)
+          ;; Ensure clean display by avoiding multibyte corruption
+          (let ((clean-response (if (string-match-p "[^\x00-\x7F]" response)
+                                   ;; Only clean API content, preserve formatting
+                                   (with-temp-buffer
+                                     (insert response)
+                                     ;; Only replace truly problematic chars, preserve emojis and UI
+                                     (goto-char (point-min))
+                                     (while (re-search-forward "[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]" nil t)
+                                       (replace-match "" nil nil))
+                                     (buffer-string))
+                                 response)))
+            (insert "\n\n--- AI Response ---\n" clean-response))
           ;; Apply syntax highlighting to the newly inserted content
           (when (featurep 'forj-syntax-highlight)
             (forj-highlight-code-blocks))
@@ -423,6 +564,141 @@ Currently displays the response; file operations are handled through forj-apply-
       (forj-process-file-operations response))
      ;; General response - display only
      (t (forj-display-response response)))))
+
+;; Tool Integration Functions
+
+(defun forj-check-for-tool-trigger (prompt)
+  "Check if PROMPT should directly trigger a tool call.
+Returns tool result string if triggered, nil otherwise."
+  (when (fboundp 'forj-tools-dispatch)
+    (let ((prompt-lower (downcase (string-trim prompt))))
+      (cond
+       ;; Directory queries
+       ((or (string-match-p "what directory" prompt-lower)
+            (string-match-p "current directory" prompt-lower)
+            (string-match-p "where am i" prompt-lower)
+            (string-match-p "pwd" prompt-lower))
+        (forj-execute-tool-call "get_current_directory" '() "directory query"))
+       
+       ;; List files queries  
+       ((string-match-p "\\(list files\\|show files\\|what files\\|files in\\)" prompt-lower)
+        (forj-execute-tool-call "list_files" '((directory . ".")) "file listing"))
+       
+       ;; Search queries
+       ((string-match-p "\\(search for\\|find\\|look for\\)" prompt-lower)
+        (cond
+         ;; Pattern: "search for the term 'QUERY'"
+         ((string-match "search for\\s-+the\\s-+term\\s-+[\"']\\([^\"'\n]+\\)[\"']" prompt-lower)
+          (let ((query (match-string 1 prompt-lower)))
+            (forj-execute-tool-call "search" `((query . ,query)) "search query")))
+         ;; Pattern: "search for 'QUERY'" or "search for QUERY"
+         ((string-match "\\(search for\\|find\\|look for\\)\\s-+[\"']?\\([^\"'\n]+?\\)\\(?:[\"']\\|\\s-+in\\|$\\)" prompt-lower)
+          (let ((query (string-trim (match-string 2 prompt-lower))))
+            (forj-execute-tool-call "search" `((query . ,query)) "search query")))
+         ;; Default: extract any quoted term
+         ((string-match "[\"']\\([^\"'\n]+\\)[\"']" prompt-lower)
+          (let ((query (match-string 1 prompt-lower)))
+            (forj-execute-tool-call "search" `((query . ,query)) "search query")))))
+       
+       ;; Default: no tool trigger
+       (t nil)))))
+
+(defun forj-execute-tool-call (tool-name args description)
+  "Execute a tool call and format the result for display."
+  (condition-case err
+      (let* ((tool-call-json (json-encode `((id . "direct-1") 
+                                           (name . ,tool-name) 
+                                           (args . ,args) 
+                                           (meta . ((description . ,description))))))
+             (result-json (forj-tools-dispatch tool-call-json))
+             (result (json-read-from-string result-json))
+             (success (alist-get 'ok result))
+             (payload (if success 
+                         (alist-get 'result result)
+                       (alist-get 'error result))))
+        
+        (if success
+            ;; Format successful tool result
+            (pcase tool-name
+              ("get_current_directory" 
+               (format "📁 Current directory: %s\n\nAbsolute path: %s" 
+                      (alist-get 'directory payload)
+                      (alist-get 'absolute_path payload)))
+              ("list_files"
+               (format "📋 Files in directory:\n\n%s" 
+                      (mapconcat (lambda (file)
+                                  (format "- %s (%s, %d bytes)" 
+                                         (alist-get 'path file)
+                                         (alist-get 'type file)
+                                         (alist-get 'size file)))
+                                payload "\n")))
+              ("search"
+               (if payload
+                   (let* ((matches (if (> (length payload) 20)
+                                     (append (seq-take payload 15) 
+                                            '(((path . "...") (line . 0) (match_text . "(truncated - showing first 15 matches)"))))
+                                   payload))
+                          (result-text (mapconcat (lambda (match)
+                                                   (format "- %s:%d: %s"
+                                                          (alist-get 'path match)
+                                                          (alist-get 'line match) 
+                                                          (alist-get 'match_text match)))
+                                                 matches "\n")))
+                     ;; Further truncate if result is still too long for emacsclient
+                     (if (> (length result-text) 3000)
+                         (concat (substring result-text 0 3000) "\n\n... (results truncated for display)")
+                       (format "🔍 Search results:\n\n%s" result-text)))
+                 "🔍 No search results found"))
+              (_ (format "✅ Tool '%s' executed successfully:\n%s" tool-name (prin1-to-string payload))))
+          ;; Format error
+          (format "❌ Tool '%s' failed:\n%s" tool-name 
+                 (alist-get 'message payload))))
+    (error 
+     (format "❌ Tool execution error: %s" (error-message-string err)))))
+
+(defun forj-process-response-with-tools (response)
+  "Process AI RESPONSE looking for tool-call blocks and execute them.
+Returns the response with tool results integrated."
+  (if (not (fboundp 'forj-tools-dispatch))
+      ;; No tools available - return original response
+      response
+    
+    ;; Look for tool-call blocks in response
+    (let ((processed-response response))
+      (while (string-match "```tool-call\n\\(\\(?:.\\|\n\\)*?\\)\n```" processed-response)
+        (let* ((tool-json (match-string 1 processed-response))
+               (start (match-beginning 0))
+               (end (match-end 0)))
+          
+          (condition-case err
+              ;; Execute the tool call
+              (let* ((result-json (forj-tools-dispatch tool-json))
+                     (result (json-read-from-string result-json))
+                     (success (alist-get 'ok result))
+                     (tool-name (alist-get 'name result))
+                     (payload (if success 
+                                 (alist-get 'result result)
+                               (alist-get 'error result)))
+                     (formatted-result (format "```tool-result\n%s\n```\n\n%s"
+                                              result-json
+                                              (if success
+                                                  (format "✅ Tool '%s' executed successfully" tool-name)
+                                                (format "❌ Tool '%s' failed: %s" tool-name 
+                                                       (alist-get 'message payload))))))
+                
+                ;; Replace the tool-call block with the result
+                (setq processed-response 
+                      (concat (substring processed-response 0 start)
+                             formatted-result
+                             (substring processed-response end))))
+            (error 
+             ;; Replace with error message
+             (setq processed-response 
+                   (concat (substring processed-response 0 start)
+                          (format "❌ Tool execution error: %s" (error-message-string err))
+                          (substring processed-response end)))))))
+      
+      processed-response)))
 
 (provide 'forj-api)
 ;;; forj-api.el ends here
